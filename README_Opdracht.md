@@ -79,8 +79,8 @@ Het systeem moet weten **wat we bezitten, waar het is en of het beschikbaar is o
 - Zakt de voorraad in het warehouse onder een bepaald niveau, dan komt er een **status/melding**
 - **Reorder point:** automatisch nabestellen bij de exporter in Hong Kong
 
-### Prioriteit B2B
-- Vult een klant een **KvK-nummer** (of bedrijfsgegevens) in, dan geldt de bestelling als **B2B-aankoop** en krijgt die **hogere prioriteit**
+### Prioriteit b2b en b2c
+- deze prio wordt gemaakt op basis van quantiteit
 
 ### Statussen
 Een status moet altijd een **echte gebeurtenis** vertegenwoordigen.
