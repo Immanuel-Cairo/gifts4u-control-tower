@@ -8,17 +8,17 @@ Use the weekly table to record which days the team plans to work together at sch
 
 | Day | Work together at school? | Planned time | Notes |
 |---|---|---|---|
-| Monday | [To be filled in] | [To be filled in] | [To be filled in] |
-| Tuesday | [To be filled in] | [To be filled in] | [To be filled in] |
-| Wednesday | [To be filled in] | [To be filled in] | [To be filled in] |
-| Thursday | [To be filled in] | [To be filled in] | [To be filled in] |
-| Friday | [To be filled in] | [To be filled in] | [To be filled in] |
+| Monday | Ja | 10:00 -14:00 | Op school, boek een projectruimte of JRCZRC201 |
+| Tuesday | Ja | 10:00 - 14:00 | Op school, boek een projectruimte of JRCZRC201 |
+| Wednesday | Nee | - | Thuis/op school, wat je fijner vindt |
+| Thursday | Nee | - | Thuis/op school, wat je fijner vindt |
+| Friday | Nee | - | Thuis/op school, wat je fijner vindt |
 
 ## Expected attendance and punctuality
 
 Agree what the team expects for attendance and punctuality, and how members should notify the group about lateness or absence.
 
-**Team agreement:** [To be filled in]
+**Team agreement:** 2 dagen per week op school, absentie melden via discord. De dagen dat er thuis wordt gewerkt moet je wel duidelijk wezen met wat je doet.
 
 ## Focus during school hours
 
