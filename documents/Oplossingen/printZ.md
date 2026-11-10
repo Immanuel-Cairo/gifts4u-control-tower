@@ -18,3 +18,6 @@ Printz laat de verkoper weten hoeveel orders het per dag aankan. Komt er een gro
 
 **6. Groter idee: kleine voorraad bij Printz**  
 Printz houdt een kleine voorraad van de best verkochte blanco producten, zoals witte en zwarte T-shirts in de populaire maten. Het product hoeft dan niet eerst van het warehouse naar Printz te reizen. Dat maakt de levertijd korter en scheelt verzendkosten. Dit vraagt wel goede afspraken over wie welke voorraad bijhoudt.
+
+
+**Hoe kan Printz orders automatisch en foutloos ontvangen, B2B- en B2C-orders goed inplannen en de verkoper op tijd laten weten als er iets misgaat of vertraging is?**
