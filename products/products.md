@@ -9,7 +9,7 @@ The following products are expected:
 3. System requirements
 4. 2 System Context Diagrams (UCD and Level 0 DFD)
 5. Wireflow
-6. High fidelity prototype (please pay attention to heuristics)
+6. High fidelity prototype (please pay attention to heuristics) — [GIFTS4U Control Tower](prototype/index.html), [Nederlandstalige walkthrough](prototype/walkthrough.md)
 7. Use-case specification (2 filled in Use Case templates per student)
 8. Activity diagram of 1 of the Use Cases per student
 9. Entity Relationship Diagram

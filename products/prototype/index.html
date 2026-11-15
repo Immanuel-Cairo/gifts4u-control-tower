@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111210" />
+    <meta
+      name="description"
+      content="Interactief Nederlandstalig GIFTS4U Control Tower-prototype met fictieve orders en partnergebeurtenissen."
+    />
+    <title>GIFTS4U — Control Tower</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Ga naar de inhoud</a>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Hoofdnavigatie">
+        <a class="brand" href="#overzicht" aria-label="GIFTS4U overzicht"
+          ><svg viewBox="0 0 40 40" aria-hidden="true">
+            <path fill="#d8f34c" d="M2 14 21 3l17 10-19 11z" />
+            <path fill="#8c71fa" d="m2 26 17-10 19 10-19 11z" />
+            <path fill="#c9ec36" d="m2 14 17 10v13L2 26z" /></svg
+          ><span
+            >GIFTS<span class="brand-four">4</span>U<small
+              >CONTROL TOWER</small
+            ></span
+          ></a
+        >
+        <div class="nav-label">WERKRUIMTE</div>
+        <nav id="navigation"></nav>
+        <div class="sidebar-bottom">
+          <div class="workspace">
+            <span class="workspace-icon">G</span>
+            <div>
+              GIFTS4U Nederland<small id="partner-connection"
+                >Alle demopartners verbonden</small
+              >
+            </div>
+          </div>
+          <button class="sidebar-help" data-action="help">
+            <span data-icon="help"></span> Rondleiding
+            <span class="key">?</span>
+          </button>
+          <div class="demo-label">
+            <span></span> Prototype · fictieve gegevens
+          </div>
+        </div>
+      </aside>
+      <div class="workspace-main">
+        <header class="topbar">
+          <div class="greeting">
+            <span class="eyebrow">MAANDAG 16 NOVEMBER 2026 · DEMODAG</span>
+            <h1>Goedemorgen, Sophie<span class="purple">.</span></h1>
+            <p>Een helder zicht op ieder cadeau.</p>
+          </div>
+          <div class="header-tools">
+            <label class="global-search"
+              ><span data-icon="search"></span
+              ><input
+                id="global-search"
+                type="search"
+                placeholder="Zoek order, klant of SKU…"
+                aria-label="Zoek order, klant of SKU"
+              /><kbd>/</kbd></label
+            ><button
+              class="icon-button notification"
+              data-action="exceptions"
+              aria-label="Open uitzonderingen"
+            >
+              <span data-icon="bell"></span><i></i></button
+            ><button
+              class="avatar"
+              data-action="settings"
+              aria-label="Demo-instellingen en gebruikersrol"
+            >
+              SV
+            </button>
+          </div>
+        </header>
+        <main id="main" tabindex="-1"></main>
+        <footer class="footer">
+          <span
+            ><span class="live-dot"></span> Lokale demonstratie
+            <span class="footer-divider">/</span> Geen echte
+            partnerkoppelingen</span
+          ><button class="text-button" data-action="help">
+            Over dit prototype <span aria-hidden="true">↗</span>
+          </button>
+        </footer>
+      </div>
+    </div>
+    <dialog
+      id="detail-dialog"
+      class="detail-dialog"
+      aria-labelledby="detail-title"
+    >
+      <div id="detail-content"></div>
+    </dialog>
+    <dialog
+      id="action-dialog"
+      class="action-dialog"
+      aria-labelledby="action-title"
+    >
+      <div id="action-content"></div>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <noscript
+      ><p class="noscript">
+        Schakel JavaScript in om dit interactieve prototype te gebruiken.
+      </p></noscript
+    >
+  </body>
+</html>
