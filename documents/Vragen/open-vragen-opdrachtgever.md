@@ -14,7 +14,7 @@ De antwoorden op deze vragen bepalen de acceptatiecriteria van sprint 1. Per vra
 |---|---|---|
 | 2.1 | Is er een minimale bestelhoeveelheid? Zo ja: geldt die voor klanten, voor de inkoop bij Hong Kong, of voor allebei? | FR-WEB-03, FR-IMP-01 |
 | 2.2 | Moet nabestellen bij de exporter in Hongkong volledig automatisch gebeuren, of wil de directeur eerst goedkeuren? | Reorder point, FR-IMP-01 |
-| 2.3 | Moet de webshop bij een tekort nog bestellingen accepteren (backorder) met een latere leverdatum, of de bestelling blokkeren? of is het gewoon print on demand | FR-WEB-03, FR-MAG-04 |
+| 2.3 | Moet de webshop bij een tekort nog bestellingen accepteren (backorder) met een latere leverdatum, of de bestelling blokkeren?| FR-WEB-03, FR-MAG-04 |
 | 2.4 | Mogen orders gesplitst worden (deels leveren) als de voorraad niet voor de hele order volstaat? | FR-MAG-03, FR-MAG-04 |
 
 ## 3. Import en douane
