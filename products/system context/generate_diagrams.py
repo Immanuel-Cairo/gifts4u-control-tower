@@ -10,29 +10,27 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 
-# Rol, twee gebruikersdoelen. De requirementkoppeling staat in README.md.
-ROWS = [
-    ("manager", "Manager / ketenregisseur", [("UC01", "Ketenoverzicht", "raadplegen"), ("UC02", "Uitzonderingen en", "impact beoordelen")]),
-    ("directeur", "Directeur / eigenaar", [("UC03", "Corrigerend besluit", "vastleggen en toewijzen"), ("UC04", "Besluit en opvolging", "controleren")]),
-    ("importCoordinator", "Importcoördinator", [("UC05", "Importpartijen", "registreren en volgen"), ("UC06", "Importvertraging", "registreren")]),
-    ("magazijn", "Magazijnmedewerker", [("UC07", "Voorraad ontvangen,", "plannen en reserveren"), ("UC08", "Overdracht naar", "Printz bevestigen")]),
-    ("printz", "Printz-medewerker", [("UC09", "Printopdracht uitvoeren", "en kwaliteit vrijgeven"), ("UC10", "Printstoring of", "capaciteitstekort melden")]),
-    ("dhl", "DHL-medewerker", [("UC11", "Zending volgen en", "gebeurtenissen bevestigen"), ("UC12", "Transportcapaciteit", "plannen")]),
-    ("service", "Klantenservice / accountmanager", [("UC13", "Klantupdate opstellen", "en afhandeling vastleggen"), ("UC14", "Personalisatieklacht", "registreren en opvolgen")]),
-    ("klant", "Klant (B2B / B2C)", [("UC15", "Bestelling plaatsen", "met personalisatie"), ("UC16", "Orderupdates", "ontvangen")]),
+# Eén persoon bedient de Control Tower; partnerwerk gebeurt buiten de grens.
+CASES = [
+    ("UC01", "Orderoverzicht", "raadplegen"),
+    ("UC02", "Uitzonderingen en", "impact beoordelen"),
+    ("UC03", "Corrigerend besluit", "vastleggen en toewijzen"),
+    ("UC04", "Opvolging en logboek", "raadplegen"),
+    ("UC05", "Voorraad en import", "volgen"),
+    ("UC06", "Productie en transport", "volgen"),
+    ("UC07", "Klantcommunicatie", "coördineren"),
+    ("UC08", "KPI's en meldingen", "bewaken"),
 ]
 
 # Stromen t.o.v. proces 0; alleen onderbouwde uitgaande stromen opnemen.
 FLOWS = [
-    ("manager", "Manager / ketenregisseur", "F01", "Filters en actiecoördinatie", "F02", "Ketenbeeld en meldingen"),
-    ("directeur", "Directeur / eigenaar", "F03", "Besluit, eigenaar, deadline", "F04", "Escalatie en besluitlog"),
-    ("importCoordinator", "Importcoördinator", "F05", "Partij en importuitzondering", "F06", "Importbeeld en orderimpact"),
-    ("magazijn", "Magazijnmedewerker", "F07", "Ontvangst en overdracht", "F08", "Voorraad en reserveringen"),
-    ("klant", "Klant (B2B / B2C)", "F09", "Bestelling en klacht", "F10", "Orderbevestiging en update"),
-    ("leverancier", "Leverancier Hongkong", "F11", "Zending, ETA en events", "", ""),
-    ("printz", "Printz-medewerker", "F12", "Productie, controle, storing", "F13", "Printopdracht en actie"),
-    ("dhl", "DHL-medewerker", "F14", "Transport, bewijs, capaciteit", "F15", "Zendingsgegevens en actie"),
-    ("service", "Klantenservice / accountmanager", "F16", "Bericht, klacht, afhandeling", "F17", "Ordercontext en werkvoorraad"),
+    ("beheerder", "Control Tower-beheerder", "F01", "Filters, acties en besluiten", "F02", "Overzicht, meldingen en log"),
+    ("webshop", "Webshop / orderservice", "F03", "Orders en leverbeloften", "", ""),
+    ("importService", "Importregistratie", "F04", "Partijen, ETA en vertraging", "", ""),
+    ("voorraad", "Magazijn / voorraadservice", "F05", "Voorraad en voorraadevents", "", ""),
+    ("printz", "Printz / productiegegevens", "F06", "Productiestatus en storing", "F07", "Toegewezen herstelactie"),
+    ("dhl", "DHL / transportgegevens", "F08", "Transportstatus en ETA", "F09", "Toegewezen herstelactie"),
+    ("communicatie", "Klantcommunicatie", "F10", "Berichtstatus en klachten", "F11", "Update en opdracht"),
 ]
 
 
@@ -66,7 +64,7 @@ def role_lines(label):
 
 def course_title(label):
     # Title Case volgens FDS Class 1, dia 36; afkortingen blijven intact.
-    return label.title().replace("Dhl", "DHL")
+    return label.title().replace("Dhl", "DHL").replace("Kpi'S", "KPI's")
 
 
 def actor(x, y, label):
@@ -76,53 +74,42 @@ def actor(x, y, label):
 
 
 def use_cases():
-    p = start("Use-casediagram · wie doet wat?", "Menselijke rollen buiten de grens; gebruikersdoelen binnen het GIFTS4U-platform.", 1650)
-    p += ['<rect x="310" y="178" width="880" height="1340" rx="4" fill="white" stroke="#151612" stroke-width="2"/>',
-          text(750, 213, "GIFTS4U-platform inclusief Control Tower", 20, weight="700")]
-    uml = ['@startuml', 'left to right direction', 'skinparam shadowing false', 'skinparam packageStyle rectangle', 'skinparam actorStyle stickman', 'skinparam usecase {', '  BackgroundColor #F0EBFE', '  BorderColor #7855E9', '}', 'title GIFTS4U — systeemcontext en gebruikersrollen']
-    for ident, label, _ in ROWS:
-        uml.append(f'actor "{course_title(label)}" as {ident}')
-    uml += ['actor "Leveranciersmedewerker Hongkong" as leverancier', 'rectangle "GIFTS4U-platform inclusief Control Tower" {']
-    for _, _, cases in ROWS:
-        for ident, a, b in cases:
-            uml.append(f'  usecase "{ident}\\n{course_title(a)}\\n{course_title(b)}" as {ident}')
+    p = start("Use-casediagram · één beheerder", "Eén persoon houdt de Control Tower bij; externe partijen leveren de ketengegevens.", 1260)
+    p += ['<rect x="520" y="180" width="850" height="920" rx="4" fill="white" stroke="#151612" stroke-width="2"/>',
+          text(945, 222, "GIFTS4U Control Tower", 24, weight="700"),
+          actor(195, 640, "Control Tower-beheerder")]
+    uml = ['@startuml', 'left to right direction', 'skinparam shadowing false', 'skinparam packageStyle rectangle', 'skinparam actorStyle stickman', 'skinparam usecase {', '  BackgroundColor #F0EBFE', '  BorderColor #7855E9', '}', 'title GIFTS4U Control Tower — één beheerder', 'actor "Control Tower-beheerder" as beheerder', 'rectangle "GIFTS4U Control Tower" {']
+    for ident, a, b in CASES:
+        uml.append(f'  usecase "{ident}\\n{course_title(a)}\\n{course_title(b)}" as {ident}')
     uml.append('}')
-    for row, (role, label, cases) in enumerate(ROWS):
-        y = 280 + row * 155
-        p.append(actor(145, y, course_title(label)))
-        if row:
-            p.append(f'<path d="M330 {y - 55}H1170" stroke="#e8e9e4"/>')
-        p.append(f'<path d="M170 {y - 7}H190V{y}H370 M190 {y}V{y + 45}H800" stroke="#747870" fill="none" stroke-width="1.6"/>')
-        for col, (ident, a, b) in enumerate(cases):
-            cx, cy = (540, y) if col == 0 else (970, y + 45)
-            p.append(f'<ellipse cx="{cx}" cy="{cy}" rx="170" ry="39" fill="#f0ebfe" stroke="#7855e9" stroke-width="1.5"/>')
-            p.append(text(cx, cy - 5, [f"{ident} · {course_title(a)}", course_title(b)], 17))
-            uml.append(f'{role} -- {ident}')
-    # De leverancier ondersteunt de importregistratie; de coördinator is eigenaar.
-    p.append(actor(1310, 545, "Leveranciersmedewerker / Hongkong"))
-    p.append('<path d="M1285 538H1265V545H740V590H710" fill="none" stroke="#747870" stroke-width="1.6"/>')
-    uml += ['leverancier -- UC05', '@enduml']
-    p += [text(40, 1560, "Leeswijzer", 18, anchor="start", weight="700"),
-          text(40, 1591, "Lijn = deelname aan een use case, geen procesvolgorde. Iedere use case heeft een primaire menselijke rol.", 17, anchor="start"),
-          text(40, 1620, "UC02 bevat een optionele impactverkenner als ontwerpvoorstel. Rollen en requirementkoppelingen: README.md.", 17, anchor="start")]
+    for row, (ident, a, b) in enumerate(CASES):
+        y = 300 + row * 105
+        p.append(f'<path d="M220 633L715 {y}" stroke="#747870" fill="none" stroke-width="1.6"/>')
+        p.append(f'<ellipse cx="945" cy="{y}" rx="230" ry="39" fill="#f0ebfe" stroke="#7855e9" stroke-width="1.5"/>')
+        p.append(text(945, y - 5, [f"{ident} · {course_title(a)}", course_title(b)], 18))
+        uml.append(f'beheerder -- {ident}')
+    uml.append('@enduml')
+    p += [text(40, 1150, "Leeswijzer", 18, anchor="start", weight="700"),
+          text(40, 1181, "Alle acht doelen horen bij dezelfde beheerder. Lijnen betekenen deelname, geen procesvolgorde.", 17, anchor="start"),
+          text(40, 1212, "Partnergegevens en uitgaande opdrachten staan in het DFD. Partners bedienen de Control Tower niet.", 17, anchor="start")]
     write_svg("use-case-diagram.svg", p)
     (ROOT / "use-case-diagram.puml").write_text("\n".join(uml) + "\n", encoding="utf-8")
 
 
 def dfd():
-    p = start("DFD · niveau 0", "Eén systeemproces, negen externe partijen en zeventien gerichte gegevensstromen.", 1380, width=1800)
+    p = start("DFD · niveau 0", "Eén Control Tower, één beheerder en zes externe gegevensbronnen of ontvangende diensten.", 1380, width=1800)
     # FDS Class 3, dia 11/14 en Class 4, dia 6: één procescirkel voor de hele systeemgrens.
     cx, cy, radius = 900, 760, 420
     p += [f'<circle cx="{cx}" cy="{cy}" r="{radius}" fill="white" stroke="#7855e9" stroke-width="2.5"/>',
           text(cx, 620, "0", 36, "#7855e9", weight="700"),
-          text(cx, 690, "GIFTS4U-orderketen beheren", 28, weight="700"),
-          text(cx, 745, ["GIFTS4U-platform", "inclusief Control Tower"], 24, weight="700"),
-          text(cx, 845, ["Orders · import · voorraad", "Printz · DHL", "Klantcommunicatie · ketenregie"], 19, "#747870")]
-    mermaid = ['flowchart LR', '    platform(("0 · GIFTS4U-orderketen beheren / GIFTS4U-platform inclusief Control Tower"))']
+          text(cx, 690, "Keten bewaken en bijsturen", 28, weight="700"),
+          text(cx, 765, "GIFTS4U Control Tower", 26, weight="700"),
+          text(cx, 845, ["Informatie samenbrengen", "Uitzonderingen en impact tonen", "Acties en besluiten vastleggen"], 19, "#747870")]
+    mermaid = ['flowchart LR', '    platform(("0 · Keten bewaken en bijsturen / GIFTS4U Control Tower"))']
     for i, (ident, label, incoming, inlabel, outgoing, outlabel) in enumerate(FLOWS):
-        left = i < 5
-        row = i if left else i - 5
-        y = 420 + row * 175 if left else 460 + row * 200
+        left = i < 4
+        row = i if left else i - 4
+        y = 440 + row * 205 if left else 490 + row * 255
         x, center = (30, 160) if left else (1510, 1640)
         p.append(f'<rect x="{x}" y="{y - 60}" width="260" height="120" fill="white" stroke="#151612" stroke-width="1.5"/>')
         p.append(text(center, y - (9 if " / " in label else 0), role_lines(label), 18, weight="700"))
@@ -143,7 +130,7 @@ def dfd():
             mermaid.append(f'    platform -->|"{outgoing}: {outlabel}"| {ident}')
     p += [text(40, 1260, "Leeswijzer", 18, anchor="start", weight="700"),
           text(40, 1292, "Rechthoek = externe partij. Cirkel 0 = volledige systeemgrens. Pijl = gegevens, geen fysieke goederen of navigatie.", 17, anchor="start"),
-          text(40, 1322, "F11 kan via de importcoördinator worden aangeleverd. Een automatische inkoopkoppeling is niet vastgesteld.", 17, anchor="start"),
+          text(40, 1322, "Externe partijen zijn gegevensbronnen of ontvangers van opdrachten; het zijn geen extra Control Tower-gebruikers.", 17, anchor="start"),
           text(40, 1352, "Geen interne services of gegevensopslag uitgewerkt op dit niveau. Gegevenswoordenboek: README.md.", 17, anchor="start")]
     write_svg("dfd-level-0.svg", p)
     (ROOT / "dfd-level-0.mmd").write_text("\n".join(mermaid) + "\n", encoding="utf-8")

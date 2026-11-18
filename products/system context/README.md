@@ -1,139 +1,126 @@
-# GIFTS4U — systeemcontext
+# GIFTS4U ? systeemcontext van de Control Tower
 
-Dit product beschrijft **wie het GIFTS4U-platform gebruikt** en **welke gegevens de systeemgrens passeren**. Het bestaat uit een use-casediagram (UCD) en een Level 0 Data Flow Diagram (DFD). Alle use cases hebben een concrete menselijke rol, waaronder manager, directeur en partnermedewerker.
+**E?n persoon houdt de Control Tower bij.** Die persoon heeft in dit ontwerp de rol **Control Tower-beheerder**. Alle acht use cases horen bij diezelfde gebruiker. Printz, DHL, het magazijn en andere ketenpartijen leveren gegevens of ontvangen opdrachten; zij zijn geen extra gebruikers van de Control Tower.
 
-Productissue: [#73](https://github.com/Immanuel-Cairo/gifts4u-control-tower/issues/73). Gerelateerd aan #70 en #71. Het bestaande [Nederlandstalige prototype](../prototype/index.html) en de [walkthrough](../prototype/walkthrough.md) zijn opgeleverd via #4 / PR #5.
+Productissue: [#73](https://github.com/Immanuel-Cairo/gifts4u-control-tower/issues/73). Pull request: [#74](https://github.com/Immanuel-Cairo/gifts4u-control-tower/pull/74). Gerelateerd aan #70 en #71.
 
 ## Diagrammen openen
 
-- [Use-casediagram — SVG](use-case-diagram.svg), direct te openen in een browser; [PlantUML-bron](use-case-diagram.puml).
-- [DFD niveau 0 — SVG](dfd-level-0.svg), direct te openen in een browser; [Mermaid-bron](dfd-level-0.mmd).
+- [Use-casediagram ? SVG](use-case-diagram.svg) en [PlantUML-bron](use-case-diagram.puml).
+- [DFD niveau 0 ? SVG](dfd-level-0.svg) en [Mermaid-bron](dfd-level-0.mmd).
 
-![Use cases en gebruikersrollen](use-case-diagram.svg)
+![E?n beheerder met acht use cases](use-case-diagram.svg)
 
-![DFD niveau 0](dfd-level-0.svg)
+![Control Tower met externe gegevensstromen](dfd-level-0.svg)
 
-De kleuren sluiten aan op het prototype: donkere kop, lichte werkruimte, limegroene accenten en paars voor de diagrammen. De SVG's zijn lokaal te bekijken en gebruiken geen externe scripts of lettertypen. Zoom in op de diagrammen voor bespreking of druk ze liggend af op groot formaat.
+De SVG's werken lokaal zonder externe scripts of lettertypen. Donkere kop, limegroene accenten en paarse diagrammen sluiten aan op het [bestaande prototype](../prototype/index.html).
 
-## Systeemgrens en bronnen
+## Systeemgrens
 
-**Binnen de grens:** het gehele beoogde GIFTS4U-platform, inclusief webshop/orders, importregistratie, voorraad, Printz- en DHL-functionaliteit, klantcommunicatie en Control Tower. Deze functies worden op contextniveau als één systeem beschouwd. De fysieke bedrijven Printz en DHL en hun medewerkers blijven buiten die grens. Hun interne software is niet uitgewerkt als extra actor: de technische koppelingen zijn nog niet vastgesteld.
+**Binnen de grens:** uitsluitend de GIFTS4U Control Tower. Deze brengt ketengegevens samen, toont orders, voorraad, bevestigde status en verwachtingen, signaleert uitzonderingen en legt acties, besluiten en opvolging vast.
 
-**Buiten de grens:** klanten, leverancier Hongkong en de medewerkers die informatie invoeren of ontvangen. Een medewerker van GIFTS4U is ook een externe actor ten opzichte van de software. Goederen, machines, douaneafhandeling en echte transporthandelingen vallen buiten de softwaregrens; alleen de registratie daarvan passeert de grens. Betaling, automatische inkoop en financiële administratie zijn hier niet gespecificeerd.
+**Buiten de grens:** de beheerder als menselijke gebruiker, plus webshop/orders, importregistratie, magazijn/voorraad, Printz, DHL en klantcommunicatie als externe informatiebronnen of ontvangende diensten. Een bron kan software, een partneroverzicht of handmatig aangeleverde informatie zijn. Het diagram legt nog geen API, protocol of automatische koppeling vast.
 
-Deze keuze is voor beide diagrammen gelijk. Het DFD gebruikt de conventie **niveau 0 = contextdiagram**: één cirkelvormig proces met nummer 0, externe entiteiten en gegevensstromen. Interne databases en service-aanroepen horen bij een latere decompositie. Het UCD gebruikt menselijke actoren, ellipsen en een systeemkader; associatielijnen betekenen deelname, geen volgorde of gegevensrichting.
+Orders plaatsen, goederen ontvangen, voorraad reserveren, bedrukken, kwaliteitscontrole uitvoeren en pakketten afleveren gebeuren in de keten buiten de Control Tower. De beheerder **volgt de geregistreerde uitkomsten** en stuurt bij. Klanten gebruiken de webshop en ontvangen berichten via de communicatiedienst; zij bedienen de Control Tower niet.
 
-Bronvolgorde:
+Beide diagrammen hebben dezelfde grens. Het UCD toont de doelen van de enige menselijke gebruiker. Het DFD werkt de uitwisseling met externe bronnen uit; een externe DFD-entiteit is niet automatisch een ingelogde gebruiker. Het DFD heeft precies ??n procescirkel, nummer 0, en geen interne datastores. UCD-lijnen betekenen deelname; DFD-pijlen betekenen gegevensoverdracht, geen schermnavigatie.
 
-1. [Requirements en acceptatiecriteria](../../documents/Requirments/GIFTS4U_Requirements.md), versie op `main` bij commit `6677d6a`: 43 functionele en acht niet-functionele eisen, inclusief de nog te beoordelen Q&A-aanvullingen.
-2. [Open opdrachtgevervragen](../../documents/Vragen/open-vragen-opdrachtgever.md), voor beslissingen die nog niet vaststaan.
-3. [Stakeholderanalyse](../../documents/Stakeholders-analyse/stakeholderanalyse.md) en [probleemstelling](../../documents/Problemen/probleemstelling.md), voor de keten en betrokken partijen.
-4. [Prototypewalkthrough](../prototype/walkthrough.md), voor de ontwerpuitwerking. Deze beschrijft een eerdere requirementsversie en is geen bewijs dat alle nieuwe eisen al zijn geïmplementeerd.
+## Use cases van de beheerder
 
-Dit is een ontwerp van het beoogde systeem, geen verklaring dat de voorbeeldbackend of het prototype alle eisen uitvoert. `docs/REQUIREMENTS.md` en de interviewbestanden bevatten nog templates en zijn niet gebruikt als ingevulde requirementsbron.
+UC01?UC08 zijn contextdoelen en vervangen niet de fijnmazige UC-ID's uit de requirements. De primaire actor is bij elke rij **Control Tower-beheerder**.
 
-## Afstemming op de FDS- en UX-lessen
-
-De volgende lesbestanden zijn als referentie gecontroleerd. Ze staan lokaal in Downloads en zijn niet naar deze repository gekopieerd. De dianummers hieronder zijn de posities in het PowerPoint-bestand; paginanummers verwijzen naar de PDF.
-
-| Referentie | Richtlijn uit de les | Toepassing op dit product |
-| --- | --- | --- |
-| `2026-Semester3-UVC-FDS-Class1-Final.pptx`, dia 34–38 | Groepeer requirements tot beknopte gebruikersdoelen; elke actor en elke use case heeft minstens één associatie. Actoren beschrijven rollen, niet individuele personen. | UC01–UC16 zijn contextdoelen met een primaire rol en requirementkoppelingen. Manager en directeur blijven afzonderlijke rollen. |
-| Hetzelfde bestand, dia 36 | Use cases bevatten actieve werkwoorden; actor- en use-casenamen gebruiken Title Case. Actorassociaties zijn gewone lijnen zonder pijl. | De diagramlabels volgen die schrijfwijze; doelen staan in ellipsen binnen de systeemgrens en rollen erbuiten. De Nederlandse lopende tekst gebruikt normale zinskapitalisatie. |
-| Hetzelfde bestand, dia 50–52 | `include` betreft verplicht gedeeld gedrag; `extend` optioneel aanvullend gedrag. Vermijd overerving voor deze cursus. | Dit contextoverzicht toont zelfstandige doelen zonder onnodige `include`-/`extend`-relaties of overerving. De optionele impactverkenner blijft een ontwerpvariant binnen UC02. |
-| `2026-Semester3-UVE-FDS-Class3-Final.pptx`, dia 9–11, 14 en 17 | Een Level 0 DFD toont het gehele systeem als één procescirkel met externe bronnen/bestemmingen. Gerichte pijlen benoemen gegevens; de diagrammen moeten onderling overeenstemmen. | Eén proces 0, negen externe partijen en F01–F17. Het proces heet “GIFTS4U-orderketen beheren”; de stromen benoemen gegevensgroepen. Geen interne datastores op dit niveau. |
-| `2026-Semester3-UVE-FDS-Class4-Final.pptx`, dia 6 | Expliciete verduidelijking: precies één procescirkel op niveau 0; zelfstandige naamwoorden boven gegevensstromen. | De eerdere afgeronde procesrechthoek is vervangen door een echte cirkel in SVG én Mermaid. |
-| `uxd-lesson-2-flows-and-frames-v2.pdf`, pagina 9, 15 en 18 | Scenario's beschrijven de gebruikerservaring; use cases systeeminteracties. Een user flow beschrijft stappen, beslissingen en navigatie. | Het herstelvoorbeeld is een scenario ter toelichting. UCD-lijnen betekenen deelname en DFD-pijlen gegevensuitwisseling; geen van beide is een scherm- of navigatieflow. |
-
-Een UML-actor kan volgens de FDS-les ook een extern systeem of een trigger zijn. In dit product hebben alle use cases op verzoek een menselijke rol; dat is een projectkeuze, geen algemene UML-beperking. Er worden geen onbevestigde externe API's of triggers toegevoegd. Gedetailleerde use-casespecificaties en activiteitendiagrammen blijven afzonderlijke producten.
-
-## Rollen en use cases
-
-De onderstaande contextdoelen worden aangeduid met **UC01–UC16**. Ze vervangen niet de fijnmazige `UC-WEB-*`, `UC-CT-*` enzovoort uit de requirements. Een primaire rol initieert of draagt verantwoordelijkheid voor het doel; de rolmatrix is een voorstel voor de nog vast te stellen autorisatiematrix.
-
-| Use case | Primaire menselijke rol | Doel / zichtbaar resultaat | Requirements |
+| ID | Doel | Resultaat | Requirementkoppeling |
 | --- | --- | --- | --- |
-| UC01 Ketenoverzicht raadplegen | Manager / ketenregisseur | Orders filteren, voorraad en orderdetails bekijken; urgente zaken, oorzaken, KPI's en dashboardmeldingen herkennen. | FR-CT-01, FR-CT-05, FR-CT-06, FR-CT-07, FR-CT-08, FR-CT-09, FR-CT-10, FR-CT-11 |
-| UC02 Uitzonderingen en impact beoordelen | Manager / ketenregisseur | Bevestigde status scheiden van uitzondering; betrokken orders, eigenaar en volgende actie bepalen. Optioneel herstelopties verkennen. | FR-CT-02, FR-CT-03, FR-IMP-04 |
-| UC03 Corrigerend besluit vastleggen en toewijzen | Directeur / eigenaar | Bij een escalatie een actie kiezen, eigenaar en deadline vastleggen. | FR-CT-04 |
-| UC04 Besluit en opvolging controleren | Directeur / eigenaar | Vastgelegd besluit en bijbehorende acties terugvinden in het controleerbare log. Geen apart goedkeuringsproces verondersteld. | FR-CT-04, NFR-03 |
-| UC05 Importpartijen registreren en volgen | Importcoördinator | Partij met SKU, aantal en referentie registreren; ETA en bevestigde gebeurtenissen volgen. Leveranciersmedewerker is ondersteunende actor. | FR-IMP-01, FR-IMP-02 |
-| UC06 Importvertraging registreren | Importcoördinator | Douane- of andere importvertraging aan een partij koppelen; orderimpact tonen aan de manager. | FR-IMP-03, FR-IMP-04 |
-| UC07 Voorraad ontvangen, plannen en reserveren | Magazijnmedewerker | Werkelijke ontvangst boeken, beschikbare aantallen bekijken, reserveren en tekorten signaleren. Bevoegde medewerker plant een hoger batchaantal. | FR-IMP-05, FR-MAG-01, FR-MAG-02, FR-MAG-03, FR-MAG-04, FR-MAG-06 |
-| UC08 Overdracht naar Printz bevestigen | Magazijnmedewerker | Bevestigde overdracht met order, aantallen en tijdstip vastleggen. | FR-MAG-05 |
-| UC09 Printopdracht uitvoeren en kwaliteit vrijgeven | Printz-medewerker | Juiste ontwerpversie raadplegen, start bevestigen en na kwaliteitscontrole verzendklaar melden. | FR-PRT-01, FR-PRT-02, FR-PRT-04, FR-PRT-05 |
-| UC10 Printstoring of capaciteitstekort melden | Printz-medewerker | Getroffen orders en oorzaak vastleggen zonder de bevestigde orderstatus te vervangen. | FR-PRT-03 |
-| UC11 Zending volgen en gebeurtenissen bevestigen | DHL-medewerker | Bestemming en vervoersfase raadplegen; ophaling, aflevering met bewijs, ETA en adres-/afleverproblemen vastleggen. | FR-DHL-01, FR-DHL-02, FR-DHL-04, FR-DHL-05 |
-| UC12 Transportcapaciteit plannen | DHL-medewerker | Vervoersvraag en capaciteit per datum vergelijken; tekort signaleren. | FR-DHL-03 |
-| UC13 Klantupdate opstellen en afhandeling vastleggen | Klantenservice / accountmanager | Op basis van events/risico's een bericht opstellen, toewijzen en de verzend- en afhandelstatus registreren. | FR-KLM-01, FR-KLM-02, FR-KLM-03, FR-KLM-04 |
-| UC14 Personalisatieklacht registreren en opvolgen | Klantenservice / accountmanager | Klacht koppelen aan order, oorzaak en gekozen retour, herdruk of vervanging. | FR-KLM-05 |
-| UC15 Bestelling plaatsen met personalisatie | Klant (B2B / B2C) | Geldige bestelling en leverbelofte vastleggen na voorraadcontrole; B2B-prioriteit behouden; adreswijziging en annulering na plaatsing blokkeren. | FR-WEB-01, FR-WEB-02, FR-WEB-03, FR-WEB-04, FR-WEB-05, FR-WEB-06 |
-| UC16 Orderupdates ontvangen | Klant (B2B / B2C) | Bevestigde status en zo nodig oorzaak en geschatte ETA ontvangen. Ontvangende actor; dit veronderstelt geen zelfstandig klantportaal. | FR-KLM-01, FR-KLM-02 |
+| UC01 | Orderoverzicht raadplegen | Orders zoeken/filteren en een orderdossier bekijken met oorspronkelijke belofte, laatste bevestiging, partner en historie. | FR-CT-01, FR-CT-06, FR-CT-08 |
+| UC02 | Uitzonderingen en impact beoordelen | Oorzaak, getroffen orders, urgentie en volgende actie vaststellen; status en uitzondering apart houden. Optioneel herstelopties vergelijken. | FR-CT-02, FR-CT-03, FR-CT-09, FR-CT-10; gegevens uit FR-IMP-04 |
+| UC03 | Corrigerend besluit vastleggen en toewijzen | Een bevoegd genomen besluit registreren met actie, eigenaar en deadline. Een actiehouder bij een partner krijgt daarmee geen toegang tot de Control Tower. | FR-CT-04 |
+| UC04 | Opvolging en logboek raadplegen | Besluiten, acties, bevestigingen en voortgang terugvinden met bron en tijdstip. | FR-CT-04, NFR-03 |
+| UC05 | Voorraad en import volgen | Fysieke, gereserveerde en beschikbare voorraad bekijken; import-ETA, vertraging en orderafhankelijkheden volgen. | FR-CT-07; gegevens uit FR-MAG-01 en FR-IMP-01 t/m FR-IMP-05 |
+| UC06 | Productie en transport volgen | Printstatus, kwaliteitsvrijgave, transportfase, capaciteitstekorten en geschatte levering volgen op basis van partnergegevens. | FR-CT-01, FR-CT-02, FR-CT-08; gegevens uit FR-PRT-01 t/m FR-PRT-05 en FR-DHL-01 t/m FR-DHL-05 |
+| UC07 | Klantcommunicatie co?rdineren | Een update/opdracht met de juiste ordercontext vastleggen en de verzend-, klacht- en afhandelstatus volgen via de communicatiedienst. | FR-KLM-01 t/m FR-KLM-05 |
+| UC08 | KPI's en meldingen bewaken | Urgente afwijkingen, dashboardmeldingen en leverlooptijd-KPI's beoordelen. | FR-CT-05, FR-CT-09, FR-CT-11 |
 
-**Manager is niet automatisch directeur.** De manager onderzoekt en coördineert; alleen de directeur legt het corrigerende directiebesluit vast. In een klein bedrijf kan één persoon beide rollen hebben. Bevoegdheden worden aan rollen gekoppeld, niet aan een persoonsnaam. Het model kent ook uitvoerende rollen toe: niet elke handeling is een managementtaak.
+**E?n gebruiker betekent niet automatisch onbeperkte beslissingsbevoegdheid.** FR-CT-04 noemt de directeur als beslisser. De beheerder kan zelf de directeur/eigenaar zijn, of een buiten de applicatie genomen directiebesluit registreren. Er is in dit model geen tweede persoon die de Control Tower bedient. Wie welke besluiten mag nemen moet organisatorisch worden vastgelegd; de gebruikercorrectie bepaalt alleen wie de applicatie bijhoudt.
 
 ## Gegevenswoordenboek bij het DFD
 
-Elke pijl is afzonderlijk gericht. “In” betekent naar proces 0; “uit” betekent naar de externe partij. Een gegevensstroom kan meerdere records bundelen en zegt niets over het gekozen protocol of de timing.
+?In? betekent naar proces 0; ?uit? betekent vanuit de Control Tower. De zeven externe entiteiten zijn ??n beheerder en zes gegevensbronnen/ontvangende diensten. Het diagram bevat elf gerichte stromen.
 
-| ID | Richting / partij | Inhoud en betekenis |
+| ID | Richting / partij | Inhoud |
 | --- | --- | --- |
-| F01 | In — manager | Zoek-/filtercriteria, uitzonderingsbeoordeling, eigenaar en volgende actie. Scenario-invoer is optioneel ontwerpvoorstel. |
-| F02 | Uit — manager | Orderbeeld, voorraad in aantallen, KPI's, meldingen, oorzaken en impact. Scenariouitkomst blijft een voorstel. |
-| F03 | In — directeur | Corrigerend besluit, betrokken uitzondering, actiehouder en deadline. |
-| F04 | Uit — directeur | Kritieke escalatie met orderimpact; vastgelegde besluiten en opvolgingslog. |
-| F05 | In — importcoördinator | Partijreferentie, leverancier, SKU, aantallen, bron en importuitzondering. |
-| F06 | Uit — importcoördinator | Geregistreerde partij, bevestigde events, geschatte aankomst en afhankelijke orders. |
-| F07 | In — magazijnmedewerker | Werkelijk ontvangen aantal, reserveringsopdracht, bevestigd overdrachtsevent; geplande batchverhoging als apart gegeven. |
-| F08 | Uit — magazijnmedewerker | Fysieke, gereserveerde en beschikbare voorraad; reserveringsresultaat, tekort en geplande batchaantallen. |
-| F09 | In — klant | Klanttype, orderregels, adres, personalisatie, gewenste datum; klachtinformatie via klantenservice. Geen rechtstreekse klantlogin verondersteld. |
-| F10 | Uit — klant | Ordernummer, leverbelofte en bevestiging; statusupdate, vertragingsoorzaak en ETA of expliciet onbekend. |
-| F11 | In — leverancier Hongkong | Zendingreferentie, SKU, aantallen, ETA en bevestigde transport-/vertragingsgegevens. Mag via de importcoördinator binnenkomen; geen directe API verondersteld. |
-| F12 | In — Printz-medewerker | Productiestart, kwaliteitscontrole, verzendklaarbevestiging, storing en capaciteitstekort met bron/tijdstip. |
-| F13 | Uit — Printz-medewerker | Order-ID, SKU, aantal, goedgekeurde ontwerpversie en toegewezen herstelactie; geen onnodige klantgegevens. |
-| F14 | In — DHL-medewerker | Ophaling, vervoersfase, afleverbewijs, gewijzigde ETA, beschikbare capaciteit en transportuitzondering. |
-| F15 | Uit — DHL-medewerker | Order-/zending-ID, benodigde aflevergegevens, vervoersvraag en toegewezen actie; geen klantfoto voor bedrukking. |
-| F16 | In — klantenservice/accountmanager | Concept/bericht, ontvanger, kanaal, toegewezen medewerker, afhandeling en personalisatieklacht met vervolgactie. |
-| F17 | Uit — klantenservice/accountmanager | Laatste bevestigde ordergegevens, oorzaak, leverbelofte, ETA, communicatielog en open/afgehandelde werkvoorraad. |
+| F01 | In ? beheerder | Zoek- en filtercriteria, uitzonderingsbeoordeling, acties, besluit, actiehouder en deadline. Optionele scenario-invoer blijft een voorstel. |
+| F02 | Uit ? beheerder | Orderbeeld, voorraad, partnerstatus, KPI's, meldingen, impact, besluiten en opvolgingslog. |
+| F03 | In ? webshop/orderservice | Uniek order-ID, klanttype, orderregels, oorspronkelijke leverbelofte en bevestigd Order Received-event met bron/tijdstip. |
+| F04 | In ? importregistratie | Partijreferentie, SKU, hoeveelheid, verwachte aankomst, bevestigde importevents en vertragingen, herleidbaar tot de leverancier. |
+| F05 | In ? magazijn/voorraadservice | Fysieke, gereserveerde en beschikbare aantallen; bevestigde ontvangst en overdracht naar Printz; voorraadtekorten. |
+| F06 | In ? Printz | Productiestatus, bevestigde kwaliteitsvrijgave, storing, capaciteitstekort en betrokken order-ID's met bron/tijdstip. |
+| F07 | Uit ? Printz | Toegewezen corrigerende actie met order/uitzondering, actiehouder en deadline. Dit is geen automatisch bewijs van uitvoering. |
+| F08 | In ? DHL | Zending-ID, vervoersfase, ophaling, afleverbewijs, geschatte ETA, vraag/capaciteit en transportuitzonderingen. |
+| F09 | Uit ? DHL | Toegewezen corrigerende actie met betrokken zending/order, actiehouder en deadline. |
+| F10 | In ? klantcommunicatie | Verzend- en afhandelstatus, communicatielog, klacht met ordernummer en gekozen vervolgactie. |
+| F11 | Uit ? klantcommunicatie | Concept/update, bevestigde status, oorzaak, belofte, ETA of expliciet onbekend, ontvanger/kanaal en communicatieopdracht. |
 
-F09 en F16 representeren de herkomst respectievelijk verwerking van klachtgegevens; dit zijn geen twee aparte klachten. Evenzo zijn F11 en F05 bron en registratie van importgegevens. De diagrammen tonen geen verplichte dubbele invoer.
+De stromen zijn logisch: informatie kan ook handmatig door de beheerder worden overgenomen. Bronvermelding blijft dan de partner, terwijl de invoerende actor de beheerder is. Partnerbevestigingen worden niet verzonnen door de beheerder. Een retourstroom is alleen getekend waar deze context een opdracht of update verstuurt; oorspronkelijke printopdrachten en webshopbevestigingen behoren tot de keten buiten deze grens.
 
-## Creatieve oplossing: een impactverkenner met overdracht per rol
+## Ketenrequirements buiten de Control Tower
 
-De bestaande prototypegedachte wordt in UC02 zichtbaar als een **optionele ontwerpuitbreiding**: de manager vergelijkt bij een printstoring een extra shift met reguliere herstart. Een voorstel toont getroffen orders, verwachte tijdwinst, kostenindicatie en onzekerheden. De directeur kan vervolgens in UC03 een besluit vastleggen. Een toegewezen Printz-medewerker bevestigt later de uitvoering, waarna klantenservice een passende update maakt.
+De [requirements](../../documents/Requirments/GIFTS4U_Requirements.md) beschrijven de hele keten. Dit contextproduct dekt de bediening van de Control Tower; het maakt niet van elke ketenhandeling een beheerderstaak.
 
-De scheiding voorkomt dat een mooie voorspelling al als nieuwe werkelijkheid wordt opgeslagen:
+| Requirementgroep | Plaats in de keten en relatie met de Control Tower |
+| --- | --- |
+| FR-WEB-01 t/m FR-WEB-06 | Orderacceptatie, adrescontrole, voorraadcontrole, B2B-prioriteit en wijzigingsbeleid horen bij de webshop. Het resultaat en Order Received komen via F03 binnen. |
+| FR-IMP-01 t/m FR-IMP-05 | Partijen en importevents worden bij de importbron geregistreerd; F04 voedt UC05 en de impactbeoordeling. Bevestigde ontvangst wordt met de voorraadservice verwerkt. |
+| FR-MAG-01 t/m FR-MAG-06 | Ontvangst, reserveringen, tekorten, overdracht en batchplanning horen bij de voorraadfunctie. UC05 toont de relevante uitkomsten via F05. |
+| FR-PRT-01 t/m FR-PRT-05 | Opdracht, productiestart, storing en kwaliteitscontrole horen bij Printz. De beheerder volgt uitkomsten via F06 en legt zo nodig een herstelactie vast via F07. |
+| FR-DHL-01 t/m FR-DHL-05 | Transportuitvoering en capaciteitsregistratie horen bij DHL. De beheerder volgt de gegevens via F08 en legt een herstelactie vast via F09. |
+| FR-KLM-01 t/m FR-KLM-05 | Communicatie wordt geco?rdineerd in UC07; verzend-/afhandelgegevens en opdrachten lopen via F10/F11. Een toegewezen accountmanager is geen extra Control Tower-gebruiker. |
+| FR-CT-01 t/m FR-CT-11 | Directe Control Tower-functionaliteit, gekoppeld aan UC01?UC08 hierboven. |
 
-1. **Signaal:** Printz meldt een storing (UC10, F12). De order blijft bijvoorbeeld “In bedrukking”.
-2. **Verkenning:** manager beoordeelt impact en optionele scenario's (UC02, F01/F02). Ontbrekende gegevens blijven onbekend.
-3. **Besluit:** directeur legt actie, eigenaar en deadline vast (UC03, F03/F04). Dit is nog geen bevestiging van uitvoering of nieuwe ETA.
-4. **Bevestiging:** de uitvoerende partner levert een nieuwe bevestiging; de oorspronkelijke leverbelofte blijft bestaan.
-5. **Communicatie:** klantenservice legt de klantupdate en afhandeling vast (UC13, F16/F17); de klant ontvangt de update (UC16, F10).
+## Creatieve oplossing: impactverkenner voor ??n beheerder
 
-De scenarioberekening, extra-shiftkosten en tijdwinst zijn geen vastgestelde requirements of gegarandeerde optimalisatie. De bedragen uit de prototypewalkthrough zijn fictieve demowaarden. Het contextdiagram voegt hiervoor geen nieuw extern systeem toe.
+De beheerder kan binnen UC02 optioneel een extra printshift vergelijken met reguliere herstart. Het voorstel toont getroffen orders, mogelijke tijdwinst, kostenindicatie en onzekerheden. Dit is een ontwerpuitbreiding uit de [prototypewalkthrough](../prototype/walkthrough.md), geen vastgestelde optimalisatie-eis.
 
-## Randvoorwaarden en open ontwerpbesluiten
+1. Printz levert een storingsmelding (F06). De bevestigde orderstatus blijft bijvoorbeeld ?In bedrukking?.
+2. De beheerder onderzoekt impact en scenario's (UC02). Onbekende gegevens blijven onbekend.
+3. Dezelfde beheerder registreert een bevoegd besluit met eigenaar/deadline (UC03). Een opdracht kan naar Printz gaan (F07).
+4. Printz bevestigt later de uitvoering (F06). Een besluit alleen verandert geen bevestigde status of oorspronkelijke leverbelofte.
+5. Dezelfde beheerder co?rdineert de klantupdate (UC07, F11) en controleert de gerapporteerde afhandeling (F10).
 
-- **Rollen en privacy (NFR-01, NFR-06):** toegang moet later per actie én gegeven worden afgedwongen. De lijnen in het UCD zijn geen volledige rechtenmatrix. De rolwissel in het prototype biedt geen echte beveiliging.
-- **Events en log (NFR-02, NFR-03):** event-ID, bron, tijdstip, actor en betrokken record maken verwerking herleidbaar; dezelfde event-ID mag niet twee keer wijzigen.
-- **Onzekerheid (NFR-04, NFR-08):** mislukte gegevensuitwisseling verandert de laatste bevestiging niet. Status, prognose, risico en uitzondering blijven afzonderlijk herkenbaar.
-- **Prestaties en behoud (NFR-05, NFR-07):** drie seconden bij minimaal 50 testorders en behoud na herstart vragen aparte implementatie- en acceptatietests; de diagrammen bewijzen deze eigenschappen niet.
-- **Batchverhoging (FR-MAG-06):** modelleren als verhoging van geplande batchaantallen; fysieke voorraad stijgt alleen door bevestigde ontvangst (FR-MAG-02). De precieze betekenis en bevoegde rol moeten worden afgestemd, omdat de Q&A-eis hier dubbelzinnig is.
-- **Leverancier:** de precieze aanleverroute van F11 is nog vast te stellen. Er is geen uitgaande leveranciersstroom getekend: automatische inkoop en goedkeuring zijn nog open vragen. Douane is geen apart gekoppeld systeem zolang een directe gegevenskoppeling niet is afgesproken.
-- **Beleid:** de >20%-alarmgrens, kalender-/werkdagen, escalatiecriteria, backorders, deellevering en automatische inkoop blijven open conform de opdrachtgevervragen. Het diagram kent daar geen definitieve regel aan toe.
-- **Klantinteractie:** bestelling en ontvangst van updates zijn contextdoelen van de beoogde webshop. De huidige Control Tower-demo laat medewerkers sommige klantacties simuleren. Het diagram stelt geen volledige webshop of klantportaal als gerealiseerd voor.
+De beheerder wisselt hiervoor niet tussen verschillende gebruikersrollen. Uitvoering bij een partner en verzending via een dienst blijven externe handelingen. De scenarioaannames uit het prototype zijn fictief.
+
+## Bronnen en lesconventies
+
+De correctie van de gebruiker ? ??n persoon houdt de Control Tower bij ? bepaalt de actor en afbakening van deze versie. Aanvullende inhoudelijke bronnen zijn de [requirements](../../documents/Requirments/GIFTS4U_Requirements.md) bij commit `6677d6a`, de [open opdrachtgevervragen](../../documents/Vragen/open-vragen-opdrachtgever.md), [stakeholderanalyse](../../documents/Stakeholders-analyse/stakeholderanalyse.md) en [probleemstelling](../../documents/Problemen/probleemstelling.md).
+
+De onderstaande lesbestanden zijn lokaal in Downloads gecontroleerd en worden niet naar de repository gekopieerd.
+
+| Referentie | Toepassing |
+| --- | --- |
+| `2026-Semester3-UVC-FDS-Class1-Final.pptx`, dia 34?38 | Beknopte gebruikersdoelen met actieve werkwoorden, Title Case in diagramlabels, een expliciete systeemgrens en een associatie zonder pijlpunt voor elk doel. E?n actor kan meerdere doelen hebben. |
+| Hetzelfde bestand, dia 50?52 | Geen onnodige include/extend-relaties of overerving. De impactverkenner blijft een optionele variant binnen UC02. |
+| `2026-Semester3-UVE-FDS-Class3-Final.pptx`, dia 9?11, 14, 17; Class 4, dia 6 | Level 0 toont het afgebakende systeem als ??n procescirkel. Externe bronnen staan buiten de grens; stroomlabels benoemen gegevensgroepen. |
+| `uxd-lesson-2-flows-and-frames-v2.pdf`, pagina 9, 15, 18 | Een scenario beschrijft ervaring; een use case een gebruikersdoel; een user flow schermstappen en navigatie. Het UCD en DFD zijn geen navigatieflows. |
+
+UML kan ook externe systemen als actor modelleren. Dit UCD toont bewust het menselijke gebruikersperspectief; gegevensuitwisseling met de omgeving staat in het bijbehorende DFD. E?n menselijke actor is een projectkeuze, geen algemene UML-regel.
+
+## Randvoorwaarden en beperkingen
+
+- **Beveiliging (NFR-01, NFR-06):** ??n bediener neemt authenticatie en toegangsbeperking niet weg. Een partner ontvangt alleen noodzakelijke opdrachtgegevens. Logins of rechten voor andere Control Tower-gebruikers worden hier niet toegevoegd.
+- **Events (NFR-02, NFR-03):** dubbele events mogen niet dubbel wijzigen. Bewaar bron, tijdstip, betrokken record en invoerende actor.
+- **Onzekerheid (NFR-04, NFR-08):** mislukte gegevensuitwisseling verandert geen bevestiging. Status, schatting en uitzondering blijven apart.
+- **Kwaliteit (NFR-05, NFR-07):** laadtijd en behoud na herstart vereisen implementatie- en acceptatietests; diagrammen bewijzen deze eigenschappen niet.
+- **Open beleid:** >20%-alarmgrens, kalender-/werkdagen, bevoegdheden, backorders, deellevering en automatische inkoop blijven te valideren. Geplande batchverhoging (FR-MAG-06) is geen bevestigde fysieke ontvangst (FR-MAG-02).
+- **Bestaand prototype:** de eerdere demo en walkthrough bevatten nog verschillende rolweergaven en simulatieknoppen voor partnerhandelingen. Ze zijn geen bewijs van meerdere echte Control Tower-gebruikers en moeten bij een volgende prototypewijziging met deze afbakening worden afgestemd. Deze PR corrigeert het systeemcontextproduct; zij wijzigt de prototypefunctionaliteit niet.
 
 ## Onderhoud en controle
 
-De tekstbronnen en SVG's worden samen uit [generate_diagrams.py](generate_diagrams.py) gegenereerd. Pas rollen, doelen, stromen of layout daar aan en voer vanuit de repositoryroot uit:
+Wijzig [generate_diagrams.py](generate_diagrams.py) en genereer de SVG-, PlantUML- en Mermaid-bestanden samen:
 
 ```powershell
 python "products/system context/generate_diagrams.py"
 git diff --check
 ```
 
-Geen installatie, netwerkverzoek of externe renderer nodig voor de SVG's. De losse `.puml`- en `.mmd`-bestanden zijn beschikbaar voor verdere bewerking met PlantUML of Mermaid; zij kunnen een andere automatische layout krijgen. Houd bij inhoudelijke wijzigingen ook deze rolmatrix en het gegevenswoordenboek bij.
+De SVG-generator heeft alleen de Python-standaardbibliotheek nodig. Een aparte PlantUML-/Mermaid-renderer kan een andere layout kiezen. Werk bij inhoudelijke wijzigingen ook de doelentabel en het gegevenswoordenboek bij.
 
-Uitgevoerde controle op 18 november 2026: beide SVG's lokaal gerenderd met resvg en visueel beoordeeld; XML en lokale documentlinks gecontroleerd; alle 43 FR-ID's teruggevonden in de rolmatrix; alle 16 use cases gekoppeld aan rollen; alle 17 DFD-stromen aanwezig. De 12 bestaande prototypetests slagen. De SVG-weergaven zijn gecontroleerd; een afzonderlijke PlantUML-/Mermaid-rendering is niet uitgevoerd.
-
-Reviewpunten: dezelfde systeemgrens in beide diagrammen; alle 16 use cases verbonden met een menselijke rol; alle 43 functionele eisen terug te vinden; precies één DFD-proces zonder interne datastore; richting en betekenis van F01–F17; leesbare labels; herkenbare aannames. Inhoudelijke review door een teamgenoot en validatie van de open besluiten door de opdrachtgever blijven nodig vóór acceptatie.
+Controle voor deze versie: ??n menselijke actor met acht geassocieerde doelen; ??n DFD-proces met zeven externe entiteiten en elf gegevensstromen; dekking van alle elf FR-CT-eisen; XML en lokale links; reproduceerbare generatie; beide SVG's lokaal gerenderd en visueel beoordeeld. Een afzonderlijke PlantUML-/Mermaid-rendering is niet uitgevoerd. Teamreview en validatie van open beleidsvragen blijven nodig voor acceptatie.
