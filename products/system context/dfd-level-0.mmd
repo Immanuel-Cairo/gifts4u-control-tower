@@ -1,0 +1,28 @@
+flowchart LR
+    platform("0 · GIFTS4U-platform inclusief Control Tower")
+    manager["Manager / ketenregisseur"]
+    manager -->|"F01: Filters en actiecoördinatie"| platform
+    platform -->|"F02: Ketenbeeld en meldingen"| manager
+    directeur["Directeur / eigenaar"]
+    directeur -->|"F03: Besluit, eigenaar, deadline"| platform
+    platform -->|"F04: Escalatie en besluitlog"| directeur
+    importCoordinator["Importcoördinator"]
+    importCoordinator -->|"F05: Partij en importuitzondering"| platform
+    platform -->|"F06: Importbeeld en orderimpact"| importCoordinator
+    magazijn["Magazijnmedewerker"]
+    magazijn -->|"F07: Ontvangst en overdracht"| platform
+    platform -->|"F08: Voorraad en reserveringen"| magazijn
+    klant["Klant (B2B / B2C)"]
+    klant -->|"F09: Bestelling en klacht"| platform
+    platform -->|"F10: Orderbevestiging en update"| klant
+    leverancier["Leverancier Hongkong"]
+    leverancier -->|"F11: Zending, ETA en events"| platform
+    printz["Printz-medewerker"]
+    printz -->|"F12: Productie, controle, storing"| platform
+    platform -->|"F13: Printopdracht en actie"| printz
+    dhl["DHL-medewerker"]
+    dhl -->|"F14: Transport, bewijs, capaciteit"| platform
+    platform -->|"F15: Zendingsgegevens en actie"| dhl
+    service["Klantenservice / accountmanager"]
+    service -->|"F16: Bericht, klacht, afhandeling"| platform
+    platform -->|"F17: Ordercontext en werkvoorraad"| service
