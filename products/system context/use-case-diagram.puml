@@ -8,32 +8,32 @@ skinparam usecase {
   BorderColor #7855E9
 }
 title GIFTS4U — systeemcontext en gebruikersrollen
-actor "Manager / ketenregisseur" as manager
-actor "Directeur / eigenaar" as directeur
+actor "Manager / Ketenregisseur" as manager
+actor "Directeur / Eigenaar" as directeur
 actor "Importcoördinator" as importCoordinator
 actor "Magazijnmedewerker" as magazijn
-actor "Printz-medewerker" as printz
-actor "DHL-medewerker" as dhl
-actor "Klantenservice / accountmanager" as service
+actor "Printz-Medewerker" as printz
+actor "DHL-Medewerker" as dhl
+actor "Klantenservice / Accountmanager" as service
 actor "Klant (B2B / B2C)" as klant
 actor "Leveranciersmedewerker Hongkong" as leverancier
 rectangle "GIFTS4U-platform inclusief Control Tower" {
-  usecase "UC01\nKetenoverzicht\nraadplegen" as UC01
-  usecase "UC02\nUitzonderingen en\nimpact beoordelen" as UC02
-  usecase "UC03\nCorrigerend besluit\nvastleggen en toewijzen" as UC03
-  usecase "UC04\nBesluit en opvolging\ncontroleren" as UC04
-  usecase "UC05\nImportpartijen\nregistreren en volgen" as UC05
-  usecase "UC06\nImportvertraging\nregistreren" as UC06
-  usecase "UC07\nVoorraad ontvangen,\nplannen en reserveren" as UC07
-  usecase "UC08\nOverdracht naar\nPrintz bevestigen" as UC08
-  usecase "UC09\nPrintopdracht uitvoeren\nen kwaliteit vrijgeven" as UC09
-  usecase "UC10\nPrintstoring of\ncapaciteitstekort melden" as UC10
-  usecase "UC11\nZending volgen en\ngebeurtenissen bevestigen" as UC11
-  usecase "UC12\nTransportcapaciteit\nplannen" as UC12
-  usecase "UC13\nKlantupdate opstellen\nen afhandeling vastleggen" as UC13
-  usecase "UC14\nPersonalisatieklacht\nregistreren en opvolgen" as UC14
-  usecase "UC15\nBestelling plaatsen\nmet personalisatie" as UC15
-  usecase "UC16\nOrderupdates\nontvangen" as UC16
+  usecase "UC01\nKetenoverzicht\nRaadplegen" as UC01
+  usecase "UC02\nUitzonderingen En\nImpact Beoordelen" as UC02
+  usecase "UC03\nCorrigerend Besluit\nVastleggen En Toewijzen" as UC03
+  usecase "UC04\nBesluit En Opvolging\nControleren" as UC04
+  usecase "UC05\nImportpartijen\nRegistreren En Volgen" as UC05
+  usecase "UC06\nImportvertraging\nRegistreren" as UC06
+  usecase "UC07\nVoorraad Ontvangen,\nPlannen En Reserveren" as UC07
+  usecase "UC08\nOverdracht Naar\nPrintz Bevestigen" as UC08
+  usecase "UC09\nPrintopdracht Uitvoeren\nEn Kwaliteit Vrijgeven" as UC09
+  usecase "UC10\nPrintstoring Of\nCapaciteitstekort Melden" as UC10
+  usecase "UC11\nZending Volgen En\nGebeurtenissen Bevestigen" as UC11
+  usecase "UC12\nTransportcapaciteit\nPlannen" as UC12
+  usecase "UC13\nKlantupdate Opstellen\nEn Afhandeling Vastleggen" as UC13
+  usecase "UC14\nPersonalisatieklacht\nRegistreren En Opvolgen" as UC14
+  usecase "UC15\nBestelling Plaatsen\nMet Personalisatie" as UC15
+  usecase "UC16\nOrderupdates\nOntvangen" as UC16
 }
 manager -- UC01
 manager -- UC02

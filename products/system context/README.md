@@ -21,7 +21,7 @@ De kleuren sluiten aan op het prototype: donkere kop, lichte werkruimte, limegro
 
 **Buiten de grens:** klanten, leverancier Hongkong en de medewerkers die informatie invoeren of ontvangen. Een medewerker van GIFTS4U is ook een externe actor ten opzichte van de software. Goederen, machines, douaneafhandeling en echte transporthandelingen vallen buiten de softwaregrens; alleen de registratie daarvan passeert de grens. Betaling, automatische inkoop en financiële administratie zijn hier niet gespecificeerd.
 
-Deze keuze is voor beide diagrammen gelijk. Het DFD gebruikt de conventie **niveau 0 = contextdiagram**: één proces met nummer 0, externe entiteiten en gegevensstromen. Interne databases en service-aanroepen horen bij een latere decompositie. Het UCD gebruikt menselijke actoren, ellipsen en een systeemkader; associatielijnen betekenen deelname, geen volgorde of gegevensrichting.
+Deze keuze is voor beide diagrammen gelijk. Het DFD gebruikt de conventie **niveau 0 = contextdiagram**: één cirkelvormig proces met nummer 0, externe entiteiten en gegevensstromen. Interne databases en service-aanroepen horen bij een latere decompositie. Het UCD gebruikt menselijke actoren, ellipsen en een systeemkader; associatielijnen betekenen deelname, geen volgorde of gegevensrichting.
 
 Bronvolgorde:
 
@@ -31,6 +31,21 @@ Bronvolgorde:
 4. [Prototypewalkthrough](../prototype/walkthrough.md), voor de ontwerpuitwerking. Deze beschrijft een eerdere requirementsversie en is geen bewijs dat alle nieuwe eisen al zijn geïmplementeerd.
 
 Dit is een ontwerp van het beoogde systeem, geen verklaring dat de voorbeeldbackend of het prototype alle eisen uitvoert. `docs/REQUIREMENTS.md` en de interviewbestanden bevatten nog templates en zijn niet gebruikt als ingevulde requirementsbron.
+
+## Afstemming op de FDS- en UX-lessen
+
+De volgende lesbestanden zijn als referentie gecontroleerd. Ze staan lokaal in Downloads en zijn niet naar deze repository gekopieerd. De dianummers hieronder zijn de posities in het PowerPoint-bestand; paginanummers verwijzen naar de PDF.
+
+| Referentie | Richtlijn uit de les | Toepassing op dit product |
+| --- | --- | --- |
+| `2026-Semester3-UVC-FDS-Class1-Final.pptx`, dia 34–38 | Groepeer requirements tot beknopte gebruikersdoelen; elke actor en elke use case heeft minstens één associatie. Actoren beschrijven rollen, niet individuele personen. | UC01–UC16 zijn contextdoelen met een primaire rol en requirementkoppelingen. Manager en directeur blijven afzonderlijke rollen. |
+| Hetzelfde bestand, dia 36 | Use cases bevatten actieve werkwoorden; actor- en use-casenamen gebruiken Title Case. Actorassociaties zijn gewone lijnen zonder pijl. | De diagramlabels volgen die schrijfwijze; doelen staan in ellipsen binnen de systeemgrens en rollen erbuiten. De Nederlandse lopende tekst gebruikt normale zinskapitalisatie. |
+| Hetzelfde bestand, dia 50–52 | `include` betreft verplicht gedeeld gedrag; `extend` optioneel aanvullend gedrag. Vermijd overerving voor deze cursus. | Dit contextoverzicht toont zelfstandige doelen zonder onnodige `include`-/`extend`-relaties of overerving. De optionele impactverkenner blijft een ontwerpvariant binnen UC02. |
+| `2026-Semester3-UVE-FDS-Class3-Final.pptx`, dia 9–11, 14 en 17 | Een Level 0 DFD toont het gehele systeem als één procescirkel met externe bronnen/bestemmingen. Gerichte pijlen benoemen gegevens; de diagrammen moeten onderling overeenstemmen. | Eén proces 0, negen externe partijen en F01–F17. Het proces heet “GIFTS4U-orderketen beheren”; de stromen benoemen gegevensgroepen. Geen interne datastores op dit niveau. |
+| `2026-Semester3-UVE-FDS-Class4-Final.pptx`, dia 6 | Expliciete verduidelijking: precies één procescirkel op niveau 0; zelfstandige naamwoorden boven gegevensstromen. | De eerdere afgeronde procesrechthoek is vervangen door een echte cirkel in SVG én Mermaid. |
+| `uxd-lesson-2-flows-and-frames-v2.pdf`, pagina 9, 15 en 18 | Scenario's beschrijven de gebruikerservaring; use cases systeeminteracties. Een user flow beschrijft stappen, beslissingen en navigatie. | Het herstelvoorbeeld is een scenario ter toelichting. UCD-lijnen betekenen deelname en DFD-pijlen gegevensuitwisseling; geen van beide is een scherm- of navigatieflow. |
+
+Een UML-actor kan volgens de FDS-les ook een extern systeem of een trigger zijn. In dit product hebben alle use cases op verzoek een menselijke rol; dat is een projectkeuze, geen algemene UML-beperking. Er worden geen onbevestigde externe API's of triggers toegevoegd. Gedetailleerde use-casespecificaties en activiteitendiagrammen blijven afzonderlijke producten.
 
 ## Rollen en use cases
 
