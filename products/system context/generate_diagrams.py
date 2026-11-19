@@ -10,15 +10,20 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 
-# Rol, twee gebruikersdoelen. De requirementkoppeling staat in README.md.
+# Actor met bijbehorende gebruikersdoelen. De requirementkoppeling staat in README.md.
 ROWS = [
-    ("manager", "Manager / ketenregisseur", [("UC01", "Ketenoverzicht", "raadplegen"), ("UC02", "Uitzonderingen en", "impact beoordelen")]),
-    ("directeur", "Directeur / eigenaar", [("UC03", "Corrigerend besluit", "vastleggen en toewijzen"), ("UC04", "Besluit en opvolging", "controleren")]),
-    ("importCoordinator", "Importcoördinator", [("UC05", "Importpartijen", "registreren en volgen"), ("UC06", "Importvertraging", "registreren")]),
+    ("directeur", "Supply Management Director", [
+        ("UC01", "Ketenoverzicht", "raadplegen"),
+        ("UC02", "Uitzonderingen en", "impact beoordelen"),
+        ("UC03", "Corrigerend besluit", "vastleggen en toewijzen"),
+        ("UC04", "Besluit en opvolging", "controleren"),
+        ("UC13", "Klantupdate opstellen", "en afhandeling vastleggen"),
+        ("UC14", "Personalisatieklacht", "registreren en opvolgen"),
+    ]),
+    ("hongkong", "Medewerker Hongkong", [("UC05", "Importpartijen", "registreren en volgen"), ("UC06", "Importvertraging", "registreren")]),
     ("magazijn", "Magazijnmedewerker", [("UC07", "Voorraad ontvangen,", "plannen en reserveren"), ("UC08", "Overdracht naar", "Printz bevestigen")]),
     ("printz", "Printz-medewerker", [("UC09", "Printopdracht uitvoeren", "en kwaliteit vrijgeven"), ("UC10", "Printstoring of", "capaciteitstekort melden")]),
     ("dhl", "DHL-medewerker", [("UC11", "Zending volgen en", "gebeurtenissen bevestigen"), ("UC12", "Transportcapaciteit", "plannen")]),
-    ("service", "Klantenservice / accountmanager", [("UC13", "Klantupdate opstellen", "en afhandeling vastleggen"), ("UC14", "Personalisatieklacht", "registreren en opvolgen")]),
     ("klant", "Klant (B2B / B2C)", [("UC15", "Bestelling plaatsen", "met personalisatie"), ("UC16", "Orderupdates", "ontvangen")]),
 ]
 
@@ -64,12 +69,11 @@ def role_lines(label):
     return label.split(" / ")
 
 
-# Middelpunten in twee kolommen. De extra ruimte bij UC05 is voor de leverancier.
+# Eerste use case en positie van de actor per groep.
 UCD_LAYOUT = {
-    "manager": (440, 105, 140), "directeur": (850, 324, 355),
-    "importCoordinator": (440, 324, 395), "magazijn": (440, 530, 566),
-    "printz": (850, 500, 536), "dhl": (850, 676, 712),
-    "service": (850, 852, 888), "klant": (440, 852, 888),
+    "directeur": (440, 105, 355), "klant": (440, 852, 888),
+    "hongkong": (850, 324, 360), "magazijn": (850, 500, 536),
+    "printz": (850, 676, 712), "dhl": (850, 852, 888),
 }
 SYSTEM = "GIFTS4U-platform inclusief Control Tower"
 
@@ -94,7 +98,7 @@ def oval(x, y, lines, extension=False):
 
 def use_cases():
     p = ['<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1010" viewBox="0 0 1280 1010" role="img" aria-labelledby="title desc">',
-         f'<title id="title">{SYSTEM}</title><desc id="desc">Negen rollen en zestien gebruikersdoelen. Een bestelling vereist een voorraadcontrole. Bij een uitzondering kan de manager herstelopties vergelijken.</desc>',
+         f'<title id="title">{SYSTEM}</title><desc id="desc">Zes rollen en zestien gebruikersdoelen. Een bestelling vereist een voorraadcontrole. Bij een uitzondering kan de Supply Management Director herstelopties vergelijken.</desc>',
          '<defs><marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="black"/></marker></defs>',
          '<g font-family="Arial, Helvetica, sans-serif"><rect width="1280" height="1010" fill="white"/>',
          '<rect x="235" y="26" width="820" height="955" fill="none" stroke="black" stroke-width="1.5"/>',
@@ -105,22 +109,20 @@ def use_cases():
     associations = []
     for ident, label, _ in ROWS:
         uml.append(f'actor "{label}" as {ident}')
-    uml += ['actor "Leveranciersmedewerker Hongkong" as leverancier', f'rectangle "{SYSTEM}" {{']
+    uml.append(f'rectangle "{SYSTEM}" {{')
     for role, label, cases in ROWS:
         x, y, actor_y = UCD_LAYOUT[role]
         left = x == 440
         actor_x, origin, end = (115, 137, x-150) if left else (1165, 1143, x+150)
         p.append(actor(actor_x, actor_y, label))
         for i, (ident, first, second) in enumerate(cases):
-            cy = y + i * (100 if role == "manager" else 77)
+            cy = y + i * (100 if role == "directeur" else 77)
             p.append(f'<path d="M{origin} {actor_y}L{end} {cy}" fill="none" stroke="black"/>')
             p.append(oval(x, cy, [first, f"{second} ({ident})"], ident == "UC02"))
             extension = r"\n--\nUitbreidingspunt\nHerstelopties gewenst" if ident == "UC02" else ""
             uml.append(f'  usecase "{first}\\n{second} ({ident}){extension}" as {ident}')
             associations.append(f"{role} -- {ident}" if left else f"{ident} -- {role}")
-    p += [actor(115, 265, "Leveranciersmedewerker / Hongkong"),
-          '<path d="M137 265L290 324" stroke="black"/>',
-          oval(850, 205, ["Herstelopties vergelijken"]),
+    p += [oval(850, 205, ["Herstelopties vergelijken"]),
           '<path d="M700 205H590" fill="none" stroke="black" stroke-dasharray="6 4" marker-end="url(#open)"/>',
           text(645, 196, "«extend»", 12, "black"),
           text(645, 225, "[herstelopties gewenst]", 10, "black"),
@@ -129,7 +131,7 @@ def use_cases():
           text(450, 795, "«include»", 12, "black", anchor="start")]
     uml += ['  usecase "Herstelopties vergelijken" as herstel',
             '  usecase "Voorraad controleren" as voorraad', '}', *associations,
-            'leverancier -- UC05', 'herstel ..> UC02 : <<extend>>\\n[herstelopties gewenst]',
+            'herstel ..> UC02 : <<extend>>\\n[herstelopties gewenst]',
             'UC15 ..> voorraad : <<include>>', '@enduml']
     write_svg("use-case-diagram.svg", p)
     (ROOT / "use-case-diagram.puml").write_text("\n".join(uml) + "\n", encoding="utf-8")

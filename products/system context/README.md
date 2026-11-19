@@ -1,6 +1,6 @@
 # GIFTS4U — systeemcontext van de Control Tower
 
-Het use-casediagram toont het hele GIFTS4U-platform. De klant bestelt, het magazijn draagt producten over aan Printz en DHL bevestigt de aflevering. De ketenregisseur volgt deze gebeurtenissen in de Control Tower.
+Het use-casediagram toont het hele GIFTS4U-platform. De klant bestelt, het magazijn draagt producten over aan Printz en DHL bevestigt de aflevering. De Supply Management Director volgt deze gebeurtenissen in de Control Tower.
 
 Productissue: [#73](https://github.com/Immanuel-Cairo/gifts4u-control-tower/issues/73). Pull request: [#74](https://github.com/Immanuel-Cairo/gifts4u-control-tower/pull/74). Gerelateerd aan #70 en #71.
 
@@ -9,7 +9,7 @@ Productissue: [#73](https://github.com/Immanuel-Cairo/gifts4u-control-tower/issu
 - [Use-casediagram — SVG](use-case-diagram.svg) en bewerkbare [PlantUML-bron](use-case-diagram.puml).
 - [DFD niveau 0 — SVG](dfd-level-0.svg) en [Mermaid-bron](dfd-level-0.mmd).
 
-![Use cases van de klant, ketenpartners, directie en ketenregisseur](use-case-diagram.svg)
+![Use cases van de klant, ketenpartners, Supply Management Director](use-case-diagram.svg)
 
 ![Control Tower met externe gegevensstromen](dfd-level-0.svg)
 
@@ -31,24 +31,24 @@ De onderstaande contextdoelen worden aangeduid met **UC01–UC16**. Ze vervangen
 
 | Use case | Primaire menselijke rol | Doel / zichtbaar resultaat | Requirements |
 | --- | --- | --- | --- |
-| UC01 Ketenoverzicht raadplegen | Manager / ketenregisseur | Orders filteren, voorraad en orderdetails bekijken; urgente zaken, oorzaken, KPI's en dashboardmeldingen herkennen. | FR-CT-01, FR-CT-05, FR-CT-06, FR-CT-07, FR-CT-08, FR-CT-09, FR-CT-10, FR-CT-11 |
-| UC02 Uitzonderingen en impact beoordelen | Manager / ketenregisseur | Bevestigde status scheiden van uitzondering; betrokken orders, eigenaar en volgende actie bepalen. Optioneel herstelopties verkennen. | FR-CT-02, FR-CT-03, FR-IMP-04 |
-| UC03 Corrigerend besluit vastleggen en toewijzen | Directeur / eigenaar | Bij een escalatie een actie kiezen, eigenaar en deadline vastleggen. | FR-CT-04 |
-| UC04 Besluit en opvolging controleren | Directeur / eigenaar | Vastgelegd besluit en bijbehorende acties terugvinden in het controleerbare log. Geen apart goedkeuringsproces verondersteld. | FR-CT-04, NFR-03 |
-| UC05 Importpartijen registreren en volgen | Importcoördinator | Partij met SKU, aantal en referentie registreren; ETA en bevestigde gebeurtenissen volgen. Leveranciersmedewerker is ondersteunende actor. | FR-IMP-01, FR-IMP-02 |
-| UC06 Importvertraging registreren | Importcoördinator | Douane- of andere importvertraging aan een partij koppelen; orderimpact tonen aan de manager. | FR-IMP-03, FR-IMP-04 |
+| UC01 Ketenoverzicht raadplegen | Supply Management Director | Orders filteren, voorraad en orderdetails bekijken; urgente zaken, oorzaken, KPI's en dashboardmeldingen herkennen. | FR-CT-01, FR-CT-05, FR-CT-06, FR-CT-07, FR-CT-08, FR-CT-09, FR-CT-10, FR-CT-11 |
+| UC02 Uitzonderingen en impact beoordelen | Supply Management Director | Bevestigde status scheiden van uitzondering; betrokken orders, eigenaar en volgende actie bepalen. Optioneel herstelopties verkennen. | FR-CT-02, FR-CT-03, FR-IMP-04 |
+| UC03 Corrigerend besluit vastleggen en toewijzen | Supply Management Director | Bij een escalatie een actie kiezen, eigenaar en deadline vastleggen. | FR-CT-04 |
+| UC04 Besluit en opvolging controleren | Supply Management Director | Vastgelegd besluit en bijbehorende acties terugvinden in het controleerbare log. Geen apart goedkeuringsproces verondersteld. | FR-CT-04, NFR-03 |
+| UC05 Importpartijen registreren en volgen | Medewerker Hongkong | Partij met SKU, aantal en referentie registreren; ETA en bevestigde gebeurtenissen volgen. | FR-IMP-01, FR-IMP-02 |
+| UC06 Importvertraging registreren | Medewerker Hongkong | Douane- of andere importvertraging aan een partij koppelen; orderimpact tonen aan de Supply Management Director. | FR-IMP-03, FR-IMP-04 |
 | UC07 Voorraad ontvangen, plannen en reserveren | Magazijnmedewerker | Werkelijke ontvangst boeken, beschikbare aantallen bekijken, reserveren en tekorten signaleren. Bevoegde medewerker plant een hoger batchaantal. | FR-IMP-05, FR-MAG-01, FR-MAG-02, FR-MAG-03, FR-MAG-04, FR-MAG-06 |
 | UC08 Overdracht naar Printz bevestigen | Magazijnmedewerker | Bevestigde overdracht met order, aantallen en tijdstip vastleggen. | FR-MAG-05 |
 | UC09 Printopdracht uitvoeren en kwaliteit vrijgeven | Printz-medewerker | Juiste ontwerpversie raadplegen, start bevestigen en na kwaliteitscontrole verzendklaar melden. | FR-PRT-01, FR-PRT-02, FR-PRT-04, FR-PRT-05 |
 | UC10 Printstoring of capaciteitstekort melden | Printz-medewerker | Getroffen orders en oorzaak vastleggen zonder de bevestigde orderstatus te vervangen. | FR-PRT-03 |
 | UC11 Zending volgen en gebeurtenissen bevestigen | DHL-medewerker | Bestemming en vervoersfase raadplegen; ophaling, aflevering met bewijs, ETA en adres-/afleverproblemen vastleggen. | FR-DHL-01, FR-DHL-02, FR-DHL-04, FR-DHL-05 |
 | UC12 Transportcapaciteit plannen | DHL-medewerker | Vervoersvraag en capaciteit per datum vergelijken; tekort signaleren. | FR-DHL-03 |
-| UC13 Klantupdate opstellen en afhandeling vastleggen | Klantenservice / accountmanager | Op basis van events/risico's een bericht opstellen, toewijzen en de verzend- en afhandelstatus registreren. | FR-KLM-01, FR-KLM-02, FR-KLM-03, FR-KLM-04 |
-| UC14 Personalisatieklacht registreren en opvolgen | Klantenservice / accountmanager | Klacht koppelen aan order, oorzaak en gekozen retour, herdruk of vervanging. | FR-KLM-05 |
+| UC13 Klantupdate opstellen en afhandeling vastleggen | Supply Management Director | Op basis van events/risico's een bericht opstellen, toewijzen en de verzend- en afhandelstatus registreren. | FR-KLM-01, FR-KLM-02, FR-KLM-03, FR-KLM-04 |
+| UC14 Personalisatieklacht registreren en opvolgen | Supply Management Director | Klacht koppelen aan order, oorzaak en gekozen retour, herdruk of vervanging. | FR-KLM-05 |
 | UC15 Bestelling plaatsen met personalisatie | Klant (B2B / B2C) | Geldige bestelling en leverbelofte vastleggen na voorraadcontrole; B2B-prioriteit behouden; adreswijziging en annulering na plaatsing blokkeren. | FR-WEB-01, FR-WEB-02, FR-WEB-03, FR-WEB-04, FR-WEB-05, FR-WEB-06 |
 | UC16 Orderupdates ontvangen | Klant (B2B / B2C) | Bevestigde status en zo nodig oorzaak en geschatte ETA ontvangen. Ontvangende actor; dit veronderstelt geen zelfstandig klantportaal. | FR-KLM-01, FR-KLM-02 |
 
-**Manager is niet automatisch directeur.** De manager onderzoekt en coördineert; alleen de directeur legt het corrigerende directiebesluit vast. In een klein bedrijf kan één persoon beide rollen hebben. Bevoegdheden worden aan rollen gekoppeld, niet aan een persoonsnaam. Het model kent ook uitvoerende rollen toe: niet elke handeling is een managementtaak.
+In deze rolverdeling behandelt de Supply Management Director ook klantupdates en de opvolging van klachten (UC13 en UC14). De medewerker in Hongkong registreert importpartijen en vertragingen (UC05 en UC06).
 
 ## Gegevenswoordenboek bij het DFD
 
