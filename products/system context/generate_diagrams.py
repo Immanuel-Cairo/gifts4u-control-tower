@@ -16,12 +16,20 @@ ROOT = Path(__file__).resolve().parent
 # alleen waar gedrag gedeeld of optioneel is. Bewerkbare bron: use-case-diagram.drawio.
 UC_W, UC_H, UC_H_EXT = 260, 60, 92
 LEFT_X, RIGHT_X = 345, 725
-BOX = (300, 30, 730, 900)
-UCD_TITLE = "GIFTS4U Control Tower"
+BOX = (300, 30, 730, 1610)
+UCD_TITLE = "GIFTS4U-platform inclusief Control Tower"
 
 # id: (label, x, y) — draw.io-umlActor van 30×60
 ACTORS = {
-    "beheerder": ("Control Tower-|beheerder", 50, 455),
+    "beheerder": ("Ketenregisseur /|Tower-beheerder", 68, 455),
+    "klant": ("Klant|B2B / B2C", 70, 990),
+    "service": ("Klantenservice /|accountmanager", 1110, 990),
+    "magazijn": ("Magazijnmedewerker", 70, 1160),
+    "printz": ("Printz-medewerker", 1110, 1160),
+    "importeur": ("Importcoördinator", 70, 1330),
+    "dhl": ("DHL-medewerker", 1110, 1330),
+    "leverancier": ("Leverancier|Hongkong", 70, 1510),
+    "directeur": ("Directeur / eigenaar", 1110, 1510),
     "tijd": ("Tijd (klok)", 1110, 490),
 }
 
@@ -37,6 +45,20 @@ UCD = [
     ("uc07", ["Klantcommunicatie", "Coördineren (UC07)"], LEFT_X, 700, None, "beheerder"),
     ("uc08", ["Meldingen En KPI's", "Bewaken (UC08)"], LEFT_X, 780, None, "beheerder"),
     ("uc11", ["Batchaantal Hongkong", "Verhogen (UC11)"], LEFT_X, 860, None, "beheerder"),
+    ("uc12", ["Bestelling Met Personalisatie Plaatsen", "(UC12)"], LEFT_X, 980, None, "klant"),
+    ("uc13", ["Orderupdate Ontvangen", "(UC13)"], LEFT_X, 1060, None, "klant"),
+    ("uc14", ["Klantupdate Opstellen", "(UC14)"], RIGHT_X, 980, None, "service"),
+    ("uc15", ["Personalisatieklacht Afhandelen", "(UC15)"], RIGHT_X, 1060, None, "service"),
+    ("uc16", ["Voorraad Ontvangen En Reserveren", "(UC16)"], LEFT_X, 1150, None, "magazijn"),
+    ("uc17", ["Overdracht Aan Printz Bevestigen", "(UC17)"], LEFT_X, 1230, None, "magazijn"),
+    ("uc18", ["Printopdracht Uitvoeren En Vrijgeven", "(UC18)"], RIGHT_X, 1150, None, "printz"),
+    ("uc19", ["Printstoring Of Capaciteitstekort Melden", "(UC19)"], RIGHT_X, 1230, None, "printz"),
+    ("uc20", ["Importpartij Registreren En Volgen", "(UC20)"], LEFT_X, 1320, None, "importeur"),
+    ("uc21", ["Importvertraging Registreren", "(UC21)"], LEFT_X, 1400, None, "importeur"),
+    ("uc22", ["Ophaling En Aflevering Bevestigen", "(UC22)"], RIGHT_X, 1320, None, "dhl"),
+    ("uc23", ["Transportcapaciteit Plannen", "(UC23)"], RIGHT_X, 1400, None, "dhl"),
+    ("uc24", ["Zending En Verwachte Aankomst Melden", "(UC24)"], LEFT_X, 1540, None, "leverancier"),
+    ("uc25", ["Herstelactie Goedkeuren En Toewijzen", "(UC25)"], RIGHT_X, 1540, None, "directeur"),
     ("herstel", ["Herstelscenario Vergelijken"], RIGHT_X, 110, None, None),
     ("getroffen", ["Getroffen Orders Bepalen"], RIGHT_X, 250, None, None),
     ("uc10", ["Leverlooptijd Bewaken (UC10)"], RIGHT_X, 520, "looptijd > 120% van belofte", "tijd"),
@@ -157,10 +179,10 @@ def label_box(a, b, cond):
 
 def use_cases():
     cases = {c[0]: c for c in UCD}
-    width, height = 1240, 1010
+    width, height = 1240, 1700
     bx, by, bw, bh = BOX
     p = [f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">
-<title id="title">Use-casediagram GIFTS4U Control Tower</title><desc id="desc">Eén beheerder en de tijd als actoren; elf doelen met include- en extend-relaties.</desc>
+<title id="title">Use-casediagram GIFTS4U-platform</title><desc id="desc">De keten van bestelling en import via magazijn en Printz tot DHL en klantcommunicatie, met beheerder, directie en klok.</desc>
 <defs><marker id="open" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11" fill="none" stroke="#000" stroke-width="1.2"/></marker></defs>
 <g font-family="Arial, Helvetica, sans-serif">
 <rect width="{width}" height="{height}" fill="#fff"/>''',
@@ -184,8 +206,8 @@ def use_cases():
         p += svg_case(case)
     for label, ax, ay in ACTORS.values():
         p.append(svg_actor(label, ax, ay))
-    p += [ucd_text(40, 960, ["Lijn = deelname van een actor (geen pijlpunt). Gestippelde pijl = «include» (altijd) of «extend» (alleen onder de conditie)."], 12, anchor="start"),
-          ucd_text(40, 982, ["Partners en diensten bedienen de Control Tower niet; hun gegevensuitwisseling staat in het DFD niveau 0."], 12, anchor="start")]
+    p += [ucd_text(40, 1665, ["Lijn = deelname van een actor (geen pijlpunt). Gestippelde pijl = «include» (altijd) of «extend» (alleen onder de conditie)."], 12, anchor="start"),
+          ucd_text(40, 1687, ["UC01–UC11: Control Tower. UC12–UC25: klant, ketenpartners en directie."], 12, anchor="start")]
     write_svg("use-case-diagram.svg", p)
     write_drawio(cases)
 
@@ -237,7 +259,7 @@ def write_drawio(cases):
         n += 1
     xml = ['<mxfile host="app.diagrams.net">',
            '  <diagram id="gifts4u_ucd" name="GIFTS4U Use-casediagram">',
-           '    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1240" pageHeight="960" background="#ffffff" math="0" shadow="0">',
+           '    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1240" pageHeight="1700" background="#ffffff" math="0" shadow="0">',
            '      <root>', '        <mxCell id="0" />', '        <mxCell id="1" parent="0" />',
            *out, '      </root>', '    </mxGraphModel>', '  </diagram>', '</mxfile>']
     (ROOT / "use-case-diagram.drawio").write_text("\n".join(xml) + "\n", encoding="utf-8")

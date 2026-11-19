@@ -1,6 +1,6 @@
 # GIFTS4U — systeemcontext van de Control Tower
 
-**Eén persoon houdt de Control Tower bij.** Die persoon heeft in dit ontwerp de rol **Control Tower-beheerder** en is de enige menselijke actor. Daarnaast is de **tijd (klok)** een actor: niemand drukt op een knop om een order "te laat" te maken, dus de >20%-controle (FR-CT-05) start op basis van de tijd. Printz, DHL, het magazijn en andere ketenpartijen leveren gegevens of ontvangen opdrachten; zij zijn geen gebruikers van de Control Tower.
+Het use-casediagram toont het hele GIFTS4U-platform. De klant bestelt, het magazijn draagt producten over aan Printz en DHL bevestigt de aflevering. De ketenregisseur volgt deze gebeurtenissen in de Control Tower. De klok start de periodieke controle op vertraging.
 
 Productissue: [#73](https://github.com/Immanuel-Cairo/gifts4u-control-tower/issues/73). Pull request: [#74](https://github.com/Immanuel-Cairo/gifts4u-control-tower/pull/74). Gerelateerd aan #70 en #71.
 
@@ -9,21 +9,23 @@ Productissue: [#73](https://github.com/Immanuel-Cairo/gifts4u-control-tower/issu
 - [Use-casediagram — SVG](use-case-diagram.svg) en bewerkbare [draw.io-bron](use-case-diagram.drawio).
 - [DFD niveau 0 — SVG](dfd-level-0.svg) en [Mermaid-bron](dfd-level-0.mmd).
 
-![Beheerder en tijd als actoren met elf doelen en include/extend-relaties](use-case-diagram.svg)
+![Use cases van de klant, ketenpartners, directie, beheerder en klok](use-case-diagram.svg)
 
 ![Control Tower met externe gegevensstromen](dfd-level-0.svg)
 
-Het use-casediagram volgt dezelfde notatie als het VeloVault-UCD uit de car-auction-opdracht van Team 11: zwart-wit UML, systeemgrens als rechthoek, menselijke actor links, tijdactor rechts, associaties zonder pijlpunt en `«include»`/`«extend»` alleen waar gedrag gedeeld of optioneel is. De SVG's werken lokaal zonder externe scripts of lettertypen.
+Het use-casediagram volgt dezelfde notatie als het VeloVault-UCD uit de car-auction-opdracht van Team 11: zwart-wit UML, systeemgrens als rechthoek, actoren buiten de systeemgrens, associaties zonder pijlpunt en `«include»`/`«extend»` alleen waar gedrag gedeeld of optioneel is. De SVG's werken lokaal zonder externe scripts of lettertypen.
 
 ## Systeemgrens
 
-**Binnen de grens:** uitsluitend de GIFTS4U Control Tower. Deze brengt ketengegevens samen, toont orders, voorraad, bevestigde status en verwachtingen, signaleert uitzonderingen en legt acties, besluiten en opvolging vast.
+**Use-casediagram:** de systeemgrens omvat het GIFTS4U-platform en de diensten voor bestelling, import, voorraad, bedrukking, transport en klantcommunicatie.
 
-**Buiten de grens:** de beheerder als menselijke gebruiker, de tijd als triggerbron, plus webshop/orders, importregistratie, magazijn/voorraad, Printz, DHL en klantcommunicatie als externe informatiebronnen of ontvangende diensten. Een bron kan software, een partneroverzicht of handmatig aangeleverde informatie zijn. Het diagram legt nog geen API, protocol of automatische koppeling vast.
+**DFD niveau 0:** het centrale proces is de GIFTS4U Control Tower. Deze brengt ketengegevens samen, toont orders, voorraad, bevestigde status en verwachtingen, signaleert uitzonderingen en legt acties, besluiten en opvolging vast.
+
+**Buiten de DFD-grens:** de beheerder als menselijke gebruiker, de tijd als triggerbron, plus webshop/orders, importregistratie, magazijn/voorraad, Printz, DHL en klantcommunicatie als externe informatiebronnen of ontvangende diensten. Een bron kan software, een partneroverzicht of handmatig aangeleverde informatie zijn. Het diagram legt nog geen API, protocol of automatische koppeling vast.
 
 Orders plaatsen, goederen ontvangen, voorraad reserveren, bedrukken, kwaliteitscontrole uitvoeren en pakketten afleveren gebeuren in de keten buiten de Control Tower. De beheerder **volgt de geregistreerde uitkomsten** en stuurt bij. Klanten gebruiken de webshop en ontvangen berichten via de communicatiedienst; zij bedienen de Control Tower niet.
 
-Beide diagrammen hebben dezelfde grens. Het UCD toont de doelen van de actoren. Het DFD werkt de uitwisseling met externe bronnen uit; een externe DFD-entiteit is niet automatisch een ingelogde gebruiker. Het DFD heeft precies één procescirkel, nummer 0, en geen interne datastores. UCD-lijnen betekenen deelname; DFD-pijlen betekenen gegevensoverdracht, geen schermnavigatie.
+Het UCD toont de doelen van de actoren in de hele keten. Het DFD werkt de uitwisseling met externe bronnen uit; een externe DFD-entiteit is niet automatisch een ingelogde gebruiker. Het DFD heeft precies één procescirkel, nummer 0, en geen interne datastores. UCD-lijnen betekenen deelname; DFD-pijlen betekenen gegevensoverdracht, geen schermnavigatie.
 
 ## Use cases
 
@@ -45,6 +47,19 @@ UC01–UC11 zijn contextdoelen en vervangen niet de fijnmazige UC-ID's uit de re
 | — | (via UC02, UC09) | Getroffen Orders Bepalen | Orders koppelen die afhankelijk zijn van de getroffen partij, SKU, printopdracht of zending; onbekend blijft onbekend. | FR-CT-03, FR-IMP-03, FR-IMP-04, FR-PRT-03 |
 | — | (via UC02) | Herstelscenario Vergelijken | Impactverkenner: bijv. extra printshift tegenover reguliere herstart, met getroffen orders, tijdwinst en onzekerheden (geen kosten: geld is buiten scope). | Ontwerpuitbreiding (prototype), geen vastgestelde eis |
 | — | (via UC10) | Vertragingsalarm Tonen | Dashboardmelding met order, oorzaak en tijdstip bij looptijd > 120% van de belofte. | FR-CT-05, FR-CT-11 |
+
+### Doelen elders in het platform
+
+| Actor | Use cases |
+| --- | --- |
+| Klant (B2B/B2C) | UC12 Bestelling Met Personalisatie Plaatsen, UC13 Orderupdate Ontvangen |
+| Klantenservice / accountmanager | UC14 Klantupdate Opstellen, UC15 Personalisatieklacht Afhandelen |
+| Magazijnmedewerker | UC16 Voorraad Ontvangen En Reserveren, UC17 Overdracht Aan Printz Bevestigen |
+| Printz-medewerker | UC18 Printopdracht Uitvoeren En Vrijgeven, UC19 Printstoring Of Capaciteitstekort Melden |
+| Importcoördinator | UC20 Importpartij Registreren En Volgen, UC21 Importvertraging Registreren |
+| DHL-medewerker | UC22 Ophaling En Aflevering Bevestigen, UC23 Transportcapaciteit Plannen |
+| Leverancier Hongkong | UC24 Zending En Verwachte Aankomst Melden |
+| Directeur / eigenaar | UC25 Herstelactie Goedkeuren En Toewijzen |
 
 ### Relatiekeuzes
 
@@ -85,7 +100,7 @@ De stromen zijn logisch: informatie kan ook handmatig door de beheerder worden o
 | FR-CT-06 t/m FR-CT-10: filteren, voorraadtabblad, orderdetail, actie-items bovenaan, oorzaaksamenvatting | Gedekt door UC01, UC02, UC05 en UC08. |
 | FR-WEB-01: één of meer orderregels; ordernummer ongewijzigd door de keten | F03 aangevuld. |
 | FR-DHL-01: per order de positie in de DHL-route | UC06 en F08 aangevuld. |
-| FR-WEB-06 (geen wijziging/annulering na plaatsing) | Webshopfunctie buiten de grens; resultaat komt via F03 binnen. |
+| FR-WEB-06 (geen wijziging/annulering na plaatsing) | Webshopfunctie buiten de DFD-grens; resultaat komt via F03 binnen. |
 | FR-MAG-06 (batch handmatig verhogen) | UC11 Batchaantal Hongkong Verhogen met uitgaande stroom F13 (zie klantfeedback hieronder). |
 | FR-KLM-05 naar COULD HAVE | Blijft binnen UC07; geen diagramwijziging. |
 
@@ -115,7 +130,7 @@ Bron: aantekeningen bij de presentaties van de eigen groep, team Jarno/Renzo/Nat
 
 ## Ketenrequirements buiten de Control Tower
 
-De [requirements](../../documents/Requirments/GIFTS4U_Requirements.md) beschrijven de hele keten. Dit contextproduct dekt de bediening van de Control Tower; het maakt niet van elke ketenhandeling een beheerderstaak.
+De [requirements](../../documents/Requirments/GIFTS4U_Requirements.md) beschrijven de hele keten. Het DFD dekt de bediening van de Control Tower; het maakt niet van elke ketenhandeling een beheerderstaak.
 
 | Requirementgroep | Plaats in de keten en relatie met de Control Tower |
 | --- | --- |
@@ -139,7 +154,7 @@ De beheerder kan binnen UC02 optioneel een extra printshift vergelijken met regu
 
 ## Bronnen en lesconventies
 
-De correctie van de gebruiker — één persoon houdt de Control Tower bij — bepaalt de menselijke actor. Notatie en relatiegebruik zijn afgestemd op het VeloVault-UCD (car-auction-assignment_team11, `products/system-context`). Inhoudelijke bronnen zijn de [requirements](../../documents/Requirments/GIFTS4U_Requirements.md) bij commit `6677d6a`, de [open opdrachtgevervragen](../../documents/Vragen/open-vragen-opdrachtgever.md), [stakeholderanalyse](../../documents/Stakeholders-analyse/stakeholderanalyse.md) en [probleemstelling](../../documents/Problemen/probleemstelling.md).
+Eén beheerder bedient de Control Tower. De ketenrollen voeren hun eigen taken uit binnen het bredere platform. Notatie en relatiegebruik zijn afgestemd op het VeloVault-UCD (car-auction-assignment_team11, `products/system-context`). Inhoudelijke bronnen zijn de [requirements](../../documents/Requirments/GIFTS4U_Requirements.md) bij commit `6677d6a`, de [open opdrachtgevervragen](../../documents/Vragen/open-vragen-opdrachtgever.md), [stakeholderanalyse](../../documents/Stakeholders-analyse/stakeholderanalyse.md) en [probleemstelling](../../documents/Problemen/probleemstelling.md).
 
 | Referentie | Toepassing |
 | --- | --- |
@@ -148,7 +163,7 @@ De correctie van de gebruiker — één persoon houdt de Control Tower bij — b
 | `2026-Semester3-UVE-FDS-Class3-Final.pptx`, dia 9–11, 14, 17; Class 4, dia 6 | Level 0 toont het afgebakende systeem als één procescirkel. Externe bronnen staan buiten de grens; stroomlabels benoemen gegevensgroepen. |
 | `uxd-lesson-2-flows-and-frames-v2.pdf`, pagina 9, 15, 18 | Een scenario beschrijft ervaring; een use case een gebruikersdoel; een user flow schermstappen en navigatie. Het UCD en DFD zijn geen navigatieflows. |
 
-UML kan ook externe systemen als actor modelleren. Dit UCD toont bewust alleen de menselijke gebruiker en de tijd; gegevensuitwisseling met de ketenpartners staat in het DFD.
+UML kan ook externe systemen als actor modelleren. Het UCD toont de menselijke rollen en de klok. Het DFD beschrijft de gegevensuitwisseling met de Control Tower.
 
 ## Randvoorwaarden en beperkingen
 
@@ -170,4 +185,4 @@ git diff --check
 
 De generator heeft alleen de Python-standaardbibliotheek nodig. Wie liever in draw.io werkt, kan `use-case-diagram.drawio` openen en de SVG daar exporteren; neem de wijziging dan ook over in de generator, anders overschrijft de volgende generatie haar. Werk bij inhoudelijke wijzigingen ook de use-casetabel en het gegevenswoordenboek bij.
 
-Controle voor deze versie: twee actoren (beheerder, tijd) met elf geassocieerde doelen, twee `«include»`- en twee `«extend»`-relaties; één DFD-proces met acht externe entiteiten en dertien gegevensstromen; dekking van alle elf FR-CT-eisen; XML-validatie van de SVG's en de draw.io-bron; beide SVG's lokaal gerenderd en visueel beoordeeld. Openen van de draw.io-bron in draw.io zelf is niet uitgevoerd. Teamreview en validatie van open beleidsvragen blijven nodig voor acceptatie.
+Het UCD bevat tien actoren, 25 genummerde doelen, twee include-relaties en twee extend-relaties. Het DFD beschrijft één proces met acht externe entiteiten en dertien gegevensstromen.

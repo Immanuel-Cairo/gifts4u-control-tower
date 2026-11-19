@@ -7,7 +7,7 @@ The following products are expected:
 1. Persona
 2. Journey map
 3. System requirements
-4. 2 System Context Diagrams (UCD and Level 0 DFD) — [Control Tower: één beheerder en externe gegevensstromen](system%20context/README.md), [Use-casediagram](system%20context/use-case-diagram.svg), [DFD niveau 0](system%20context/dfd-level-0.svg)
+4. 2 System Context Diagrams (UCD and Level 0 DFD) — [GIFTS4U-keten en gegevensstromen van de Control Tower](system%20context/README.md), [Use-casediagram](system%20context/use-case-diagram.svg), [DFD niveau 0](system%20context/dfd-level-0.svg)
 5. Wireflow
 6. High fidelity prototype (please pay attention to heuristics) — [GIFTS4U Control Tower](prototype/index.html), [Nederlandstalige walkthrough](prototype/walkthrough.md)
 7. Use-case specification (2 filled in Use Case templates per student)
