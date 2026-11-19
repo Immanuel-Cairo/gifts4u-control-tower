@@ -3,6 +3,15 @@
 // No network requests: this product deliberately uses a reproducible local demo.
 const STORAGE_KEY = "gifts4u-prototype-v1";
 const DEMO_DATE = "2026-11-16";
+const OPERATOR = "Sophie · Control Tower-beheerder";
+// Demo input for external sources is opt-in per page session, never a user role.
+let partnerDemo = false;
+const partnerActions = new Set([
+  "new-order", "advance", "receive", "new-import", "capacity", "report-print", "duplicate",
+]);
+const partnerForms = new Set([
+  "order-form", "qc-form", "shipping-form", "receive-form", "import-form", "capacity-form", "fault-form",
+]);
 const icons = {
   grid: "M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z",
   box: "m3 7 9-5 9 5v10l-9 5-9-5z M3 7l9 5 9-5 M12 12v10 M8 4l9 5",
@@ -237,7 +246,6 @@ function createDemo() {
         time: "2026-11-16T08:41:00Z",
       },
     ],
-    role: "Regisseur",
     offline: false,
     transport: { planned: 52, capacity: 40 },
     seenEvents: [],
@@ -251,8 +259,11 @@ function loadState() {
       saved?.version === 1 &&
       Array.isArray(saved.orders) &&
       Array.isArray(saved.audit)
-    )
+    ) {
+      // Keep all existing orders/history while retiring the old UI role choice.
+      delete saved.role;
       return saved;
+    }
   } catch {
     storageOK = false;
   }
@@ -288,7 +299,8 @@ function audit(text, source, record) {
     text,
     source,
     record,
-    actor: state.role,
+    actor: OPERATOR,
+    simulated: partnerDemo,
     time: now(),
   });
 }
@@ -302,7 +314,7 @@ function toast(message) {
 }
 function openAction(title, body, eyebrow = "GIFTS4U · DEMONSTRATIE") {
   document.querySelector("#action-content").innerHTML =
-    `<div class="dialog-head"><div><span class="eyebrow">${escapeHTML(eyebrow)}</span><h2 id="action-title">${escapeHTML(title)}</h2></div><button class="icon-button" data-action="close-action" aria-label="Sluiten">${icon("close")}</button></div><div class="dialog-body">${body}</div>`;
+    `<div class="dialog-head"><div><span class="eyebrow">${escapeHTML(eyebrow)}</span><h2 id="action-title">${escapeHTML(title)}</h2></div><button class="icon-button" data-action="close-action" aria-label="Sluiten">${icon("close")}</button></div><div class="dialog-body">${partnerDemo ? '<div class="status-box"><strong>Partnerdemo actief</strong><p>Deze invoer simuleert externe gegevens. Je blijft de Control Tower-beheerder.</p></div>' : ""}${body}</div>`;
   if (!actionDialog.open) actionDialog.showModal();
 }
 function activeExceptions() {
@@ -379,6 +391,10 @@ function heading(title, subtitle, actions = "") {
   return `<div class="page-heading"><div><h2>${title}</h2><p>${subtitle}</p></div><div class="actions">${actions}</div></div>`;
 }
 function button(label, action, variant = "secondary", img = "", attrs = "") {
+  if (partnerActions.has(action)) {
+    if (!partnerDemo) return "";
+    label = `Demo: ${label}`;
+  }
   return `<button class="button ${variant}" data-action="${action}" ${attrs}>${img ? icon(img) : ""}${label}</button>`;
 }
 function render() {
@@ -400,6 +416,9 @@ function render() {
               : view === "logboek"
                 ? auditView()
                 : ordersView();
+  if (partnerDemo) {
+    main.innerHTML = `<div class="partner-demo-banner"><div><strong>Partnerdemo actief</strong><p>Je simuleert externe gegevens. Je blijft ${OPERATOR}; partners krijgen geen toegang.</p></div>${button("Sluit partnerdemo", "toggle-partner-demo")}</div>` + main.innerHTML;
+  }
   document
     .querySelectorAll("[data-icon]")
     .forEach((el) => (el.innerHTML = icon(el.dataset.icon)));
@@ -417,7 +436,7 @@ function overview() {
   return (
     heading(
       "Jouw keten, in één overzicht.",
-      "Van eerste bestelling tot het laatste bezorgmoment.",
+      "Jij houdt de Control Tower bij. Partners leveren de gegevens.",
       button("Exporteer", "export", "secondary", "download") +
         button("Nieuwe order", "new-order", "lime", "plus"),
     ) +
@@ -478,9 +497,9 @@ function ordersView() {
       ? "Iedere zending in zicht."
       : "Iedere order, één verhaal.";
   const subtitle = isPrint
-    ? "Goedgekeurd ontwerp, bevestigde productie en een controle vóór verzending."
+    ? "Volg de bevestigingen en uitzonderingen die Printz aanlevert."
     : isDHL
-      ? "De leverbelofte blijft staan. Nieuwe verwachtingen staan ernaast."
+      ? "Volg de zendingen en capaciteit die DHL aanlevert. De leverbelofte blijft staan."
       : "Bekijk de hele keten en volg de laatste bevestigde gebeurtenis.";
   return (
     heading(
@@ -516,7 +535,7 @@ function exceptionsView() {
         )
         .join("") ||
       '<div class="empty-state">Er zijn geen open uitzonderingen.</div>'
-    }</div><div class="section-note">Een besluit is nog geen uitvoering. Een uitzondering blijft open tot een medewerker de oplossing bevestigt. De alarmregel voor een looptijdoverschrijding is strikt &gt;20% en moet nog door de opdrachtgever worden gevalideerd.</div></div>`
+    }</div><div class="section-note">Een besluit is nog geen uitvoering. De beheerder sluit een uitzondering pas na bevestiging van de partner. De alarmregel voor een looptijdoverschrijding is strikt &gt;20% en moet nog door de opdrachtgever worden gevalideerd.</div></div>`
   );
 }
 function importView() {
@@ -526,7 +545,7 @@ function importView() {
       "Een verwachte aankomst is pas voorraad na een bevestigde ontvangst.",
       button("Partij registreren", "new-import", "lime", "plus"),
     ) +
-    `<div class="content-pad"><div class="table-scroll"><table><thead><tr><th>Zending / leverancier</th><th>SKU</th><th>Aantal</th><th>ETA · schatting</th><th>Bevestigd</th><th>Actie</th></tr></thead><tbody>${state.imports.map((i) => `<tr><td>${escapeHTML(i.id)}<small>${escapeHTML(i.supplier)}</small></td><td>${escapeHTML(i.sku)}</td><td>${i.quantity}</td><td>${date(i.eta)}</td><td><span class="badge ${i.received ? "lime" : ""}">${i.received ? "Ontvangen" : "Onderweg"}</span>${i.id === "HK-2026-081" && !i.received ? "<small>Uitzondering: douanecontrole</small>" : ""}</td><td>${button(i.received ? "Ontvangst vastgelegd" : "Bevestig ontvangst", "receive", "secondary", "", `data-id="${escapeHTML(i.id)}" ${i.received ? "disabled" : ""}`)}</td></tr>`).join("")}</tbody></table></div><h3 class="service-heading">Afhankelijk van de vertraagde partij</h3>${state.exceptions
+    `<div class="content-pad"><div class="table-scroll"><table><thead><tr><th>Zending / leverancier</th><th>SKU</th><th>Aantal</th><th>ETA · schatting</th><th>Bevestigd</th><th>Actie</th></tr></thead><tbody>${state.imports.map((i) => `<tr><td>${escapeHTML(i.id)}<small>${escapeHTML(i.supplier)}</small></td><td>${escapeHTML(i.sku)}</td><td>${i.quantity}</td><td>${date(i.eta)}</td><td><span class="badge ${i.received ? "lime" : ""}">${i.received ? "Ontvangen" : "Onderweg"}</span>${i.id === "HK-2026-081" && !i.received ? "<small>Uitzondering: douanecontrole</small>" : ""}</td><td>${partnerDemo ? button(i.received ? "Ontvangst vastgelegd" : "Bevestig ontvangst", "receive", "secondary", "", `data-id="${escapeHTML(i.id)}" ${i.received ? "disabled" : ""}`) : (i.received ? "Ontvangst aangeleverd" : "Wacht op magazijn")}</td></tr>`).join("")}</tbody></table></div><h3 class="service-heading">Afhankelijk van de vertraagde partij</h3>${state.exceptions
       .filter((e) => e.kind === "customs")
       .map(
         (e) =>
@@ -551,11 +570,11 @@ function inventoryView() {
       )
       .join(
         "",
-      )}</tbody></table></div><h3 class="service-heading">Klaar voor de volgende stap</h3><div class="table-scroll"><table><thead><tr><th>Order</th><th>SKU / aantal</th><th>Status</th><th>Actie</th></tr></thead><tbody>${state.orders
+      )}</tbody></table></div><h3 class="service-heading">Wachten op de volgende magazijnbevestiging</h3><div class="table-scroll"><table><thead><tr><th>Order</th><th>SKU / aantal</th><th>Status</th><th>Actie</th></tr></thead><tbody>${state.orders
       .filter((o) => o.stage < 2)
       .map(
         (o) =>
-          `<tr><td>${o.id}<small>${escapeHTML(o.customer)}</small></td><td>${o.sku} · ${o.quantity}</td><td>${badge(o)}</td><td>${button(o.stage === 0 ? "Reserveer voorraad" : "Overdragen aan Printz", "advance", "secondary", "", `data-id="${o.id}"`)}</td></tr>`,
+          `<tr><td>${o.id}<small>${escapeHTML(o.customer)}</small></td><td>${o.sku} · ${o.quantity}</td><td>${badge(o)}</td><td>${partnerDemo ? button(o.stage === 0 ? "Reserveer voorraad" : "Overdragen aan Printz", "advance", "secondary", "", `data-id="${o.id}"`) : button("Bekijk dossier", "order", "secondary", "", `data-id="${o.id}"`)}</td></tr>`,
       )
       .join(
         "",
@@ -578,7 +597,7 @@ function auditView() {
       "Bevestigingen, uitzonderingen, besluiten en acties met bron, actor en tijdstip.",
       button("Exporteer logboek", "export-audit", "secondary", "download"),
     ) +
-    `<div class="content-pad"><ul class="audit-list">${state.audit.map((a) => `<li class="audit-item">${icon("history")}<div>${escapeHTML(a.text)}<small>${timestamp(a.time)} · ${escapeHTML(a.source)} · ${escapeHTML(a.actor)} · ${escapeHTML(a.record)}</small></div></li>`).join("")}</ul></div>`
+    `<div class="content-pad"><ul class="audit-list">${state.audit.map((a) => `<li class="audit-item">${icon("history")}<div>${escapeHTML(a.text)}<small>${timestamp(a.time)} · ${escapeHTML(a.source)} · ${escapeHTML(a.actor)} · ${escapeHTML(a.record)}${a.simulated ? " · partnerdemo" : ""}</small></div></li>`).join("")}</ul></div>`
   );
 }
 
@@ -587,22 +606,20 @@ function showOrder(id) {
   if (!o) return;
   selectedOrder = id;
   const exceptions = orderExceptions(o);
-  const canDesign = ["Regisseur", "Printz", "Directeur"].includes(state.role);
-  const canCustomer = state.role !== "Printz";
   const percent = overrunPercent(o);
   document.querySelector("#detail-content").innerHTML =
-    `<div class="dialog-head"><div><span class="eyebrow">ORDERDOSSIER · ${o.type}${o.priority ? " · PRIORITEIT" : ""}</span><h2 id="detail-title">${o.id}</h2><p>${canCustomer ? escapeHTML(o.customer) : "Klantgegevens afgeschermd in Printz-weergave"}</p></div><button class="icon-button" data-action="close-detail" aria-label="Orderdetails sluiten">${icon("close")}</button></div><div class="dialog-body"><dl class="detail-facts"><div><dt>Product</dt><dd>${o.sku}<small>${o.quantity} stuks</small></dd></div><div><dt>Verantwoordelijke partner</dt><dd>${sources[o.stage]}<small>Zending ${o.shipment}</small></dd></div><div><dt>Oorspronkelijke leverbelofte</dt><dd>${date(o.promised)}<small>Vastgelegd bij orderacceptatie</small></dd></div><div><dt>Verwachte levering · schatting</dt><dd>${date(o.eta)}<small>${percent === null ? "Geen bevestigde nieuwe verwachting" : `${Math.round(percent)}% extra looptijd${hasOverrun(o) ? " · >20%-alarm" : ""}`}</small></dd></div></dl><div class="status-box"><span class="tiny-label">Laatste bevestigde status</span><p>${badge(o)}</p><p>${timestamp(o.events.at(-1).time)} · bron: ${o.events.at(-1).source}. Een risico wijzigt deze status niet.</p></div>${exceptions.map((e) => `<div class="warning-box"><strong>${escapeHTML(e.title)} · ${escapeHTML(e.urgency)}</strong><p>${escapeHTML(e.cause)}<br>Impact: ${escapeHTML(e.impact)}<br>Eigenaar: ${escapeHTML(e.owner)}<br>Volgende actie: ${escapeHTML(e.next)}</p>${button("Verken herstelopties", "scenario", "secondary", "spark", `data-id="${e.id}"`)}</div>`).join("")}
-  <h3>De volgende bevestiging</h3><div class="button-row">${o.stage < 6 ? button(["Reserveer voorraad", "Overdragen aan Printz", "Start bedrukking", "Kwaliteitscontrole & vrijgave", "Bevestig ophaling", "Bevestig aflevering"][o.stage], "advance", "lime", "check", `data-id="${o.id}"`) : '<span class="badge lime">Aflevering bevestigd</span>'}${button("Klantupdate opstellen", "compose", "secondary", "message", `data-id="${o.id}"`)}${button("ETA bijwerken", "eta", "secondary", "clock", `data-id="${o.id}"`)}</div>
-  ${canDesign ? `<h3>Goedgekeurd ontwerp</h3><div class="status-box"><strong>${escapeHTML(o.design)}</strong><p>Fictieve ontwerpverwijzing · gekoppeld aan ${o.id} en ${o.sku}. Geen klantfoto opgenomen.</p></div>` : ""}${canCustomer ? `<h3>Aflevergegevens · fictief</h3><p class="scenario-intro">${escapeHTML(o.address.street)} ${escapeHTML(o.address.number)}<br>${escapeHTML(o.address.postal)} ${escapeHTML(o.address.city)}</p>` : ""}<h3>Bevestigde gebeurtenissen</h3><ol class="timeline">${o.events
+    `<div class="dialog-head"><div><span class="eyebrow">ORDERDOSSIER · ${o.type}${o.priority ? " · PRIORITEIT" : ""}</span><h2 id="detail-title">${o.id}</h2><p>${escapeHTML(o.customer)}</p></div><button class="icon-button" data-action="close-detail" aria-label="Orderdetails sluiten">${icon("close")}</button></div><div class="dialog-body"><dl class="detail-facts"><div><dt>Product</dt><dd>${o.sku}<small>${o.quantity} stuks</small></dd></div><div><dt>Verantwoordelijke partner</dt><dd>${sources[o.stage]}<small>Zending ${o.shipment}</small></dd></div><div><dt>Oorspronkelijke leverbelofte</dt><dd>${date(o.promised)}<small>Vastgelegd bij orderacceptatie</small></dd></div><div><dt>Verwachte levering · schatting</dt><dd>${date(o.eta)}<small>${percent === null ? "Geen bevestigde nieuwe verwachting" : `${Math.round(percent)}% extra looptijd${hasOverrun(o) ? " · >20%-alarm" : ""}`}</small></dd></div></dl><div class="status-box"><span class="tiny-label">Laatste bevestigde status</span><p>${badge(o)}</p><p>${timestamp(o.events.at(-1).time)} · bron: ${o.events.at(-1).source}. Een risico wijzigt deze status niet.</p></div>${exceptions.map((e) => `<div class="warning-box"><strong>${escapeHTML(e.title)} · ${escapeHTML(e.urgency)}</strong><p>${escapeHTML(e.cause)}<br>Impact: ${escapeHTML(e.impact)}<br>Eigenaar: ${escapeHTML(e.owner)}<br>Volgende actie: ${escapeHTML(e.next)}</p>${button("Verken herstelopties", "scenario", "secondary", "spark", `data-id="${e.id}"`)}</div>`).join("")}
+  <h3>Opvolging door de beheerder</h3><p class="scenario-intro">Status en voorraad volgen externe bevestigingen. Gebruik Partnerdemo om zulke gegevens tijdens de demo te simuleren.</p><div class="button-row">${o.stage < 6 ? button(["Reserveer voorraad", "Overdragen aan Printz", "Start bedrukking", "Kwaliteitscontrole & vrijgave", "Bevestig ophaling", "Bevestig aflevering"][o.stage], "advance", "lime", "check", `data-id="${o.id}"`) : '<span class="badge lime">Aflevering bevestigd</span>'}${button("Klantupdate opstellen", "compose", "secondary", "message", `data-id="${o.id}"`)}${button("ETA bijwerken", "eta", "secondary", "clock", `data-id="${o.id}"`)}</div>
+  <h3>Goedgekeurd ontwerp</h3><div class="status-box"><strong>${escapeHTML(o.design)}</strong><p>Fictieve ontwerpverwijzing · gekoppeld aan ${o.id} en ${o.sku}. Geen klantfoto opgenomen.</p></div><h3>Aflevergegevens · fictief</h3><p class="scenario-intro">${escapeHTML(o.address.street)} ${escapeHTML(o.address.number)}<br>${escapeHTML(o.address.postal)} ${escapeHTML(o.address.city)}</p><h3>Bevestigde gebeurtenissen</h3><ol class="timeline">${o.events
     .slice()
     .reverse()
     .map(
       (e) =>
-        `<li>${escapeHTML(e.label)}<small>${timestamp(e.time)} · ${escapeHTML(e.source)} · ${escapeHTML(e.actor)}<br>${escapeHTML(e.id)}${e.proof ? ` · bewijs: ${escapeHTML(e.proof)}` : ""}</small></li>`,
+        `<li>${escapeHTML(e.label)}<small>${timestamp(e.time)} · bron: ${escapeHTML(e.source)} · invoer: ${escapeHTML(e.actor)}${e.simulated ? " · gesimuleerde partnerdata" : ""}<br>${escapeHTML(e.id)}${e.proof ? ` · bewijs: ${escapeHTML(e.proof)}` : ""}</small></li>`,
     )
     .join(
       "",
-    )}</ol>${button("Test dubbel event", "duplicate", "secondary", "history", `data-id="${o.id}"`)}<div class="section-note">Rolweergave: ${escapeHTML(state.role)}. Dit is een UI-demonstratie; echte autorisatie hoort in de backend.</div></div>`;
+    )}</ol>${button("Test dubbel event", "duplicate", "secondary", "history", `data-id="${o.id}"`)}<div class="section-note">${OPERATOR}. Partnergegevens zijn externe bronnen; een actiehouder is geen extra gebruiker.</div></div>`;
   document
     .querySelector("#detail-content")
     .insertAdjacentHTML(
@@ -627,7 +644,8 @@ function addEvent(o, stage, proof = "") {
     id: eventId,
     label: stages[stage],
     source: sources[stage],
-    actor: state.role,
+    actor: OPERATOR,
+    simulated: true,
     time: now(),
     proof,
   };
@@ -653,6 +671,7 @@ function addException(data) {
   return ex;
 }
 function advance(id) {
+  if (!partnerDemo) return;
   const o = state.orders.find((o) => o.id === id);
   if (!o || o.stage >= 6) return;
   if (state.offline && [2, 3].includes(o.stage)) {
@@ -738,15 +757,12 @@ function showScenario(id, keepChoice = false) {
   const isPrint = ex.kind === "print";
   const selected = scenario === "extra";
   const options = scenarioOptions(ex);
-  const decisions =
-    state.role === "Directeur"
-      ? state.decisions.filter((d) => d.exception === id)
-      : [];
+  const decisions = state.decisions.filter((d) => d.exception === id);
   openAction(
     "Wat als je nu bijstuurt?",
     `<p class="scenario-intro">${escapeHTML(ex.title)} raakt <strong>${ex.orders.length} orders</strong>. Vergelijk een herstelroute vóór je een besluit vastlegt. Dit zijn illustratieve scenario’s, geen berekende capaciteitsgaranties.</p><div class="route"><span>${icon("globe")}Import</span>→<span>${icon("warehouse")}Magazijn</span>→<span class="${isPrint ? "route-risk" : ""}">${icon("print")}Printz</span>→<span>${icon("truck")}DHL</span>→<span>${icon("box")}Klant</span></div><span class="tiny-label">Kies een scenario</span><div class="scenario-options">${options.map((label, i) => `<button class="scenario-option ${(i === 0) === selected ? "selected" : ""}" data-action="scenario-choice" data-id="${i === 0 ? "extra" : "wait"}" aria-pressed="${(i === 0) === selected}"><span class="option-tag">${i === 0 ? "ACTIEF BIJSTUREN" : "BESTAANDE ROUTE"}</span><strong>${label}</strong><small>${isPrint ? (i === 0 ? "Een extra shift bij Printz, na akkoord op capaciteit." : "Wachten tot lijn 02 weer beschikbaar is.") : i === 0 ? "Eigenaar stemt een versnelling af met de partner." : "De partner bevestigt eerst een nieuwe verwachting."}</small></button>`).join("")}</div><div class="scenario-result"><div><span>Mogelijke tijdwinst</span><b>${isPrint ? (selected ? "1 dag" : "0 dagen") : "Onbekend"}</b></div><div><span>Extra kosten · indicatie</span><b>${isPrint ? (selected ? "€ 180" : "€ 0") : "Op aanvraag"}</b></div><div><span>Betrokken orders</span><b>${ex.orders.length}</b></div></div><p class="scenario-intro">${isPrint ? `Scenario-ETA: <strong>${selected ? "17" : "18"} november</strong>. De oorspronkelijke leverbelofte blijft 16 november. ${selected ? "Bij vijf dagen beloofde looptijd is zes dagen precies 20%: geen >20%-alarm." : "Zeven dagen is 40% extra looptijd: wel een >20%-alarm."}` : "Een nieuwe ETA is nog onbekend. De partner moet de haalbaarheid bevestigen."}</p><div class="button-row">${ex.orders.map((oid) => button(oid, "scenario-order", "secondary", "box", `data-id="${oid}"`)).join("")}</div><div class="section-note">${escapeHTML(ex.owner)} · ${escapeHTML(ex.next)}. Het kiezen van een scenario wijzigt geen orderstatus, reservering of ETA.</div>
-  ${state.role === "Directeur" ? `<form id="decision-form" data-id="${ex.id}"><div class="form-grid"><label class="field">Actiehouder<input name="owner" value="${escapeHTML(ex.owner)}" required maxlength="80"></label><label class="field">Deadline<input name="deadline" type="datetime-local" required value="2026-11-16T15:00"></label></div><label class="field">Besluit en toelichting<textarea name="reason" required maxlength="600">${options[selected ? 0 : 1]} afstemmen. Eerst capaciteit en ETA laten bevestigen; daarna de klant informeren.</textarea></label><button class="button lime" type="submit">Besluit vastleggen</button></form>` : `<div class="receipt-check">Alleen de directeur kan een corrigerend besluit vastleggen. Huidige demorol: ${escapeHTML(state.role)}.</div>${button("Bekijk als directeur", "director", "lime", "shield")}`}
-  ${decisions.length ? `<h3>Vastgelegde directiebesluiten</h3>${decisions.map((d) => `<div class="status-box"><strong>${escapeHTML(d.option)}</strong><p>${escapeHTML(d.reason)}<br>${escapeHTML(d.owner)} · deadline ${timestamp(d.deadline)}<br>Vastgelegd ${timestamp(d.time)}</p></div>`).join("")}` : ""}<h3>Is het probleem daadwerkelijk verholpen?</h3><p class="scenario-intro">Sluit de uitzondering pas na bevestiging van de verantwoordelijke partner. Ook deze stap wijzigt geen orderstatus of ETA.</p>${button("Oplossing bevestigen", "resolve-exception", "secondary", "check", `data-id="${ex.id}" ${ex.state === "Opgelost" ? "disabled" : ""}`)}`,
+  <form id="decision-form" data-id="${ex.id}"><div class="form-grid"><label class="field">Actiehouder bij de partner<input name="owner" value="${escapeHTML(ex.owner)}" required maxlength="80"></label><label class="field">Deadline<input name="deadline" type="datetime-local" required value="${localDateTime()}"></label></div><label class="field">Besluit genomen door<input name="decidedBy" required maxlength="80" placeholder="Naam van de bevoegde beslisser"></label><label class="field">Besluit en toelichting<textarea name="reason" required maxlength="600">${options[selected ? 0 : 1]} afstemmen. Eerst capaciteit en ETA laten bevestigen; daarna de klant informeren.</textarea></label><label class="checkbox"><input name="authorized" type="checkbox" required> Ik registreer een bevoegd genomen besluit.</label><div class="section-note">Vastgelegd door ${OPERATOR}. De beslisser en actiehouder zijn geen extra gebruikersaccounts.</div><button class="button lime" type="submit">Besluit vastleggen</button></form>
+  ${decisions.length ? `<h3>Vastgelegde besluiten</h3>${decisions.map((d) => `<div class="status-box"><strong>${escapeHTML(d.option)}</strong><p>${escapeHTML(d.reason)}<br>${escapeHTML(d.owner)} · deadline ${timestamp(d.deadline)}<br>Beslisser: ${escapeHTML(d.decidedBy || "Niet vastgelegd in eerdere demo")}<br>Ingevoerd door ${escapeHTML(d.recordedBy || "Historische invoer")} · ${timestamp(d.time)}</p></div>`).join("")}` : ""}<h3>Is het probleem daadwerkelijk verholpen?</h3><p class="scenario-intro">Sluit de uitzondering pas na bevestiging van de verantwoordelijke partner. Ook deze stap wijzigt geen orderstatus of ETA.</p>${button("Oplossing bevestigen", "resolve-exception", "secondary", "check", `data-id="${ex.id}" ${ex.state === "Opgelost" ? "disabled" : ""}`)}`,
     `IMPACTVERKENNER · ${ex.id}`,
   );
 }
@@ -762,19 +778,19 @@ function compose(id) {
   const body = `Beste ${o.customer},\n\nJe bestelling ${o.id} heeft de bevestigde status ‘${stages[o.stage]}’.${ex.length ? " " + ex.map((e) => e.cause).join(" ") : ""}\nDe verwachte levering is ${o.eta ? date(o.eta) + " (schatting)" : "nog onbekend"}. De oorspronkelijke leverbelofte is ${date(o.promised)}.\n\nMet vriendelijke groet,\nGIFTS4U`;
   openAction(
     "Een heldere update voor de klant",
-    `<form id="message-form" data-id="${id}"><p class="scenario-intro">Gebaseerd op ${o.events.at(-1).id} · ${timestamp(o.events.at(-1).time)} · ${o.events.at(-1).source}</p><div class="form-grid"><label class="field">Ontvanger<input name="recipient" type="email" required value="${o.id.toLowerCase()}@example.test"></label><label class="field">Kanaal<select name="channel"><option>E-mail</option><option>Telefoonnotitie</option></select></label></div><label class="field">Toegewezen medewerker<input name="owner" required value="Sophie · Klantenservice" maxlength="80"></label><label class="field">Bericht<textarea name="body" required maxlength="2000" style="min-height:210px">${escapeHTML(body)}</textarea></label><div class="section-note">Dit registreert een gesimuleerde verzending. Er wordt geen e-mail of ander bericht verstuurd.</div><div class="form-actions"><button class="button lime" type="submit">Simuleer verzending</button></div></form>`,
+    `<form id="message-form" data-id="${id}"><p class="scenario-intro">Gebaseerd op ${o.events.at(-1).id} · ${timestamp(o.events.at(-1).time)} · ${o.events.at(-1).source}</p><div class="form-grid"><label class="field">Ontvanger<input name="recipient" type="email" required value="${o.id.toLowerCase()}@example.test"></label><label class="field">Kanaal<select name="channel"><option>E-mail</option><option>Telefoonnotitie</option></select></label></div><label class="field">Toegewezen medewerker<input name="owner" required value="Sophie · Control Tower-beheerder" maxlength="80"></label><label class="field">Bericht<textarea name="body" required maxlength="2000" style="min-height:210px">${escapeHTML(body)}</textarea></label><div class="section-note">Dit registreert een gesimuleerde verzending. Er wordt geen e-mail of ander bericht verstuurd.</div><div class="form-actions"><button class="button lime" type="submit">Simuleer verzending</button></div></form>`,
   );
 }
 function showSettings() {
   openAction(
-    "Maak de demo van jou",
-    `<label class="field">Gebruikersrol (UI-simulatie)<select id="role-select">${["Regisseur", "Directeur", "Magazijn", "Printz", "DHL", "Klantenservice"].map((r) => `<option ${state.role === r ? "selected" : ""}>${r}</option>`).join("")}</select><small>Rolkeuze demonstreert informatiebehoefte. Het is geen beveiligde login.</small></label><div class="section-note">De demodag is 16 november 2026. Nieuwe handelingen krijgen het werkelijke tijdstip. ${storageOK ? "Wijzigingen worden lokaal in deze browser bewaard." : "Lokale opslag is niet beschikbaar; wijzigingen zijn tijdelijk."}</div><div class="button-row">${button(state.offline ? "Herstel Printz-verbinding" : "Simuleer Printz offline", "toggle-offline", "secondary", "globe")}${button("Test alarmdrempel", "threshold", "secondary", "alert")}${button("Herstel startdemo", "reset-confirm", "secondary", "history")}</div>`,
+    "Jouw werkruimte",
+    `<div class="status-box"><strong>${OPERATOR}</strong><p>Eén beheerder volgt de keten, beoordeelt uitzonderingen en registreert besluiten. Partners leveren gegevens; zij bedienen deze werkruimte niet.</p></div><h3>Partnerdemo</h3><p class="scenario-intro">Test externe gegevens zoals een nieuwe webshoporder, goederenontvangst of een DHL-bevestiging. Dit opent alleen demohandelingen; je wisselt niet van gebruiker.</p><div class="button-row">${button(partnerDemo ? "Sluit partnerdemo" : "Open partnerdemo", "toggle-partner-demo", "lime")}${button(state.offline ? "Herstel Printz-verbinding" : "Simuleer Printz offline", "toggle-offline", "secondary", "globe")}</div><div class="section-note">Vaste demodag: 16 november 2026. Nieuwe handelingen krijgen het werkelijke tijdstip. ${storageOK ? "Wijzigingen blijven lokaal bewaard; Partnerdemo staat na herladen weer uit." : "Opslag is niet beschikbaar; wijzigingen zijn tijdelijk."}</div><div class="button-row">${button("Test alarmdrempel", "threshold", "secondary", "alert")}${button("Herstel startdemo", "reset-confirm", "secondary", "history")}</div>`,
   );
 }
 function showHelp() {
   openAction(
     "Welkom in de Control Tower",
-    `<p class="scenario-intro">Een werkruimte voor de regisseur van GIFTS4U. Alle namen, orders, voorspellingen en partnergebeurtenissen zijn fictief.</p><ol class="help-steps"><li><strong>Begin bij het overzicht.</strong> Bekijk bevestigde orderfasen en de verwachte leverdatum naast de oorspronkelijke belofte.</li><li><strong>Open G4U-1048.</strong> De order staat ‘In bedrukking’, terwijl de machinestoring als aparte uitzondering zichtbaar is.</li><li><strong>Verken herstelopties.</strong> Vergelijk een extra printshift met een reguliere herstart. Een scenario verandert nog niets.</li><li><strong>Leg als directeur een besluit vast.</strong> Kies een eigenaar en deadline. Laat een partner daarna de nieuwe ETA bevestigen via het orderdossier.</li><li><strong>Stel een klantupdate op.</strong> Simuleer verzending en vind die terug bij Klantcommunicatie. Alle wijzigingen staan in het Logboek.</li></ol><div class="section-note">Sneltoets / opent zoeken. Escape sluit een venster. Via SV rechtsboven wissel je de demorole, test je de alarmgrens en herstel je de demo.</div><a class="button secondary" href="walkthrough.md" target="_blank" rel="noopener">Open het walkthrough-document ↗</a>`,
+    `<p class="scenario-intro">Je werkt als ${OPERATOR}. Alle orders en partnergegevens zijn fictief.</p><ol class="help-steps"><li><strong>Begin bij het overzicht.</strong> Bekijk bevestigde status, leverbelofte en geschatte levering.</li><li><strong>Open G4U-1048.</strong> De order staat In bedrukking; de storing is een aparte uitzondering.</li><li><strong>Verken herstelopties.</strong> Vergelijk scenario’s zonder de bevestigde gegevens te wijzigen.</li><li><strong>Registreer een bevoegd besluit.</strong> Vermeld beslisser, actiehouder en deadline. Je blijft dezelfde beheerder.</li><li><strong>Volg de partnerbevestiging op.</strong> Leg de aangeleverde ETA vast en coördineer de klantupdate.</li></ol><div class="section-note">Via SV open je Partnerdemo voor externe testgegevens. / opent zoeken; Escape sluit een venster.</div><a class="button secondary" href="walkthrough.md" target="_blank" rel="noopener">Open de walkthrough</a>`,
   );
 }
 function showThreshold() {
@@ -788,6 +804,7 @@ document.addEventListener("click", (event) => {
   const target = event.target.closest("[data-action]");
   if (!target) return;
   const { action, id } = target.dataset;
+  if (partnerActions.has(action) && !partnerDemo) return;
   switch (action) {
     case "close-action":
       actionDialog.close();
@@ -843,10 +860,11 @@ document.addEventListener("click", (event) => {
       scenario = id;
       showScenario(scenarioException, true);
       break;
-    case "director":
-      state.role = "Directeur";
+    case "toggle-partner-demo":
+      partnerDemo = !partnerDemo;
+      actionDialog.close();
       refresh();
-      showScenario(scenarioException, true);
+      toast(partnerDemo ? "Partnerdemo geopend. Je blijft de beheerder." : "Partnerdemo gesloten.");
       break;
     case "compose":
       compose(id);
@@ -854,7 +872,7 @@ document.addEventListener("click", (event) => {
     case "report-problem":
       openAction(
         "Probleem of klacht registreren",
-        `<form id="problem-form" data-id="${id}"><label class="field">Type probleem<select name="kind"><option value="address">Adresprobleem</option><option value="delivery">Mislukte afleverpoging</option><option value="photo">Verkeerde personalisatie</option></select></label><label class="field">Oorzaak<input name="cause" required maxlength="250"></label><label class="field">Eigenaar<input name="owner" required value="Sophie · Klantenservice" maxlength="80"></label><label class="field">Volgende actie<select name="next"><option>Adres controleren en opnieuw aanbieden</option><option>Retour afstemmen</option><option>Herdruk voorbereiden</option><option>Vervanging voorbereiden</option></select></label><button class="button lime" type="submit">Registreer probleem</button></form>`,
+        `<form id="problem-form" data-id="${id}"><label class="field">Type probleem<select name="kind"><option value="address">Adresprobleem</option><option value="delivery">Mislukte afleverpoging</option><option value="photo">Verkeerde personalisatie</option></select></label><label class="field">Oorzaak<input name="cause" required maxlength="250"></label><label class="field">Eigenaar<input name="owner" required value="Sophie · Control Tower-beheerder" maxlength="80"></label><label class="field">Volgende actie<select name="next"><option>Adres controleren en opnieuw aanbieden</option><option>Retour afstemmen</option><option>Herdruk voorbereiden</option><option>Vervanging voorbereiden</option></select></label><button class="button lime" type="submit">Registreer probleem</button></form>`,
       );
       break;
     case "resolve-exception":
@@ -886,6 +904,7 @@ document.addEventListener("click", (event) => {
       break;
     case "reset":
       state = createDemo();
+      partnerDemo = false;
       query = "";
       filter = "alle";
       page = 1;
@@ -1000,6 +1019,7 @@ document.addEventListener("submit", (event) => {
   event.preventDefault();
   if (!form.reportValidity()) return;
   const data = Object.fromEntries(new FormData(form));
+  if (partnerForms.has(form.id) && !partnerDemo) return;
   const id = form.dataset.id;
   const o = state.orders.find((order) => order.id === id);
   switch (form.id) {
@@ -1045,7 +1065,8 @@ document.addEventListener("submit", (event) => {
             id: `EV-G4U-${next}-0`,
             label: stages[0],
             source: "Webshop",
-            actor: state.role,
+            actor: OPERATOR,
+            simulated: true,
             time: now(),
           },
         ],
@@ -1089,8 +1110,8 @@ document.addEventListener("submit", (event) => {
       o.events.at(-1).time = new Date(data.eventTime).toISOString();
       break;
     case "decision-form": {
-      if (state.role !== "Directeur") {
-        toast("Alleen de directeur kan besluiten vastleggen.");
+      if (!data.authorized || !data.decidedBy?.trim()) {
+        toast("Vermeld de beslisser en bevestig dat het besluit bevoegd is genomen.");
         return;
       }
       const ex = state.exceptions.find((e) => e.id === id);
@@ -1099,6 +1120,8 @@ document.addEventListener("submit", (event) => {
         exception: id,
         option: scenarioOptions(ex)[scenario === "extra" ? 0 : 1],
         reason: data.reason,
+        decidedBy: data.decidedBy.trim(),
+        recordedBy: OPERATOR,
         owner: data.owner,
         deadline: new Date(data.deadline).toISOString(),
         time: now(),
@@ -1107,8 +1130,8 @@ document.addEventListener("submit", (event) => {
       ex.next = "Actie uitvoeren en partnerbevestiging ophalen";
       ex.state = "In behandeling";
       audit(
-        `Directiebesluit voor ${id} geregistreerd; actiehouder ${data.owner}.`,
-        "Directeur",
+        `Besluit voor ${id} geregistreerd; beslisser ${data.decidedBy.trim()}; actiehouder ${data.owner}.`,
+        "Control Tower",
         id,
       );
       actionDialog.close();
@@ -1284,11 +1307,6 @@ document.addEventListener("change", (event) => {
   if (event.target.id === "chart-period") {
     period = event.target.value;
     render();
-  }
-  if (event.target.id === "role-select") {
-    state.role = event.target.value;
-    refresh();
-    toast(`Rolweergave gewijzigd naar ${state.role}.`);
   }
 });
 window.addEventListener("hashchange", () => {

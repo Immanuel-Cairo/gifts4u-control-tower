@@ -8,10 +8,10 @@ const { readFileSync } = require("node:fs");
 const { join } = require("node:path");
 const vm = require("node:vm");
 
-function demo() {
+function demo(savedState) {
   const elements = new Map();
   const handlers = {};
-  const stored = new Map();
+  const stored = new Map(savedState ? [["gifts4u-prototype-v1", JSON.stringify(savedState)]] : []);
   function element(selector) {
     if (!elements.has(selector))
       elements.set(selector, {
@@ -86,6 +86,9 @@ function demo() {
     run: (code) => vm.runInContext(code, context),
     html: (selector) => element(selector).innerHTML,
     text: (selector) => element(selector).textContent,
+    click(action, id) {
+      handlers.click({ target: { closest: () => ({ dataset: { action, id } }) } });
+    },
     submit(id, data, record) {
       handlers.submit({
         target: new Form(id, data, record),
@@ -151,7 +154,7 @@ test("all navigation views render and search, filters, pagination and empty stat
   assert.equal(d.run("page"), 1);
 });
 
-test("scenario selection and director decision preserve status, ETA and reservation", () => {
+test("single operator records an authorized decision without changing order facts", () => {
   const d = demo();
   const before = d.run("JSON.stringify(state.orders)");
   d.run('showScenario("EX-001");scenario="wait";showScenario("EX-001",true)');
@@ -166,11 +169,13 @@ test("scenario selection and director decision preserve status, ETA and reservat
     "EX-001",
   );
   assert.equal(d.run("state.decisions.length"), 0);
-  d.run('state.role="Directeur"');
+
   d.submit(
     "decision-form",
     {
       owner: "Milan",
+      decidedBy: "Sophie / eigenaar",
+      authorized: "on",
       deadline: "2026-11-16T15:00",
       reason: "Extra capaciteit afstemmen",
     },
@@ -183,6 +188,7 @@ test("scenario selection and director decision preserve status, ETA and reservat
 
 test("an unavailable stock balance prevents double allocation in the local demo", () => {
   const d = demo();
+  d.click("toggle-partner-demo");
   d.run(
     'state.orders.forEach(o=>o.reserved=false); state.inventory[0].physical=100; state.orders[0].stage=0;state.orders[0].sku="MUG-WHT";state.orders[0].quantity=100;state.orders[0].events=state.orders[0].events.slice(0,1); state.orders[1].quantity=100; advance("G4U-1048");advance("G4U-1047")',
   );
@@ -194,6 +200,7 @@ test("an unavailable stock balance prevents double allocation in the local demo"
 
 test("receiving an import batch adds actual quantity only once", () => {
   const d = demo();
+  d.click("toggle-partner-demo");
   const before = d.run("state.inventory[0].physical");
   d.submit("receive-form", { quantity: "580" }, "HK-2026-081");
   d.submit("receive-form", { quantity: "580" }, "HK-2026-081");
@@ -203,6 +210,7 @@ test("receiving an import batch adds actual quantity only once", () => {
 
 test("duplicate events are idempotent, offline Printz cannot confirm new status", () => {
   const d = demo();
+  d.click("toggle-partner-demo");
   const count = d.run("state.orders[0].events.length");
   assert.equal(d.run("addEvent(state.orders[0],state.orders[0].stage)"), false);
   assert.equal(d.run("state.orders[0].events.length"), count);
@@ -219,6 +227,7 @@ test("duplicate events are idempotent, offline Printz cannot confirm new status"
 
 test("quality, shipment proof and ETA changes are tracked independently", () => {
   const d = demo();
+  d.click("toggle-partner-demo");
   d.submit("qc-form", { design: "on", quantity: "on" }, "G4U-1048");
   assert.equal(d.run("state.orders[0].qc"), true);
   assert.equal(d.run("state.orders[0].stage"), 4);
@@ -280,6 +289,7 @@ test("communication and complaint are logged without status mutation", () => {
 
 test("new order rejects insufficient stock and escapes rendered user content", () => {
   const d = demo();
+  d.click("toggle-partner-demo");
   const fields = {
     customer: "<img src=x onerror=alert(1)>",
     type: "B2B",
@@ -305,13 +315,51 @@ test("new order rejects insufficient stock and escapes rendered user content", (
   assert.equal(d.run("state.orders[0].reserved"), false);
 });
 
-test("DHL role hides the design reference and Printz hides customer address", () => {
+test("one operator sees order context without a role switch", () => {
   const d = demo();
-  d.run('state.role="DHL";showOrder("G4U-1048")');
-  assert.doesNotMatch(d.html("#detail-content"), /ONT-1048/);
-  d.run('state.role="Printz";showOrder("G4U-1048")');
-  assert.doesNotMatch(d.html("#detail-content"), /Voorbeeldstraat/);
+  d.run('showSettings();showOrder("G4U-1048")');
+  assert.doesNotMatch(d.html("#action-content"), /role-select|Bekijk als directeur/);
+  assert.match(d.html("#action-content"), /Control Tower-beheerder/);
   assert.match(d.html("#detail-content"), /ONT-1048/);
+  assert.match(d.html("#detail-content"), /Voorbeeldstraat/);
+  assert.doesNotMatch(d.html("#detail-content"), /data-action="advance"/);
+  d.run('showScenario("EX-001")');
+  assert.match(d.html("#action-content"), /id="decision-form"/);
+});
+
+test("legacy role migration preserves orders and historical actors", () => {
+  const old = demo().run('JSON.parse(JSON.stringify(state))');
+  old.role = "DHL";
+  old.orders[0].customer = "Bewaarde klant";
+  old.audit[0].actor = "Historische directeur";
+  const d = demo(old);
+  assert.equal(d.run('Object.hasOwn(state,"role")'), false);
+  assert.equal(d.run('state.orders[0].customer'), "Bewaarde klant");
+  assert.equal(d.run('state.audit[0].actor'), "Historische directeur");
+  d.run('audit("Test", "Printz", "G4U-1048");save();state=loadState()');
+  assert.equal(d.run('state.audit[0].actor'), "Sophie · Control Tower-beheerder");
+  assert.equal(d.run('state.audit[0].source'), "Printz");
+});
+
+test("partner inputs require explicit demo mode and keep the same operator", () => {
+  const d = demo();
+  const before = d.run('JSON.stringify(state)');
+  d.click("receive", "HK-2026-081");
+  d.submit("receive-form", { quantity: "580" }, "HK-2026-081");
+  d.run('advance("G4U-1047")');
+  assert.equal(d.run('JSON.stringify(state)'), before);
+  assert.doesNotMatch(d.html("#main"), /data-action="new-order"/);
+  d.click("toggle-partner-demo");
+  assert.match(d.html("#main"), /Partnerdemo actief/);
+  d.submit("receive-form", { quantity: "580" }, "HK-2026-081");
+  assert.equal(d.run('state.imports[0].received'), true);
+  assert.equal(d.run('state.audit[0].actor'), "Sophie · Control Tower-beheerder");
+  assert.equal(d.run('state.audit[0].simulated'), true);
+  d.click("toggle-partner-demo");
+  assert.doesNotMatch(d.html("#main"), /Partnerdemo actief/);
+  const reopened = demo(d.run('JSON.parse(JSON.stringify(state))'));
+  assert.equal(reopened.run('partnerDemo'), false);
+  assert.equal(reopened.run('state.imports[0].received'), true);
 });
 
 test("closing an exception preserves order facts and state survives reload", () => {

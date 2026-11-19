@@ -1,8 +1,18 @@
 # GIFTS4U Control Tower — walkthrough
 
-Een Nederlandstalig interactief prototype voor de regisseur van GIFTS4U: zien waar een order staat, begrijpen wat een verstoring betekent en een volgende actie vastleggen.
+Een Nederlandstalig interactief prototype voor één Control Tower-beheerder van GIFTS4U: zien waar een order staat, begrijpen wat een verstoring betekent en een volgende actie vastleggen.
 
-**Product-issue:** [#4](https://github.com/Immanuel-Cairo/gifts4u-control-tower/issues/4). Dit is het high-fidelity prototypeproduct uit [products.md](../products.md), met de bijbehorende demonstratiehandleiding. Alle wijzigingen zijn lokaal en fictief. Het prototype verstuurt geen berichten en benadert geen partners.
+**Oorspronkelijk product-issue:** [#4](https://github.com/Immanuel-Cairo/gifts4u-control-tower/issues/4). Dit is het high-fidelity prototypeproduct uit [products.md](../products.md), met de bijbehorende demonstratiehandleiding. Alle wijzigingen zijn lokaal en fictief. Het prototype verstuurt geen berichten en benadert geen partners.
+
+**Aanpassing op feedback:** [#75](https://github.com/Immanuel-Cairo/gifts4u-control-tower/issues/75), aansluitend op de systeemcontext in [PR #74](https://github.com/Immanuel-Cairo/gifts4u-control-tower/pull/74). Sophie is de enige bediener. De vormgeving blijft behouden; de rolwisselaar en aparte directeur-/partnerweergaven zijn verwijderd.
+
+## Eén beheerder, externe gegevens
+
+Je werkt steeds als **Sophie · Control Tower-beheerder**. Bekijk orders, import, voorraad, productie en transport; beoordeel uitzonderingen; registreer een bevoegd besluit en coördineer klantcommunicatie. Een beslisser of actiehouder is een naam bij een besluit, geen extra gebruikersaccount.
+
+Via **SV → Open partnerdemo** worden externe testhandelingen zichtbaar met het voorvoegsel **Demo:**. De paarse banner en dialoogmelding maken deze toestand herkenbaar. Nieuwe orders, importpartijen, voorraadmutaties, productiestart, kwaliteitsvrijgave en DHL-events simuleren aanlevering uit de keten. Dit zijn geen taken van extra Control Tower-gebruikers. Sluit Partnerdemo met de bannerknop of via SV. Na herladen staat deze altijd uit; reeds ingevoerde demogegevens blijven behouden.
+
+De oorspronkelijke opslagnaam blijft behouden. Een eerder opgeslagen rolkeuze wordt bij laden verwijderd, zonder orders, besluiten, berichten of historische actornamen te wissen. Nieuwe wijzigingen noemen altijd Sophie als invoerende beheerder; de bron blijft bijvoorbeeld Printz of DHL. Gesimuleerde partner-events krijgen een aparte aanduiding in de tijdlijn en het logboek.
 
 ## Openen
 
@@ -45,7 +55,7 @@ Statuslabels gebruiken tekst naast kleur. Formulieren hebben labels, verplichte 
 
 De **impactverkenner** verbindt een uitzondering met de betrokken orders en toont de keten van import tot klant. Voor de printstoring vergelijk je een extra shift met de reguliere herstart. Het venster toont mogelijke tijdwinst, kostenindicatie en een scenario-ETA.
 
-Dit voorkomt dat een voorgesteld herstelplan ongemerkt als bevestigde werkelijkheid wordt gepresenteerd. De directeur legt een besluit vast, de partner bevestigt later een nieuwe verwachting en de klantenservice stelt daarna een bericht op. Elke stap is apart terug te vinden.
+Dit voorkomt dat een voorgesteld herstelplan ongemerkt als bevestigde werkelijkheid wordt gepresenteerd. Dezelfde beheerder registreert een bevoegd genomen besluit, verwerkt later een aangeleverde partnerverwachting en coördineert daarna de klantupdate. Elke stap is apart terug te vinden.
 
 De bedragen en scenario’s zijn **ontwerpaannames**: een extra printshift kost in de demo € 180 en kan één dag winnen. Ze komen niet uit het requirementsbestand en vormen geen optimalisatieberekening of toezegging. Het printscenario gebruikt de vaste startcasus met een belofte op 16 november; na wijzigingen aan orders is het geen automatische herberekening. Voor douane en transport blijven tijdwinst en kosten onbekend tot overleg met de partner.
 
@@ -69,15 +79,15 @@ Open **G4U-1048** via het ordernummer of de pijl in de tabel. Je ziet:
 - Een afzonderlijke uitzondering **Printlijn 02 staat stil** met oorzaak, eigenaar en volgende actie.
 - Een goedgekeurde fictieve ontwerpverwijzing, gekoppeld aan order en SKU.
 
-De storing heeft de bevestigde status niet vervangen. Klik op **Test dubbel event**: hetzelfde event-ID wordt herkend. Er komt geen tweede status-event bij; de detectie wordt wel in het logboek geregistreerd.
+De storing heeft de bevestigde status niet vervangen. Open desgewenst eerst Partnerdemo en klik op **Demo: Test dubbel event**: hetzelfde event-ID wordt herkend. Er komt geen tweede status-event bij; de detectie wordt wel in het logboek geregistreerd.
 
 ### 3. Vergelijk een herstelroute en leg een besluit vast
 
 Kies **Verken herstelopties**. Wissel tussen **Extra printshift** en **Reguliere herstart**. Bekijk de betrokken orders. Het wisselen verandert geen order, ETA of reservering.
 
-Kies **Bekijk als directeur**. Dit is een demonstratie van een rolweergave, geen login. Controleer actiehouder, deadline en toelichting en kies **Besluit vastleggen**. De uitzondering wordt **In behandeling**. De order blijft **In bedrukking** en behoudt zijn ETA, tot een aparte partnerupdate wordt vastgelegd. Via **SV** kun je de rol ook wijzigen.
+Vul **Actiehouder bij de partner**, **Deadline**, **Besluit genomen door** en de toelichting in. Bevestig **Ik registreer een bevoegd genomen besluit** en kies **Besluit vastleggen**. Zonder beslisser of bevestiging wordt niets vastgelegd. De uitzondering wordt **In behandeling**. Orderstatus, reservering en ETA blijven gelijk.
 
-Directiebesluitdetails worden in dit venster alleen voor de directeur getoond. Het logboek vermeldt dat er een besluit is geregistreerd. De data blijft in deze statische demo beschikbaar in JavaScript en lokale opslag; dit is geen beveiligingsgrens.
+Je blijft Sophie. Het dossier toont de beslisser en de invoerende beheerder afzonderlijk. De beslisser kan Sophie/eigenaar zijn of iemand die buiten de applicatie heeft besloten. De checkbox legt die verklaring vast; zij is geen controle van daadwerkelijke bevoegdheid. Ook eerdere besluiten blijven zichtbaar, met een expliciete melding wanneer de beslisser toen niet was opgeslagen. Echte authenticatie en autorisatie blijven implementatiewerk.
 
 ### 4. Werk de verwachting bij en informeer de klant
 
@@ -89,21 +99,23 @@ Sluit het dossier en open **Klantcommunicatie**. Het bericht staat daar met ontv
 
 ### 5. Volg een order tot aflevering
 
-Open G4U-1048 en kies **Kwaliteitscontrole & vrijgave**. Beide controles — personalisatie en aantal/kwaliteit — zijn verplicht. Daarna wordt **Verzendklaar** bevestigd.
+Open **SV → Open partnerdemo**, open G4U-1048 en kies **Demo: Kwaliteitscontrole & vrijgave**. Je simuleert hiermee een bevestiging van Printz. Beide controles — personalisatie en aantal/kwaliteit — zijn verplicht. Daarna wordt **Verzendklaar** bevestigd.
 
-Kies vervolgens **Bevestig ophaling**. Controleer postcode, huisnummer en gebeurtenistijd en bevestig de overdracht. De status wordt **Onderweg**. Bij **Bevestig aflevering** is daarnaast een referentie naar het afleverbewijs vereist. De bevestiging wordt opgeslagen in de tijdlijn.
+Kies vervolgens **Demo: Bevestig ophaling**. Controleer postcode, huisnummer en gebeurtenistijd en bevestig de overdracht. De status wordt **Onderweg**. Bij **Demo: Bevestig aflevering** is daarnaast een referentie naar het afleverbewijs vereist. De bevestiging wordt opgeslagen in de tijdlijn.
 
 Een open storing sluit niet automatisch door een statuswijziging. Open de impactverkenner en kies **Oplossing bevestigen** wanneer de oorzaak voor alle gekoppelde orders is verholpen. Vermeld de bevestiging van de partner. De uitzondering verdwijnt uit de open aandachtspunten; oorzaak en afsluiting blijven opgeslagen en gelogd.
 
 ### 6. Bekijk import en voorraad
 
-**Import** toont de inkomende partijen uit Hongkong. De douanevertraging van HK-2026-081 heeft een onbekende ETA en koppelt drie orders aan de vertraagde SKU. Via **Partij registreren** maak je een extra partij aan met unieke referentie, leverancier, SKU, aantal en optionele ETA.
+**Import** toont de inkomende partijen uit Hongkong. De douanevertraging van HK-2026-081 heeft een onbekende ETA en koppelt drie orders aan de vertraagde SKU. Met Partnerdemo actief maak je via **Demo: Partij registreren** een extra partij aan met unieke referentie, leverancier, SKU, aantal en optionele ETA.
 
-Kies bij HK-2026-081 **Bevestig ontvangst** en voer bijvoorbeeld 580 van de verwachte 600 stuks in. Alleen deze 580 verhogen de fysieke voorraad. De ontvangstknop wordt daarna uitgeschakeld en de mutatie is ook programmatisch tegen dubbeltelling beschermd. Het verschil van 20 staat in het logboek. Deze demo ondersteunt geen verdere deelontvangsten op dezelfde partij; registreer zo nodig een aparte vervolgpartij.
+Kies bij HK-2026-081 **Demo: Bevestig ontvangst** en voer bijvoorbeeld 580 van de verwachte 600 stuks in. Alleen deze 580 verhogen de fysieke voorraad. De ontvangstknop wordt daarna uitgeschakeld en de mutatie is ook programmatisch tegen dubbeltelling beschermd. Het verschil van 20 staat in het logboek. Deze demo ondersteunt geen verdere deelontvangsten op dezelfde partij; registreer zo nodig een aparte vervolgpartij.
 
-In **Magazijn** zie je fysiek, gereserveerd en beschikbaar per SKU. Reserveer een ontvangen order. Bij onvoldoende voorraad blijft de status gelijk en ontstaat een uitzondering met ontbrekend aantal, order en eigenaar. Overdracht aan Printz verbruikt de fysieke goederen en heft de bijbehorende reservering op. De demo controleert opeenvolgende acties binnen één venster; echte gelijktijdigheid vraagt backendtransacties.
+In **Magazijn** zie je fysiek, gereserveerd en beschikbaar per SKU. In de normale werkruimte open je alleen het dossier. Met Partnerdemo actief kun je een magazijnreservering simuleren voor een ontvangen order. Bij onvoldoende voorraad blijft de status gelijk en ontstaat een uitzondering met ontbrekend aantal, order en eigenaar. Overdracht aan Printz verbruikt de fysieke goederen en heft de bijbehorende reservering op. De demo controleert opeenvolgende acties binnen één venster; echte gelijktijdigheid vraagt backendtransacties.
 
 ### 7. Probeer de overige serviceacties
+
+Voor een nieuwe order, magazijnmutatie, Printz-storing of capaciteitsplanning moet Partnerdemo actief zijn. De bijbehorende knoppen beginnen met **Demo:**. ETA en klachtgegevens kun je als beheerder overnemen uit een partnerbericht.
 
 | Actie                                              | Verwacht resultaat                                                                                         |
 | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -114,8 +126,6 @@ In **Magazijn** zie je fysiek, gereserveerd en beschikbaar per SKU. Reserveer ee
 | DHL → Capaciteit plannen                           | Bij vraag boven capaciteit ontstaat of actualiseert een capaciteitsexceptie                                |
 | Orderdossier → Probleem of klacht melden           | Adresprobleem, mislukte aflevering of personalisatieklacht met eigenaar en vervolgactie                    |
 | SV → Simuleer Printz offline                       | Syncprobleem zichtbaar; nieuwe Printz-status- en ETA-bevestigingen worden geblokkeerd                      |
-| SV → rol DHL                                       | Ontwerpverwijzing verdwijnt uit het orderdossier; aflevergegevens blijven zichtbaar                        |
-| SV → rol Printz                                    | Klantnaam en adres verdwijnen uit het dossier; order, SKU en ontwerp blijven zichtbaar                     |
 | Exporteer                                          | CSV van de demo-orders; logboek heeft een eigen JSON-export                                                |
 | Pagina vernieuwen                                  | Opgeslagen orders, besluiten, uitzonderingen en berichten blijven behouden als localStorage beschikbaar is |
 
@@ -138,7 +148,7 @@ Gebruik de decimale notatie die de browser voor het numerieke veld accepteert. D
 
 Bron: het door de gebruiker aangeleverde **GIFTS4U_Requirements_ControlTower_Alle_Services.xlsx**, tabbladen **Requirements** en **Acceptatiecriteria**, rijen 2–44. Dit bestand bevat 35 functionele en acht niet-functionele eisen. De spreadsheet is gelezen en niet gewijzigd. De requirements beschrijven de beoogde oplossing; de onderstaande mapping beschrijft uitsluitend wat dit prototype daadwerkelijk demonstreert.
 
-**Interactief** betekent dat de actie met lokale demodata werkt. **Gedeeltelijk** betekent dat een deel wordt getoond of gesimuleerd en het resterende deel vervolgwerk is. Geen van deze aanduidingen verklaart een productieacceptatietest geslaagd.
+**Interactief** betekent dat de actie met lokale demodata werkt. **Gedeeltelijk** betekent dat een deel wordt getoond of gesimuleerd en het resterende deel vervolgwerk is. Geen van deze aanduidingen verklaart een productieacceptatietest geslaagd. Webshop-, import-, magazijn-, Printz- en DHL-mutaties hieronder zijn externe simulaties onder Partnerdemo; zij zijn geen aanvullende gebruikersrollen.
 
 | ID        | Scherm / bewijs in het ontwerp        | Dekking en grens                                                                                                                         |
 | --------- | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
@@ -161,7 +171,7 @@ Bron: het door de gebruiker aangeleverde **GIFTS4U_Requirements_ControlTower_All
 | FR-PRT-02 | Start bedrukking                      | Interactief: expliciet start-event met bron en tijdstip                                                                                  |
 | FR-PRT-03 | Storing melden                        | Gedeeltelijk: machinestoring als aparte uitzondering; berekening van printcapaciteit is vervolgwerk                                      |
 | FR-PRT-04 | Kwaliteitscontrole & vrijgave         | Interactief: verplichte controle van ontwerp en aantal/kwaliteit                                                                         |
-| FR-PRT-05 | Verzendklaar                          | Interactief: vrijgave na controle, zichtbaar in DHL-perspectief                                                                          |
+| FR-PRT-05 | Verzendklaar | Interactief in Partnerdemo: vrijgave na controle; de beheerder volgt deze bevestiging in het transportoverzicht. |
 | FR-DHL-01 | DHL en orderdossier                   | Interactief: zending, gekoppelde order, fase, bestemming en geschatte levering                                                           |
 | FR-DHL-02 | Ophaling en aflevering                | Interactief: bevestiging, zending-ID, bron, tijdstip; aflevering vereist bewijsreferentie                                                |
 | FR-DHL-03 | Capaciteit plannen                    | Gedeeltelijk: vraag/capaciteit en tekortmelding voor één vaste demodatum; meerdagenplanning is vervolgwerk                               |
@@ -175,14 +185,14 @@ Bron: het door de gebruiker aangeleverde **GIFTS4U_Requirements_ControlTower_All
 | FR-CT-01  | Overzicht en orderdossier             | Interactief: gedeelde order, laatste events, partner en leverbelofte                                                                     |
 | FR-CT-02  | Apart uitzonderingenmodel             | Interactief: storing vervangt geen bevestigde status                                                                                     |
 | FR-CT-03  | Uitzonderingen en impactverkenner     | Interactief: orders, impact, urgentie, eigenaar en volgende stap; onbekend blijft onbekend                                               |
-| FR-CT-04  | Directiebesluit                       | Interactief als UI-simulatie: corrigerende actie, eigenaar, deadline en log; echte autorisatie en notificatie-escalatie zijn vervolgwerk |
+| FR-CT-04 | Besluit registreren | Interactief: één beheerder registreert beslisser, actiehouder, deadline en toelichting; bevestiging van bevoegdheid is een verklaring, geen autorisatie. |
 | FR-CT-05  | KPI’s, orderalarm en grenscalculator  | Interactief: strikt >20%, te valideren; grafiek en scenariokosten zijn illustratief                                                      |
-| NFR-01    | Demorolkeuze                          | Gedeeltelijk: selectieve UI-weergave en besluitguard; geen veilige serverautorisatie                                                     |
+| NFR-01 | Eén beheerder | Niet als beveiliging gerealiseerd: geen login of serverautorisatie. Een naam of beslischeckbox is geen toegangscontrole. |
 | NFR-02    | Event-ID en Test dubbel event         | Interactief: dubbele statusmutaties voorkomen in het lokale eventmodel                                                                   |
 | NFR-03    | Logboek en tijdlijn                   | Gedeeltelijk: bron, actor, tijdstip en record aanwezig; lokale opslag is niet manipulatiebestendig                                       |
 | NFR-04    | Printz offline                        | Gedeeltelijk: falen gesimuleerd, bevestigingen blijven behouden; geen echte API-retry of netwerkdetectie                                 |
-| NFR-05    | Startset van 50 orders                | Dataset aanwezig; <3 seconden bruikbaarheid in een echte browser is nog niet gemeten                                                     |
-| NFR-06    | DHL-/Printz-perspectief               | Gedeeltelijk: ontwerp versus afleverinformatie in het dossier; geen echte dataminimalisatie aan de serverkant                            |
+| NFR-05 | Startset van 50 orders | Browserflow en rendering gecontroleerd; de eis van drie seconden is niet afzonderlijk gemeten. |
+| NFR-06 | Externe bronnen | Geen partneraccounts of echte gegevensdeling. Dataminimalisatie moet later aan de servicegrens worden afgedwongen. |
 | NFR-07    | localStorage                          | Gedeeltelijk: behoud na pagina-/browserherstart waar opslag beschikbaar is; geen backendherstel of back-up                               |
 | NFR-08    | Drie gescheiden informatietypen       | Interactief zichtbaar: bevestiging, schatting en uitzondering met eigen labels                                                           |
 
@@ -196,17 +206,15 @@ node --test products/prototype/tests/prototype.test.cjs
 git diff --check
 ```
 
-De 12 tests slagen. Ze testen de echte applicatielogica met een kleine DOM-adapter: dataset, voorraad, alarmgrens, schermgeneratie, zoek-/filterlogica, onafhankelijke scenario’s/besluiten, dubbele events, importontvangst, offline blokkades, kwaliteits-/verzendflow, berichten/klachten, ontsnapping van HTML-invoer, rolweergave en behoud na opnieuw laden. Deze tests vervangen geen native formuliervalidatie, toetsenbordtest of browserrendering. De lokale server retourneerde HTTP 200 voor het prototype.
+De **14 tests** slagen. Naast de bestaande bedrijfsregels controleren ze de migratie van een oude rolkeuze, het behoud van data/historie, besluitregistratie zonder rolwissel, het blokkeren van externe mutaties buiten Partnerdemo en het behoud van dezelfde invoerende beheerder naast de externe bron.
 
-**Visuele browsercontrole is niet uitgevoerd.** Computer Use stopte omdat de huidige Chrome-URL niet betrouwbaar kon worden vastgesteld. Er zijn daarom geen gecontroleerde screenshots of gemeten browserlaadtijden opgenomen. Desktop- en mobiele CSS zijn geïmplementeerd, maar blijven handmatig te controleren.
+**Browsercontrole op 19 november 2026:** het prototype gaf HTTP 200 en is in headless Microsoft Edge doorlopen. Getest: order openen, besluit registreren zonder rolwissel, behoud van status/ETA, ontbreken van de rolkeuze, Partnerdemo openen/sluiten en besluitbehoud na herladen. Desktop (1440 × 1000) en mobiel (390 × 844) zijn gerenderd en visueel gecontroleerd. De mobiele pagina blijft 390 pixels breed; de brede tabel heeft eigen horizontale scrolling. Er waren geen JavaScript-fouten tijdens deze flow.
 
-De reviewer kan de volgende open controles uitvoeren vóór acceptatie:
+Open controles vóór acceptatie:
 
-1. Open het overzicht op circa 1440 × 1000 en 390 × 844 pixels. Controleer dat alleen brede tabellen horizontaal scrollen en de hoofdinterface binnen het scherm blijft.
-2. Doorloop de bovenstaande herstelroute met muis én toetsenbord; controleer focus na dialogen en filterwissels.
-3. Probeer lege adresvelden, ontbrekende kwaliteitsvinkjes en aflevering zonder bewijs. De browser moet verzending blokkeren.
-4. Controleer zoeken, paginering, CSV-download, Escape, herladen en opslagblokkade in de beoogde browser.
-5. Meet laden en bruikbaarheid met de 50 testorders tegen de eis van drie seconden.
-6. Valideer terminologie, scenarioaannames en de >20%-grens met het projectteam en de opdrachtgever.
+1. Volledige toetsenbord- en toegankelijkheidscontrole, inclusief focus bij dialoog- en filterwissels.
+2. Alle overige demoformulieren, download/export en geblokkeerde browseropslag testen in de beoogde browser.
+3. De drie-seconden-eis afzonderlijk meten met minimaal 50 orders.
+4. Bevoegdheden, scenarioaannames en de >20%-regel valideren met opdrachtgever en projectteam.
 
 Het prototype gebruikt één browservenster als toestandsbron. Meerdere vensters of gebruikers kunnen elkaars opgeslagen wijzigingen overschrijven. Alle data staat leesbaar op de client; gebruik uitsluitend demo-invoer. Productie-authenticatie, betrouwbare partnerintegraties, server-side logging, concurrency, echte berichten en opslag van klantfoto’s vallen buiten dit ontwerpdocument en prototypeproduct.
