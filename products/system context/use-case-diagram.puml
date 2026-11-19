@@ -1,13 +1,10 @@
 @startuml
 left to right direction
+skinparam monochrome true
 skinparam shadowing false
-skinparam packageStyle rectangle
-skinparam actorStyle stickman
-skinparam usecase {
-  BackgroundColor #F0EBFE
-  BorderColor #7855E9
-}
-title GIFTS4U — systeemcontext en gebruikersrollen
+skinparam BackgroundColor white
+skinparam usecaseBackgroundColor white
+skinparam actorBackgroundColor white
 actor "Manager / ketenregisseur" as manager
 actor "Directeur / eigenaar" as directeur
 actor "Importcoördinator" as importCoordinator
@@ -18,38 +15,42 @@ actor "Klantenservice / accountmanager" as service
 actor "Klant (B2B / B2C)" as klant
 actor "Leveranciersmedewerker Hongkong" as leverancier
 rectangle "GIFTS4U-platform inclusief Control Tower" {
-  usecase "UC01\nKetenoverzicht\nraadplegen" as UC01
-  usecase "UC02\nUitzonderingen en\nimpact beoordelen" as UC02
-  usecase "UC03\nCorrigerend besluit\nvastleggen en toewijzen" as UC03
-  usecase "UC04\nBesluit en opvolging\ncontroleren" as UC04
-  usecase "UC05\nImportpartijen\nregistreren en volgen" as UC05
-  usecase "UC06\nImportvertraging\nregistreren" as UC06
-  usecase "UC07\nVoorraad ontvangen,\nplannen en reserveren" as UC07
-  usecase "UC08\nOverdracht naar\nPrintz bevestigen" as UC08
-  usecase "UC09\nPrintopdracht uitvoeren\nen kwaliteit vrijgeven" as UC09
-  usecase "UC10\nPrintstoring of\ncapaciteitstekort melden" as UC10
-  usecase "UC11\nZending volgen en\ngebeurtenissen bevestigen" as UC11
-  usecase "UC12\nTransportcapaciteit\nplannen" as UC12
-  usecase "UC13\nKlantupdate opstellen\nen afhandeling vastleggen" as UC13
-  usecase "UC14\nPersonalisatieklacht\nregistreren en opvolgen" as UC14
-  usecase "UC15\nBestelling plaatsen\nmet personalisatie" as UC15
-  usecase "UC16\nOrderupdates\nontvangen" as UC16
+  usecase "Ketenoverzicht\nraadplegen (UC01)" as UC01
+  usecase "Uitzonderingen en\nimpact beoordelen (UC02)\n--\nUitbreidingspunt\nHerstelopties gewenst" as UC02
+  usecase "Corrigerend besluit\nvastleggen en toewijzen (UC03)" as UC03
+  usecase "Besluit en opvolging\ncontroleren (UC04)" as UC04
+  usecase "Importpartijen\nregistreren en volgen (UC05)" as UC05
+  usecase "Importvertraging\nregistreren (UC06)" as UC06
+  usecase "Voorraad ontvangen,\nplannen en reserveren (UC07)" as UC07
+  usecase "Overdracht naar\nPrintz bevestigen (UC08)" as UC08
+  usecase "Printopdracht uitvoeren\nen kwaliteit vrijgeven (UC09)" as UC09
+  usecase "Printstoring of\ncapaciteitstekort melden (UC10)" as UC10
+  usecase "Zending volgen en\ngebeurtenissen bevestigen (UC11)" as UC11
+  usecase "Transportcapaciteit\nplannen (UC12)" as UC12
+  usecase "Klantupdate opstellen\nen afhandeling vastleggen (UC13)" as UC13
+  usecase "Personalisatieklacht\nregistreren en opvolgen (UC14)" as UC14
+  usecase "Bestelling plaatsen\nmet personalisatie (UC15)" as UC15
+  usecase "Orderupdates\nontvangen (UC16)" as UC16
+  usecase "Herstelopties vergelijken" as herstel
+  usecase "Voorraad controleren" as voorraad
 }
 manager -- UC01
 manager -- UC02
-directeur -- UC03
-directeur -- UC04
+UC03 -- directeur
+UC04 -- directeur
 importCoordinator -- UC05
 importCoordinator -- UC06
 magazijn -- UC07
 magazijn -- UC08
-printz -- UC09
-printz -- UC10
-dhl -- UC11
-dhl -- UC12
-service -- UC13
-service -- UC14
+UC09 -- printz
+UC10 -- printz
+UC11 -- dhl
+UC12 -- dhl
+UC13 -- service
+UC14 -- service
 klant -- UC15
 klant -- UC16
 leverancier -- UC05
+herstel ..> UC02 : <<extend>>\n[herstelopties gewenst]
+UC15 ..> voorraad : <<include>>
 @enduml

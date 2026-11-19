@@ -64,42 +64,73 @@ def role_lines(label):
     return label.split(" / ")
 
 
+# Middelpunten in twee kolommen. De extra ruimte bij UC05 is voor de leverancier.
+UCD_LAYOUT = {
+    "manager": (440, 105, 140), "directeur": (850, 324, 355),
+    "importCoordinator": (440, 324, 395), "magazijn": (440, 530, 566),
+    "printz": (850, 500, 536), "dhl": (850, 676, 712),
+    "service": (850, 852, 888), "klant": (440, 852, 888),
+}
+SYSTEM = "GIFTS4U-platform inclusief Control Tower"
+
+
 def actor(x, y, label):
-    # Menselijke UML-actor met naam van de rol; geen concrete persoonsnaam.
-    words = ["Klant", "(B2B / B2C)"] if label.startswith("Klant (") else role_lines(label)
-    return f'<g stroke="#151612" stroke-width="2.5" fill="none"><circle cx="{x}" cy="{y - 33}" r="12"/><path d="M{x} {y - 21}v36 m-25 -22h50 m-25 22l-22 26 m22 -26l22 26"/></g>' + text(x, y + 66, words, 16, weight="700")
+    lines = ["Klant", "(B2B / B2C)"] if label.startswith("Klant (") else role_lines(label)
+    return (f'<g fill="none" stroke="black" stroke-width="1.5"><circle cx="{x}" cy="{y-23}" r="8"/>'
+            f'<path d="M{x} {y-15}v27m-15 -19h30m-15 19l-15 20m15 -20l15 20"/></g>'
+            + text(x, y+52, lines, 14, "black", weight="700"))
+
+
+def oval(x, y, lines, extension=False):
+    radius = 51 if extension else 32
+    result = f'<ellipse cx="{x}" cy="{y}" rx="150" ry="{radius}" fill="white" stroke="black" stroke-width="1.3"/>'
+    result += text(x, y-(22 if extension else (6 if len(lines)>1 else -4)), lines, 14, "black")
+    if extension:
+        result += (f'<path d="M{x-132} {y+4}h264" stroke="black"/>'
+                   + text(x, y+20, "Uitbreidingspunt", 11, "black", weight="700")
+                   + text(x, y+34, "Herstelopties gewenst", 11, "black"))
+    return result
 
 
 def use_cases():
-    p = start("Use-casediagram · wie doet wat?", "Menselijke rollen buiten de grens; gebruikersdoelen binnen het GIFTS4U-platform.", 1650)
-    p += ['<rect x="310" y="178" width="880" height="1340" rx="4" fill="white" stroke="#151612" stroke-width="2"/>',
-          text(750, 213, "GIFTS4U-platform inclusief Control Tower", 20, weight="700")]
-    uml = ['@startuml', 'left to right direction', 'skinparam shadowing false', 'skinparam packageStyle rectangle', 'skinparam actorStyle stickman', 'skinparam usecase {', '  BackgroundColor #F0EBFE', '  BorderColor #7855E9', '}', 'title GIFTS4U — systeemcontext en gebruikersrollen']
+    p = ['<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1010" viewBox="0 0 1280 1010" role="img" aria-labelledby="title desc">',
+         f'<title id="title">{SYSTEM}</title><desc id="desc">Negen rollen en zestien gebruikersdoelen. Een bestelling vereist een voorraadcontrole. Bij een uitzondering kan de manager herstelopties vergelijken.</desc>',
+         '<defs><marker id="open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="black"/></marker></defs>',
+         '<g font-family="Arial, Helvetica, sans-serif"><rect width="1280" height="1010" fill="white"/>',
+         '<rect x="235" y="26" width="820" height="955" fill="none" stroke="black" stroke-width="1.5"/>',
+         text(645, 55, SYSTEM, 16, "black", weight="700")]
+    uml = ["@startuml", "left to right direction", "skinparam monochrome true",
+           "skinparam shadowing false", "skinparam BackgroundColor white",
+           "skinparam usecaseBackgroundColor white", "skinparam actorBackgroundColor white"]
+    associations = []
     for ident, label, _ in ROWS:
         uml.append(f'actor "{label}" as {ident}')
-    uml += ['actor "Leveranciersmedewerker Hongkong" as leverancier', 'rectangle "GIFTS4U-platform inclusief Control Tower" {']
-    for _, _, cases in ROWS:
-        for ident, a, b in cases:
-            uml.append(f'  usecase "{ident}\\n{a}\\n{b}" as {ident}')
-    uml.append('}')
-    for row, (role, label, cases) in enumerate(ROWS):
-        y = 280 + row * 155
-        p.append(actor(145, y, label))
-        if row:
-            p.append(f'<path d="M330 {y - 55}H1170" stroke="#e8e9e4"/>')
-        p.append(f'<path d="M170 {y - 7}H190V{y}H370 M190 {y}V{y + 45}H800" stroke="#747870" fill="none" stroke-width="1.6"/>')
-        for col, (ident, a, b) in enumerate(cases):
-            cx, cy = (540, y) if col == 0 else (970, y + 45)
-            p.append(f'<ellipse cx="{cx}" cy="{cy}" rx="170" ry="39" fill="#f0ebfe" stroke="#7855e9" stroke-width="1.5"/>')
-            p.append(text(cx, cy - 5, [f"{ident} · {a}", b], 17))
-            uml.append(f'{role} -- {ident}')
-    # De leverancier ondersteunt de importregistratie; de coördinator is eigenaar.
-    p.append(actor(1310, 545, "Leveranciersmedewerker / Hongkong"))
-    p.append('<path d="M1285 538H1265V545H740V590H710" fill="none" stroke="#747870" stroke-width="1.6"/>')
-    uml += ['leverancier -- UC05', '@enduml']
-    p += [text(40, 1560, "Leeswijzer", 18, anchor="start", weight="700"),
-          text(40, 1591, "Lijn = deelname aan een use case, geen procesvolgorde. Iedere use case heeft een primaire menselijke rol.", 17, anchor="start"),
-          text(40, 1620, "UC02 bevat een optionele impactverkenner als ontwerpvoorstel. Rollen en requirementkoppelingen: README.md.", 17, anchor="start")]
+    uml += ['actor "Leveranciersmedewerker Hongkong" as leverancier', f'rectangle "{SYSTEM}" {{']
+    for role, label, cases in ROWS:
+        x, y, actor_y = UCD_LAYOUT[role]
+        left = x == 440
+        actor_x, origin, end = (115, 137, x-150) if left else (1165, 1143, x+150)
+        p.append(actor(actor_x, actor_y, label))
+        for i, (ident, first, second) in enumerate(cases):
+            cy = y + i * (100 if role == "manager" else 77)
+            p.append(f'<path d="M{origin} {actor_y}L{end} {cy}" fill="none" stroke="black"/>')
+            p.append(oval(x, cy, [first, f"{second} ({ident})"], ident == "UC02"))
+            extension = r"\n--\nUitbreidingspunt\nHerstelopties gewenst" if ident == "UC02" else ""
+            uml.append(f'  usecase "{first}\\n{second} ({ident}){extension}" as {ident}')
+            associations.append(f"{role} -- {ident}" if left else f"{ident} -- {role}")
+    p += [actor(115, 265, "Leveranciersmedewerker / Hongkong"),
+          '<path d="M137 265L290 324" stroke="black"/>',
+          oval(850, 205, ["Herstelopties vergelijken"]),
+          '<path d="M700 205H590" fill="none" stroke="black" stroke-dasharray="6 4" marker-end="url(#open)"/>',
+          text(645, 196, "«extend»", 12, "black"),
+          text(645, 225, "[herstelopties gewenst]", 10, "black"),
+          oval(440, 731, ["Voorraad controleren"]),
+          '<path d="M440 820V763" fill="none" stroke="black" stroke-dasharray="6 4" marker-end="url(#open)"/>',
+          text(450, 795, "«include»", 12, "black", anchor="start")]
+    uml += ['  usecase "Herstelopties vergelijken" as herstel',
+            '  usecase "Voorraad controleren" as voorraad', '}', *associations,
+            'leverancier -- UC05', 'herstel ..> UC02 : <<extend>>\\n[herstelopties gewenst]',
+            'UC15 ..> voorraad : <<include>>', '@enduml']
     write_svg("use-case-diagram.svg", p)
     (ROOT / "use-case-diagram.puml").write_text("\n".join(uml) + "\n", encoding="utf-8")
 
