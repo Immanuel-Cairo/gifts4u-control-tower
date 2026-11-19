@@ -1,4 +1,4 @@
-"""Genereer lokale SVG-, draw.io- en Mermaid-bronnen zonder dependencies.
+"""Genereer lokale SVG-, PlantUML- en Mermaid-bronnen zonder dependencies.
 
 Uitvoeren: python "products/system context/generate_diagrams.py"
 De diagrammen delen onderstaande rollen en use cases. Er gaan geen data naar buiten.
@@ -10,68 +10,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 
-# ---------------------------------------------------------------- use cases
-# Zelfde notatie als het VeloVault-UCD (car-auction-assignment_team11):
-# zwart-wit UML, actoren buiten de grens, tijdactor rechts, «include»/«extend»
-# alleen waar gedrag gedeeld of optioneel is. Bewerkbare bron: use-case-diagram.drawio.
-UC_W, UC_H, UC_H_EXT = 260, 60, 92
-LEFT_X, RIGHT_X = 345, 725
-BOX = (300, 30, 730, 1610)
-UCD_TITLE = "GIFTS4U-platform inclusief Control Tower"
-
-# id: (label, x, y) — draw.io-umlActor van 30×60
-ACTORS = {
-    "beheerder": ("Ketenregisseur /|Tower-beheerder", 68, 455),
-    "klant": ("Klant|B2B / B2C", 70, 990),
-    "service": ("Klantenservice /|accountmanager", 1110, 990),
-    "magazijn": ("Magazijnmedewerker", 70, 1160),
-    "printz": ("Printz-medewerker", 1110, 1160),
-    "importeur": ("Importcoördinator", 70, 1330),
-    "dhl": ("DHL-medewerker", 1110, 1330),
-    "leverancier": ("Leverancier|Hongkong", 70, 1510),
-    "directeur": ("Directeur / eigenaar", 1110, 1510),
-    "tijd": ("Tijd (klok)", 1110, 490),
-}
-
-# id, labelregels (Title Case, FDS Class 1 dia 36), kolom-x, middelpunt-y, extension point, actor
-UCD = [
-    ("uc01", ["Orderoverzicht", "Raadplegen (UC01)"], LEFT_X, 110, None, "beheerder"),
-    ("uc02", ["Uitzondering En Impact", "Beoordelen (UC02)"], LEFT_X, 200, "herstelscenario gewenst", "beheerder"),
-    ("uc09", ["Ketenverstoring Simuleren", "(Demo, UC09)"], LEFT_X, 300, None, "beheerder"),
-    ("uc03", ["Corrigerend Besluit", "Vastleggen (UC03)"], LEFT_X, 380, None, "beheerder"),
-    ("uc04", ["Opvolging En Logboek", "Raadplegen (UC04)"], LEFT_X, 460, None, "beheerder"),
-    ("uc05", ["Voorraad En Import", "Volgen (UC05)"], LEFT_X, 540, None, "beheerder"),
-    ("uc06", ["Productie En Transport", "Volgen (UC06)"], LEFT_X, 620, None, "beheerder"),
-    ("uc07", ["Klantcommunicatie", "Coördineren (UC07)"], LEFT_X, 700, None, "beheerder"),
-    ("uc08", ["Meldingen En KPI's", "Bewaken (UC08)"], LEFT_X, 780, None, "beheerder"),
-    ("uc11", ["Batchaantal Hongkong", "Verhogen (UC11)"], LEFT_X, 860, None, "beheerder"),
-    ("uc12", ["Bestelling Met Personalisatie Plaatsen", "(UC12)"], LEFT_X, 980, None, "klant"),
-    ("uc13", ["Orderupdate Ontvangen", "(UC13)"], LEFT_X, 1060, None, "klant"),
-    ("uc14", ["Klantupdate Opstellen", "(UC14)"], RIGHT_X, 980, None, "service"),
-    ("uc15", ["Personalisatieklacht Afhandelen", "(UC15)"], RIGHT_X, 1060, None, "service"),
-    ("uc16", ["Voorraad Ontvangen En Reserveren", "(UC16)"], LEFT_X, 1150, None, "magazijn"),
-    ("uc17", ["Overdracht Aan Printz Bevestigen", "(UC17)"], LEFT_X, 1230, None, "magazijn"),
-    ("uc18", ["Printopdracht Uitvoeren En Vrijgeven", "(UC18)"], RIGHT_X, 1150, None, "printz"),
-    ("uc19", ["Printstoring Of Capaciteitstekort Melden", "(UC19)"], RIGHT_X, 1230, None, "printz"),
-    ("uc20", ["Importpartij Registreren En Volgen", "(UC20)"], LEFT_X, 1320, None, "importeur"),
-    ("uc21", ["Importvertraging Registreren", "(UC21)"], LEFT_X, 1400, None, "importeur"),
-    ("uc22", ["Ophaling En Aflevering Bevestigen", "(UC22)"], RIGHT_X, 1320, None, "dhl"),
-    ("uc23", ["Transportcapaciteit Plannen", "(UC23)"], RIGHT_X, 1400, None, "dhl"),
-    ("uc24", ["Zending En Verwachte Aankomst Melden", "(UC24)"], LEFT_X, 1540, None, "leverancier"),
-    ("uc25", ["Herstelactie Goedkeuren En Toewijzen", "(UC25)"], RIGHT_X, 1540, None, "directeur"),
-    ("herstel", ["Herstelscenario Vergelijken"], RIGHT_X, 110, None, None),
-    ("getroffen", ["Getroffen Orders Bepalen"], RIGHT_X, 250, None, None),
-    ("uc10", ["Leverlooptijd Bewaken (UC10)"], RIGHT_X, 520, "looptijd > 120% van belofte", "tijd"),
-    ("alarm", ["Vertragingsalarm Tonen"], RIGHT_X, 680, None, None),
-]
-
-# (soort, bron, doel, conditie) — de pijl wijst bij «include» naar het opgenomen
-# geval en bij «extend» naar het basisgeval, net als in het VeloVault-UCD.
-RELATIONS = [
-    ("extend", "herstel", "uc02", "[herstelscenario gewenst]"),
-    ("include", "uc02", "getroffen", ""),
-    ("include", "uc09", "getroffen", ""),
-    ("extend", "alarm", "uc10", "[looptijd > 120% van belofte]"),
+# Rol, twee gebruikersdoelen. De requirementkoppeling staat in README.md.
+ROWS = [
+    ("manager", "Manager / ketenregisseur", [("UC01", "Ketenoverzicht", "raadplegen"), ("UC02", "Uitzonderingen en", "impact beoordelen")]),
+    ("directeur", "Directeur / eigenaar", [("UC03", "Corrigerend besluit", "vastleggen en toewijzen"), ("UC04", "Besluit en opvolging", "controleren")]),
+    ("importCoordinator", "Importcoördinator", [("UC05", "Importpartijen", "registreren en volgen"), ("UC06", "Importvertraging", "registreren")]),
+    ("magazijn", "Magazijnmedewerker", [("UC07", "Voorraad ontvangen,", "plannen en reserveren"), ("UC08", "Overdracht naar", "Printz bevestigen")]),
+    ("printz", "Printz-medewerker", [("UC09", "Printopdracht uitvoeren", "en kwaliteit vrijgeven"), ("UC10", "Printstoring of", "capaciteitstekort melden")]),
+    ("dhl", "DHL-medewerker", [("UC11", "Zending volgen en", "gebeurtenissen bevestigen"), ("UC12", "Transportcapaciteit", "plannen")]),
+    ("service", "Klantenservice / accountmanager", [("UC13", "Klantupdate opstellen", "en afhandeling vastleggen"), ("UC14", "Personalisatieklacht", "registreren en opvolgen")]),
+    ("klant", "Klant (B2B / B2C)", [("UC15", "Bestelling plaatsen", "met personalisatie"), ("UC16", "Orderupdates", "ontvangen")]),
 ]
 
 # ---------------------------------------------------------------- DFD
@@ -116,156 +64,46 @@ def role_lines(label):
     return label.split(" / ")
 
 
-# ---------------------------------------------------------------- UCD-tekenen
-def ucd_geom(case):
-    _, _, x, cy, ext, _ = case
-    h = UC_H_EXT if ext else UC_H
-    return x, cy - h / 2, UC_W, h
-
-
-def ucd_center(case):
-    x, y, w, h = ucd_geom(case)
-    return x + w / 2, y + h / 2, w / 2, h / 2
-
-
-def edge_point(case, towards):
-    # Snijpunt van middelpunt→doel met de ellipsrand, zoals draw.io het verbindt.
-    cx, cy, rx, ry = ucd_center(case)
-    dx, dy = towards[0] - cx, towards[1] - cy
-    t = 1 / sqrt((dx / rx) ** 2 + (dy / ry) ** 2)
-    return round(cx + t * dx, 2), round(cy + t * dy, 2)
-
-
-def relation_points(cases, src, dst):
-    s_c, d_c = ucd_center(cases[src]), ucd_center(cases[dst])
-    return edge_point(cases[src], d_c[:2]), edge_point(cases[dst], s_c[:2])
-
-
-def ucd_text(x, y, lines, size=12, weight="400", style="normal", anchor="middle"):
-    spans = "".join(f'<tspan x="{x}" dy="{0 if i == 0 else round(size * 1.25, 1)}">{escape(line)}</tspan>' for i, line in enumerate(lines))
-    return (f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" font-style="{style}" '
-            f'text-anchor="{anchor}" dominant-baseline="middle" fill="#000">{spans}</text>')
-
-
-def svg_actor(label, x, y):
-    cx = x + 15
-    return (f'<g stroke="#000" stroke-width="1.2" fill="none"><circle cx="{cx}" cy="{y + 7.5}" r="7.5"/>'
-            f'<path d="M{cx} {y + 15}V{y + 40} M{x} {y + 25}H{x + 30} M{cx} {y + 40}L{x} {y + 60} M{cx} {y + 40}L{x + 30} {y + 60}"/></g>'
-            + ucd_text(cx, y + 74, label.split("|"), 12, "700"))
-
-
-def svg_case(case):
-    _, lines, _, _, ext, _ = case
-    cx, cy, rx, ry = ucd_center(case)
-    p = [f'<ellipse cx="{cx}" cy="{cy}" rx="{rx}" ry="{ry}" fill="#fff" stroke="#000" stroke-width="1"/>']
-    if not ext:
-        return p + [ucd_text(cx, cy - (len(lines) - 1) * 7.5, lines)]
-    # UML-ellips met extension-point-compartiment (zoals Withdraw Listing in VeloVault).
-    sep = cy + 4
-    half = rx * sqrt(1 - ((sep - cy) / ry) ** 2) - 14
-    return p + [ucd_text(cx, sep - 14 - (len(lines) - 1) * 15, lines),
-                f'<path d="M{cx - half} {sep}H{cx + half}" stroke="#000" stroke-width="1"/>',
-                ucd_text(cx, sep + 13, ["extension points"], 10, "700"),
-                ucd_text(cx, sep + 26, [ext], 10)]
-
-
-def label_box(a, b, cond):
-    # Positie van «include»/«extend» en conditie: rechts naast een verticale pijl, anders erboven/eronder.
-    mx, my = (a[0] + b[0]) / 2, (a[1] + b[1]) / 2
-    if abs(a[0] - b[0]) < 1:
-        return (mx + 8, my - (7 if cond else 0), "start"), (mx + 8, my + 8, "start")
-    return (mx, my - 14, "middle"), (mx, my + 20, "middle")
+def actor(x, y, label):
+    # Menselijke UML-actor met naam van de rol; geen concrete persoonsnaam.
+    words = ["Klant", "(B2B / B2C)"] if label.startswith("Klant (") else role_lines(label)
+    return f'<g stroke="#151612" stroke-width="2.5" fill="none"><circle cx="{x}" cy="{y - 33}" r="12"/><path d="M{x} {y - 21}v36 m-25 -22h50 m-25 22l-22 26 m22 -26l22 26"/></g>' + text(x, y + 66, words, 16, weight="700")
 
 
 def use_cases():
-    cases = {c[0]: c for c in UCD}
-    width, height = 1240, 1700
-    bx, by, bw, bh = BOX
-    p = [f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">
-<title id="title">Use-casediagram GIFTS4U-platform</title><desc id="desc">De keten van bestelling en import via magazijn en Printz tot DHL en klantcommunicatie, met beheerder, directie en klok.</desc>
-<defs><marker id="open" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11" fill="none" stroke="#000" stroke-width="1.2"/></marker></defs>
-<g font-family="Arial, Helvetica, sans-serif">
-<rect width="{width}" height="{height}" fill="#fff"/>''',
-         f'<rect x="{bx}" y="{by}" width="{bw}" height="{bh}" fill="none" stroke="#000" stroke-width="1.5"/>',
-         ucd_text(bx + bw / 2, by + 22, [UCD_TITLE], 14, "700")]
-    # Associaties zonder pijlpunt (FDS Class 1, dia 34–38).
-    for case in UCD:
-        if case[5]:
-            _, ax, ay = ACTORS[case[5]]
-            cx, cy, rx, _ = ucd_center(case)
-            a, b = ((ax + 30, cx - rx) if ax < bx else (ax, cx + rx))
-            p.append(f'<path d="M{a} {ay + 30}L{b} {cy}" stroke="#000" stroke-width="1.2" fill="none"/>')
-    for kind, src, dst, cond in RELATIONS:
-        a, b = relation_points(cases, src, dst)
-        p.append(f'<path d="M{a[0]} {a[1]}L{b[0]} {b[1]}" stroke="#000" stroke-width="1.2" stroke-dasharray="6 4" fill="none" marker-end="url(#open)"/>')
-        (lx, ly, anchor), (cx, cy, canchor) = label_box(a, b, cond)
-        p.append(ucd_text(lx, ly, [f"«{kind}»"], 11, anchor=anchor))
-        if cond:
-            p.append(ucd_text(cx, cy, [cond], 10, style="italic", anchor=canchor))
-    for case in UCD:
-        p += svg_case(case)
-    for label, ax, ay in ACTORS.values():
-        p.append(svg_actor(label, ax, ay))
-    p += [ucd_text(40, 1665, ["Lijn = deelname van een actor (geen pijlpunt). Gestippelde pijl = «include» (altijd) of «extend» (alleen onder de conditie)."], 12, anchor="start"),
-          ucd_text(40, 1687, ["UC01–UC11: Control Tower. UC12–UC25: klant, ketenpartners en directie."], 12, anchor="start")]
+    p = start("Use-casediagram · wie doet wat?", "Menselijke rollen buiten de grens; gebruikersdoelen binnen het GIFTS4U-platform.", 1650)
+    p += ['<rect x="310" y="178" width="880" height="1340" rx="4" fill="white" stroke="#151612" stroke-width="2"/>',
+          text(750, 213, "GIFTS4U-platform inclusief Control Tower", 20, weight="700")]
+    uml = ['@startuml', 'left to right direction', 'skinparam shadowing false', 'skinparam packageStyle rectangle', 'skinparam actorStyle stickman', 'skinparam usecase {', '  BackgroundColor #F0EBFE', '  BorderColor #7855E9', '}', 'title GIFTS4U — systeemcontext en gebruikersrollen']
+    for ident, label, _ in ROWS:
+        uml.append(f'actor "{label}" as {ident}')
+    uml += ['actor "Leveranciersmedewerker Hongkong" as leverancier', 'rectangle "GIFTS4U-platform inclusief Control Tower" {']
+    for _, _, cases in ROWS:
+        for ident, a, b in cases:
+            uml.append(f'  usecase "{ident}\\n{a}\\n{b}" as {ident}')
+    uml.append('}')
+    for row, (role, label, cases) in enumerate(ROWS):
+        y = 280 + row * 155
+        p.append(actor(145, y, label))
+        if row:
+            p.append(f'<path d="M330 {y - 55}H1170" stroke="#e8e9e4"/>')
+        p.append(f'<path d="M170 {y - 7}H190V{y}H370 M190 {y}V{y + 45}H800" stroke="#747870" fill="none" stroke-width="1.6"/>')
+        for col, (ident, a, b) in enumerate(cases):
+            cx, cy = (540, y) if col == 0 else (970, y + 45)
+            p.append(f'<ellipse cx="{cx}" cy="{cy}" rx="170" ry="39" fill="#f0ebfe" stroke="#7855e9" stroke-width="1.5"/>')
+            p.append(text(cx, cy - 5, [f"{ident} · {a}", b], 17))
+            uml.append(f'{role} -- {ident}')
+    # De leverancier ondersteunt de importregistratie; de coördinator is eigenaar.
+    p.append(actor(1310, 545, "Leveranciersmedewerker / Hongkong"))
+    p.append('<path d="M1285 538H1265V545H740V590H710" fill="none" stroke="#747870" stroke-width="1.6"/>')
+    uml += ['leverancier -- UC05', '@enduml']
+    p += [text(40, 1560, "Leeswijzer", 18, anchor="start", weight="700"),
+          text(40, 1591, "Lijn = deelname aan een use case, geen procesvolgorde. Iedere use case heeft een primaire menselijke rol.", 17, anchor="start"),
+          text(40, 1620, "UC02 bevat een optionele impactverkenner als ontwerpvoorstel. Rollen en requirementkoppelingen: README.md.", 17, anchor="start")]
     write_svg("use-case-diagram.svg", p)
-    write_drawio(cases)
+    (ROOT / "use-case-diagram.puml").write_text("\n".join(uml) + "\n", encoding="utf-8")
 
 
-def write_drawio(cases):
-    def cell(ident, value, style, geom=None, attrs=""):
-        if geom:
-            kind, g = 'vertex="1"', f'<mxGeometry x="{geom[0]}" y="{geom[1]}" width="{geom[2]}" height="{geom[3]}" as="geometry" />'
-        else:
-            kind, g = 'edge="1"', '<mxGeometry relative="1" as="geometry" />'
-        return (f'        <mxCell id="{ident}" value="{escape(value)}" style="{style}" {kind} parent="1"{attrs}>\n'
-                f'          {g}\n        </mxCell>')
-
-    ell = "ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;"
-    txt = "text;html=1;whiteSpace=wrap;fontFamily=Arial;align=center;verticalAlign=middle;fontColor=#000000;"
-    line = "edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;"
-    bx, by, bw, _ = BOX
-    out = [cell("system", "", "rounded=0;html=1;fillColor=none;strokeColor=#000000;strokeWidth=1.5;", BOX),
-           cell("t_system", UCD_TITLE, txt + "fontSize=14;fontStyle=1;", (bx + bw / 2 - 150, by + 13, 300, 18))]
-    for case in UCD:
-        ident, lines, _, _, ext, _ = case
-        label, style = "<br>".join(lines), ell
-        if ext:
-            label += f'<hr><b style="font-size:10px">extension points</b><br><span style="font-size:10px">{ext}</span>'
-            style += "verticalAlign=top;spacingTop=4;"
-        out.append(cell(ident, label, style, ucd_geom(case)))
-    for ident, (label, ax, ay) in ACTORS.items():
-        out.append(cell(ident, label.replace("|", "<br>"), "shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontStyle=1;fontFamily=Arial;", (ax, ay, 30, 60)))
-    n = 0
-    for case in UCD:
-        if case[5]:
-            left = ACTORS[case[5]][1] < bx
-            ends = ("exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" if left
-                    else "exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;")
-            out.append(cell(f"e{n}", "", line + ends + "endArrow=none;startArrow=none;", attrs=f' source="{case[5]}" target="{case[0]}"'))
-            n += 1
-    for kind, src, dst, cond in RELATIONS:
-        a, b = relation_points(cases, src, dst)
-        out.append(cell(f"e{n}", "", line + "endArrow=open;endFill=0;startArrow=none;dashed=1;", attrs=f' source="{src}" target="{dst}"'))
-        (lx, ly, anchor), (cx, cy, _) = label_box(a, b, cond)
-        if anchor == "start":
-            out.append(cell(f"l{n}", f"«{kind}»", txt + "align=left;fontSize=11;", (lx, ly - 7.5, 70, 15)))
-            if cond:
-                out.append(cell(f"c{n}", cond, txt + "align=left;fontSize=10;fontStyle=2;", (cx, cy - 7, 170, 14)))
-        else:
-            out.append(cell(f"l{n}", f"«{kind}»", txt + "fontSize=11;", (lx - 35, ly - 7.5, 70, 15)))
-            if cond:
-                out.append(cell(f"c{n}", cond, txt + "fontSize=10;fontStyle=2;", (cx - 85, cy - 7, 170, 14)))
-        n += 1
-    xml = ['<mxfile host="app.diagrams.net">',
-           '  <diagram id="gifts4u_ucd" name="GIFTS4U Use-casediagram">',
-           '    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1240" pageHeight="1700" background="#ffffff" math="0" shadow="0">',
-           '      <root>', '        <mxCell id="0" />', '        <mxCell id="1" parent="0" />',
-           *out, '      </root>', '    </mxGraphModel>', '  </diagram>', '</mxfile>']
-    (ROOT / "use-case-diagram.drawio").write_text("\n".join(xml) + "\n", encoding="utf-8")
-
-
-# ---------------------------------------------------------------- DFD
 def dfd():
     p = start("DFD · niveau 0", "Eén Control Tower, één beheerder, zes externe bronnen of diensten en de tijd als triggerbron.", 1380, width=1800)
     # FDS Class 3, dia 11/14 en Class 4, dia 6: één procescirkel voor de hele systeemgrens.
@@ -300,7 +138,7 @@ def dfd():
             mermaid.append(f'    platform -->|"{outgoing}: {outlabel}"| {ident}')
     p += [text(40, 1260, "Leeswijzer", 18, anchor="start", weight="700"),
           text(40, 1292, "Rechthoek = externe entiteit. Cirkel 0 = volledige systeemgrens. Pijl = gegevens, geen fysieke goederen of navigatie.", 17, anchor="start"),
-          text(40, 1322, "Externe partijen zijn gegevensbronnen of ontvangers van opdrachten; Tijd / klok komt overeen met de tijdactor in het UCD.", 17, anchor="start"),
+          text(40, 1322, "Externe partijen zijn gegevensbronnen of ontvangers van opdrachten; Tijd / klok levert de datum en tijd voor de looptijdcontrole.", 17, anchor="start"),
           text(40, 1352, "Geen interne services of gegevensopslag uitgewerkt op dit niveau. Gegevenswoordenboek: README.md.", 17, anchor="start")]
     write_svg("dfd-level-0.svg", p)
     (ROOT / "dfd-level-0.mmd").write_text("\n".join(mermaid) + "\n", encoding="utf-8")
@@ -309,4 +147,4 @@ def dfd():
 if __name__ == "__main__":
     use_cases()
     dfd()
-    print("Gegenereerd: 2 SVG-diagrammen, 1 draw.io-bron en 1 Mermaid-bron.")
+    print("Gegenereerd: 2 SVG-diagrammen, 1 PlantUML-bron en 1 Mermaid-bron.")
