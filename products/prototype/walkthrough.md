@@ -53,11 +53,11 @@ Statuslabels gebruiken tekst naast kleur. Formulieren hebben labels, verplichte 
 
 ## Creatieve oplossing: eerst de impact verkennen
 
-De **impactverkenner** verbindt een uitzondering met de betrokken orders en toont de keten van import tot klant. Voor de printstoring vergelijk je een extra shift met de reguliere herstart. Het venster toont mogelijke tijdwinst, kostenindicatie en een scenario-ETA.
+De **impactverkenner** verbindt een uitzondering met de betrokken orders en toont de keten van import tot klant. Voor de printstoring vergelijk je een extra shift met de reguliere herstart. Het venster toont mogelijke tijdwinst, het aantal betrokken producten en een scenario-ETA. Kosten staan er bewust niet in: volgens de klantfeedback is geld buiten de scope; we rekenen alleen in aantallen producten.
 
 Dit voorkomt dat een voorgesteld herstelplan ongemerkt als bevestigde werkelijkheid wordt gepresenteerd. Dezelfde beheerder registreert een bevoegd genomen besluit, verwerkt later een aangeleverde partnerverwachting en coördineert daarna de klantupdate. Elke stap is apart terug te vinden.
 
-De bedragen en scenario’s zijn **ontwerpaannames**: een extra printshift kost in de demo € 180 en kan één dag winnen. Ze komen niet uit het requirementsbestand en vormen geen optimalisatieberekening of toezegging. Het printscenario gebruikt de vaste startcasus met een belofte op 16 november; na wijzigingen aan orders is het geen automatische herberekening. Voor douane en transport blijven tijdwinst en kosten onbekend tot overleg met de partner.
+De scenario’s zijn **ontwerpaannames**: een extra printshift kan in de demo één dag winnen. Ze komen niet uit het requirementsbestand en vormen geen optimalisatieberekening of toezegging. Het printscenario gebruikt de vaste startcasus met een belofte op 16 november; na wijzigingen aan orders is het geen automatische herberekening. Voor douane en transport blijft de tijdwinst onbekend tot overleg met de partner. Bij een vertraging in Hongkong is de herstelroute een **spoedverzoek** (de "special request" uit de klantfeedback).
 
 ## Demonstratie in ongeveer tien minuten
 
@@ -65,7 +65,9 @@ De bedragen en scenario’s zijn **ontwerpaannames**: een extra printshift kost 
 
 De vaste demodag is **16 november 2026**. De startset bevat 50 orders, drie uitzonderingen en acht betrokken orders. Nieuwe handelingen krijgen het werkelijke tijdstip van invoer. Alle tijdstippen worden in de interface in de tijdzone Europe/Amsterdam getoond.
 
-De kerncijfers en faseverdeling zijn afgeleid van de huidige demodataset. **Verwacht op tijd** is het aandeel orders met een bekende ETA op of vóór de leverbelofte, gedeeld door alle orders. Een onbekende ETA telt niet als op tijd. De paarse trendgrafiek is expliciet illustratieve demohistorie, geen aggregatie van de 50 huidige orders. Het periodeveld wisselt tussen twee illustraties.
+Bovenaan staat **Actie nodig**: alle open uitzonderingen, de meest urgente eerst, in rood, met per regel een korte oorzaak (partner, aantal geraakte orders, impact) en de **volgende stap**. Daaronder staat een alarmregel voor orders waarvan de verwachte looptijd meer dan 20% boven de belofte van 5 dagen ligt. Zonder open punten wordt het blok groen: **Alles op schema**. Zo zie je problemen zonder te scrollen, zoals de klant vroeg.
+
+De kerncijfers volgen dezelfde kleurafspraak: **Vragen aandacht** is rood, **Op schema** (geen uitzondering en geen alarm) is groen. **De keten in één regel** toont per schakel — Hongkong, webshop, magazijn, Printz, DHL, klant — hoeveel orders op schema zijn en hoeveel een probleem hebben. Alle cijfers zijn afgeleid van de huidige demodataset; er staan geen bedragen in.
 
 Gebruik de zoekbalk of `/` om `G4U-1048` te vinden. De zoekfunctie doorzoekt ordernummer, klant en SKU. Wis de zoekterm voordat je andere datasets wilt bekijken. De filters combineren met de zoekterm; paginering toont zes orders per pagina. Een onbekende zoekterm levert een lege toestand met uitleg op.
 
@@ -107,22 +109,25 @@ Een open storing sluit niet automatisch door een statuswijziging. Open de impact
 
 ### 6. Bekijk import en voorraad
 
-**Import** toont de inkomende partijen uit Hongkong. De douanevertraging van HK-2026-081 heeft een onbekende ETA en koppelt drie orders aan de vertraagde SKU. Met Partnerdemo actief maak je via **Demo: Partij registreren** een extra partij aan met unieke referentie, leverancier, SKU, aantal en optionele ETA.
+**Import** toont de inkomende partijen uit Hongkong. Hongkong heeft zelf geen voorraad voor ons en meldt alleen **Delayed**; de oorzaak noteer je zelf. HK-2026-081 staat op Delayed (douane), heeft een onbekende ETA en koppelt drie orders aan de vertraagde SKU. Met Partnerdemo actief (knop **Probleem nabootsen**) kies je bij een partij **Demo: Vertraging simuleren** met als oorzaak douane, brand in Hongkong of onbekend. De partij wordt Delayed, de ETA onbekend en orders die nog op die SKU wachten worden aan een nieuwe uitzondering gekoppeld. Via **Demo: Partij registreren** maak je een extra partij aan; de ETA staat standaard op 1 dag verwerking plus 10 werkdagen transport.
 
 Kies bij HK-2026-081 **Demo: Bevestig ontvangst** en voer bijvoorbeeld 580 van de verwachte 600 stuks in. Alleen deze 580 verhogen de fysieke voorraad. De ontvangstknop wordt daarna uitgeschakeld en de mutatie is ook programmatisch tegen dubbeltelling beschermd. Het verschil van 20 staat in het logboek. Deze demo ondersteunt geen verdere deelontvangsten op dezelfde partij; registreer zo nodig een aparte vervolgpartij.
 
-In **Magazijn** zie je fysiek, gereserveerd en beschikbaar per SKU. In de normale werkruimte open je alleen het dossier. Met Partnerdemo actief kun je een magazijnreservering simuleren voor een ontvangen order. Bij onvoldoende voorraad blijft de status gelijk en ontstaat een uitzondering met ontbrekend aantal, order en eigenaar. Overdracht aan Printz verbruikt de fysieke goederen en heft de bijbehorende reservering op. De demo controleert opeenvolgende acties binnen één venster; echte gelijktijdigheid vraagt backendtransacties.
+In **Magazijn** zie je fysiek aanwezig, gereserveerd en beschikbaar per SKU, in één gezamenlijke voorraad voor B2B en B2C. Met **Batchaantal verhogen** zet je voor Kerst, Valentijn of een andere piek het bestelaantal per partij bij Hongkong hoger. Dat is een aangepaste bestelling, geen fysieke voorraad: de kolom **Batch Hongkong** verandert, fysiek aanwezig niet. Een lager of gelijk aantal wordt geweigerd; de wijziging staat in het logboek. In de normale werkruimte open je alleen het dossier. Met Partnerdemo actief kun je een magazijnreservering simuleren voor een ontvangen order. Bij onvoldoende voorraad blijft de status gelijk en ontstaat een uitzondering met ontbrekend aantal, order en eigenaar. Overdracht aan Printz verbruikt de fysieke goederen en heft de bijbehorende reservering op. De demo controleert opeenvolgende acties binnen één venster; echte gelijktijdigheid vraagt backendtransacties.
 
 ### 7. Probeer de overige serviceacties
 
-Voor een nieuwe order, magazijnmutatie, Printz-storing of capaciteitsplanning moet Partnerdemo actief zijn. De bijbehorende knoppen beginnen met **Demo:**. ETA en klachtgegevens kun je als beheerder overnemen uit een partnerbericht.
+Orders ontstaan altijd in de webshop, nooit in de Control Tower; **Webshoporder simuleren** bootst die aanlevering na. Voor een gesimuleerde webshoporder, magazijnmutatie, Printz-storing, importvertraging of capaciteitsplanning moet Partnerdemo actief zijn. Op de pagina's Printz en Import opent **Probleem nabootsen** die modus direct. De bijbehorende knoppen beginnen met **Demo:**. ETA en klachtgegevens kun je als beheerder overnemen uit een partnerbericht.
 
 | Actie                                              | Verwacht resultaat                                                                                         |
 | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Nieuwe order met 100 stuks en volledig adres       | Unieke B2B- of B2C-order, voorraadcontrole en één ontvangst-event                                          |
-| Nieuwe order met 10.000 stuks van een beperkte SKU | Duidelijke voorraadfout; geen onbevestigde leverbelofte                                                    |
+| Webshoporder met 100 stuks en volledig adres       | Unieke B2B- of B2C-order, voorraadcontrole en één ontvangst-event                                          |
+| Webshoporder met 10.000 stuks, beperkte SKU        | Duidelijke voorraadfout; geen onbevestigde leverbelofte                                                    |
 | B2B-prioriteit aanvinken                           | Prioriteit zichtbaar; bestaande reserveringen veranderen niet                                              |
-| Printz → Storing melden                            | Aparte uitzondering; orderstatus blijft gelijk                                                             |
+| Printz → Storing simuleren                         | Aparte uitzondering; orderstatus blijft gelijk                                                             |
+| Import → Vertraging simuleren                      | Partij Delayed, ETA onbekend, wachtende orders gekoppeld; herstelroute Spoedverzoek bij Hongkong           |
+| Magazijn → Batchaantal verhogen                    | Hoger bestelaantal per partij; fysieke voorraad onveranderd; logboekregel met reden                       |
+| Printz / DHL / transport                           | Printz: vier statussen (ontvangen, in productie, gereed, verzonden). DHL: positie in de route per order    |
 | DHL → Capaciteit plannen                           | Bij vraag boven capaciteit ontstaat of actualiseert een capaciteitsexceptie                                |
 | Orderdossier → Probleem of klacht melden           | Adresprobleem, mislukte aflevering of personalisatieklacht met eigenaar en vervolgactie                    |
 | SV → Simuleer Printz offline                       | Syncprobleem zichtbaar; nieuwe Printz-status- en ETA-bevestigingen worden geblokkeerd                      |
@@ -144,6 +149,22 @@ Open **SV → Test alarmdrempel**. De regel is `(verwachte looptijd − beloofde
 
 Gebruik de decimale notatie die de browser voor het numerieke veld accepteert. De orderweergave gebruikt kalenderdatums; de aparte grenscalculator maakt ook 21% toetsbaar. De 20%-regel staat in het requirementsbestand als **nog te valideren door de opdrachtgever**.
 
+## Verwerkte klantfeedback (presentaties)
+
+| Feedback | In het prototype |
+| --- | --- |
+| Eerst zien waar actie op nodig is; uitzonderingen echt goed zichtbaar; rood zonder scrollen, groen wat goed gaat | **Actie nodig** bovenaan het overzicht, gesorteerd op urgentie, met kleuren in kerncijfers en keten |
+| Korte, abstracte samenvatting van waarom iets misgaat; stap voor stap wat je moet doen | Per actiepunt één oorzaakregel en de volgende stap, genummerd |
+| Vereenvoudigde keten in de Control Tower | **De keten in één regel** op het overzicht |
+| Geld buiten scope, alleen aantallen producten | Kostenindicatie verwijderd; impactverkenner toont betrokken stuks |
+| Printz: ontvangen, in productie, gereed, verzonden; geen lijst van printopdrachten nodig | Vier statustellers op de Printz-pagina |
+| Happy flow plus een knop om een probleem na te bootsen (Printz, Hongkong) | **Probleem nabootsen**, **Storing simuleren**, **Vertraging simuleren** |
+| Hongkong meldt alleen Delayed; 1 dag verwerking + 10 werkdagen; brand mogelijk | Status Hongkong, standaard-ETA, oorzaak douane/brand/onbekend, herstelroute Spoedverzoek |
+| Batches verhogen voor Kerst en Valentijn | **Batchaantal verhogen** in Magazijn |
+| DHL: waar in de route zit de zending, geen groot kopje met zendingen | Kolom **Positie in DHL-route** en routebalk in het orderdossier |
+| Geen orders maken in de Control Tower | Knop heet **Webshoporder simuleren** en legt uit dat orders uit de webshop komen |
+| Eén voorraad, niet apart voor B2B en B2C; fysiek aanwezig duidelijker | Uitleg en kolomnaam **Fysiek aanwezig** in Magazijn |
+
 ## Traceerbaarheid naar de requirements
 
 Bron: het door de gebruiker aangeleverde **GIFTS4U_Requirements_ControlTower_Alle_Services.xlsx**, tabbladen **Requirements** en **Acceptatiecriteria**, rijen 2–44. Dit bestand bevat 35 functionele en acht niet-functionele eisen. De spreadsheet is gelezen en niet gewijzigd. De requirements beschrijven de beoogde oplossing; de onderstaande mapping beschrijft uitsluitend wat dit prototype daadwerkelijk demonstreert.
@@ -159,7 +180,7 @@ Bron: het door de gebruiker aangeleverde **GIFTS4U_Requirements_ControlTower_All
 | FR-WEB-05 | Nieuwe order en prioriteitslabel      | Interactief: gewenste datum en B2B-prioriteit, zonder herverdeling van bestaande reserveringen                                           |
 | FR-IMP-01 | Partij registreren                    | Interactief: leverancier, SKU, aantal en unieke zendingreferentie                                                                        |
 | FR-IMP-02 | Import en ontvangstlog                | Gedeeltelijk: schatting en bevestigde ontvangst; uitgebreide inbound-transporttijdlijn is vervolgwerk                                    |
-| FR-IMP-03 | HK-2026-081 en EX-002                 | Gedeeltelijk: douane-uitzondering met oorzaak en eigenaar voorgeladen; nieuwe douane-events invoeren is vervolgwerk                      |
+| FR-IMP-03 | HK-2026-081, EX-002 en Vertraging simuleren | Interactief: douane voorgeladen; nieuwe vertraging (douane, brand, onbekend) is te simuleren en koppelt wachtende orders             |
 | FR-IMP-04 | Afhankelijke orders bij Import        | Gedeeltelijk: de startcasus heeft expliciete koppelingen; automatische afhankelijkheidsanalyse van nieuwe partijen is vervolgwerk        |
 | FR-IMP-05 | Ontvangstbevestiging                  | Interactief: werkelijk ontvangen aantal wordt één keer voorraad                                                                          |
 | FR-MAG-01 | Voorraadtabel                         | Interactief: fysiek minus reserveringen, niet-negatieve beschikbaarheid                                                                  |
@@ -167,12 +188,13 @@ Bron: het door de gebruiker aangeleverde **GIFTS4U_Requirements_ControlTower_All
 | FR-MAG-03 | Reserveren                            | Gedeeltelijk: hercontrole en bescherming tegen overtoewijzing in één venster; geen gelijktijdige gebruikers/backendtransacties           |
 | FR-MAG-04 | Tekort bij reserveren                 | Interactief: ontbrekend aantal, betrokken order en eigenaar                                                                              |
 | FR-MAG-05 | Overdragen aan Printz                 | Interactief: reservering verbruikt, status-event met order en tijdstip                                                                   |
+| FR-MAG-06 | Batchaantal verhogen                  | Interactief: hoger batchaantal per SKU met reden, direct zichtbaar en gelogd; geen echte bestelling bij Hongkong                         |
 | FR-PRT-01 | Orderdossier                          | Interactief zichtbaar: order, SKU, aantal en één goedgekeurde ontwerpversie; geen afbeeldingsopslag                                      |
 | FR-PRT-02 | Start bedrukking                      | Interactief: expliciet start-event met bron en tijdstip                                                                                  |
-| FR-PRT-03 | Storing melden                        | Gedeeltelijk: machinestoring als aparte uitzondering; berekening van printcapaciteit is vervolgwerk                                      |
+| FR-PRT-03 | Storing simuleren                     | Gedeeltelijk: machinestoring als aparte uitzondering; berekening van printcapaciteit is vervolgwerk                                      |
 | FR-PRT-04 | Kwaliteitscontrole & vrijgave         | Interactief: verplichte controle van ontwerp en aantal/kwaliteit                                                                         |
 | FR-PRT-05 | Verzendklaar | Interactief in Partnerdemo: vrijgave na controle; de beheerder volgt deze bevestiging in het transportoverzicht. |
-| FR-DHL-01 | DHL en orderdossier                   | Interactief: zending, gekoppelde order, fase, bestemming en geschatte levering                                                           |
+| FR-DHL-01 | DHL en orderdossier                   | Interactief: per order de positie in de DHL-route (ophalen, sorteercentrum, bezorgroute, afgeleverd), bestemming en geschatte levering   |
 | FR-DHL-02 | Ophaling en aflevering                | Interactief: bevestiging, zending-ID, bron, tijdstip; aflevering vereist bewijsreferentie                                                |
 | FR-DHL-03 | Capaciteit plannen                    | Gedeeltelijk: vraag/capaciteit en tekortmelding voor één vaste demodatum; meerdagenplanning is vervolgwerk                               |
 | FR-DHL-04 | Probleem melden                       | Interactief: adres-/afleverprobleem met zending, reden, eigenaar en volgende actie                                                       |
@@ -186,7 +208,10 @@ Bron: het door de gebruiker aangeleverde **GIFTS4U_Requirements_ControlTower_All
 | FR-CT-02  | Apart uitzonderingenmodel             | Interactief: storing vervangt geen bevestigde status                                                                                     |
 | FR-CT-03  | Uitzonderingen en impactverkenner     | Interactief: orders, impact, urgentie, eigenaar en volgende stap; onbekend blijft onbekend                                               |
 | FR-CT-04 | Besluit registreren | Interactief: één beheerder registreert beslisser, actiehouder, deadline en toelichting; bevestiging van bevoegdheid is een verklaring, geen autorisatie. |
-| FR-CT-05  | KPI’s, orderalarm en grenscalculator  | Interactief: strikt >20%, te valideren; grafiek en scenariokosten zijn illustratief                                                      |
+| FR-CT-05  | Actie nodig, orderalarm en grenscalculator | Interactief: strikt >20%, als alarmregel bovenaan het overzicht; kalender- of werkdagen nog te valideren                            |
+| FR-CT-09  | Actie nodig en kleuren                | Interactief: urgente punten bovenaan, rood voor problemen en groen voor op schema, zonder scrollen zichtbaar                             |
+| FR-CT-10  | Actie nodig                           | Interactief: per uitzondering een korte, abstracte oorzaak en de volgende stap                                                            |
+| FR-CT-11  | Actie nodig en meldingenbel           | Interactief: dashboardmeldingen in plaats van e-mail                                                                                      |
 | NFR-01 | Eén beheerder | Niet als beveiliging gerealiseerd: geen login of serverautorisatie. Een naam of beslischeckbox is geen toegangscontrole. |
 | NFR-02    | Event-ID en Test dubbel event         | Interactief: dubbele statusmutaties voorkomen in het lokale eventmodel                                                                   |
 | NFR-03    | Logboek en tijdlijn                   | Gedeeltelijk: bron, actor, tijdstip en record aanwezig; lokale opslag is niet manipulatiebestendig                                       |
@@ -206,7 +231,7 @@ node --test products/prototype/tests/prototype.test.cjs
 git diff --check
 ```
 
-De **14 tests** slagen. Naast de bestaande bedrijfsregels controleren ze de migratie van een oude rolkeuze, het behoud van data/historie, besluitregistratie zonder rolwissel, het blokkeren van externe mutaties buiten Partnerdemo en het behoud van dezelfde invoerende beheerder naast de externe bron.
+De **20 tests** slagen. Zes daarvan zijn toegevoegd na de klantfeedback: actiepunten eerst en in rood, geen bedragen in de impactverkenner, gesimuleerde importvertraging, batch verhogen zonder fysieke voorraadmutatie, Printz-statussen en DHL-routepositie, en migratie van oudere opgeslagen demo's. Naast de bestaande bedrijfsregels controleren ze de migratie van een oude rolkeuze, het behoud van data/historie, besluitregistratie zonder rolwissel, het blokkeren van externe mutaties buiten Partnerdemo en het behoud van dezelfde invoerende beheerder naast de externe bron.
 
 **Browsercontrole op 19 november 2026:** het prototype gaf HTTP 200 en is in headless Microsoft Edge doorlopen. Getest: order openen, besluit registreren zonder rolwissel, behoud van status/ETA, ontbreken van de rolkeuze, Partnerdemo openen/sluiten en besluitbehoud na herladen. Desktop (1440 × 1000) en mobiel (390 × 844) zijn gerenderd en visueel gecontroleerd. De mobiele pagina blijft 390 pixels breed; de brede tabel heeft eigen horizontale scrolling. Er waren geen JavaScript-fouten tijdens deze flow.
 

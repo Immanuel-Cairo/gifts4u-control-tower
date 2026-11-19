@@ -378,3 +378,86 @@ test("closing an exception preserves order facts and state survives reload", () 
   );
   assert.match(d.run("state.audit[0].text"), /Printz bevestigt herstel/);
 });
+
+// ---- Klantfeedback uit de presentaties ----
+
+test("overview shows action items first, most urgent on top, in red", () => {
+  const d = demo();
+  d.run('view="overzicht";render()');
+  const html = d.html("#main");
+  const action = html.indexOf('class="action-panel"');
+  assert.ok(action > 0 && action < html.indexOf('class="metrics"'));
+  assert.ok(html.indexOf("Printlijn 02 staat stil") < html.indexOf("Zending wacht bij douane"));
+  assert.match(html, /badge danger">Kritiek/);
+  assert.match(html, /Leverlooptijd meer dan 20% overschreden/);
+  assert.match(html, /class="chain"/);
+  d.run('state.exceptions.forEach(e=>e.state="Opgelost");state.orders.forEach(o=>o.eta=o.promised);render()');
+  assert.match(d.html("#main"), /Alles op schema/);
+});
+
+test("money is out of scope: the scenario shows quantities, not costs", () => {
+  const d = demo();
+  d.run('showScenario("EX-001")');
+  const html = d.html("#action-content");
+  assert.doesNotMatch(html, /€|kosten · indicatie/i);
+  assert.match(html, /Betrokken producten<\/span><b>\d[\d.]* stuks/);
+});
+
+test("simulated Hong Kong delay marks the batch Delayed and links waiting orders", () => {
+  const d = demo();
+  d.submit("delay-form", { cause: "Brand in Hongkong" }, "HK-2026-082");
+  assert.equal(d.run('state.imports[1].delayed'), false);
+  d.click("toggle-partner-demo");
+  d.run('state.orders[5].stage=0;state.orders[5].sku="BAG-NAT"');
+  d.submit("delay-form", { cause: "Brand in Hongkong" }, "HK-2026-082");
+  d.submit("delay-form", { cause: "Brand in Hongkong" }, "HK-2026-082");
+  assert.equal(d.run('state.imports[1].delayed'), true);
+  assert.equal(d.run('state.imports[1].eta'), null);
+  assert.equal(d.run('state.exceptions.filter(e=>e.kind==="delay").length'), 1);
+  assert.equal(d.run('state.exceptions.at(-1).orders.includes(state.orders[5].id)'), true);
+  assert.deepEqual(
+    [...d.run('scenarioOptions(state.exceptions.at(-1))')],
+    ["Spoedverzoek bij Hongkong", "Wachten op nieuwe ETA"],
+  );
+  d.run('view="import";render()');
+  assert.match(d.html("#main"), /badge danger">Delayed/);
+  assert.equal(d.run('hongKongEta("2026-11-16")'), "2026-12-01");
+});
+
+test("batch increase for peak periods changes the Hong Kong order, not physical stock", () => {
+  const d = demo();
+  const physical = d.run("state.inventory[0].physical");
+  d.submit("batch-form", { sku: "MUG-WHT", quantity: "500", reason: "Kerst" });
+  assert.equal(d.run("state.inventory[0].batch"), 600);
+  assert.match(d.text("#batch-error"), /meer dan het huidige batchaantal/);
+  d.submit("batch-form", { sku: "MUG-WHT", quantity: "1200", reason: "Kerst" });
+  assert.equal(d.run("state.inventory[0].batch"), 1200);
+  assert.equal(d.run("state.inventory[0].physical"), physical);
+  assert.match(d.run("state.audit[0].text"), /600 naar 1200 stuks \(Kerst\)/);
+  d.run('view="magazijn";render()');
+  assert.match(d.html("#main"), /Batch Hongkong/);
+});
+
+test("Printz shows four statuses and DHL shows the route position per order", () => {
+  const d = demo();
+  d.run('view="printz";render()');
+  for (const label of ["Ontvangen bij Printz", "In productie", "Gereed", "Verzonden"])
+    assert.match(d.html("#main"), new RegExp(label));
+  d.run('view="dhl";render()');
+  assert.match(d.html("#main"), /Positie in DHL-route/);
+  assert.match(d.html("#main"), /Sorteercentrum|Bezorgroute|Wacht op ophaling/);
+  d.run('const o=state.orders.find(o=>o.stage===5);showOrder(o.id)');
+  assert.match(d.html("#detail-content"), /class="current"/);
+});
+
+test("older saved demos gain batch and delay fields without losing data", () => {
+  const old = demo().run("JSON.parse(JSON.stringify(state))");
+  old.inventory.forEach((i) => delete i.batch);
+  old.imports.forEach((i) => { delete i.delayed; delete i.delayCause; });
+  old.orders[0].customer = "Bewaarde klant";
+  const d = demo(old);
+  assert.equal(d.run("state.inventory[0].batch"), 600);
+  assert.equal(d.run("state.imports[0].delayed"), true);
+  assert.equal(d.run("state.imports[1].delayed"), false);
+  assert.equal(d.run("state.orders[0].customer"), "Bewaarde klant");
+});
