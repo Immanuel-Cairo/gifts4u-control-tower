@@ -1,41 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1260" viewBox="0 0 1440 1260" role="img" aria-labelledby="title desc">
-<title id="title">Use-casediagram · één beheerder</title><desc id="desc">Eén persoon houdt de Control Tower bij; externe partijen leveren de ketengegevens.</desc>
-<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9" fill="#7855e9"/></marker></defs>
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1010" viewBox="0 0 1240 1010" role="img" aria-labelledby="title desc">
+<title id="title">Use-casediagram GIFTS4U Control Tower</title><desc id="desc">Eén beheerder en de tijd als actoren; elf doelen met include- en extend-relaties.</desc>
+<defs><marker id="open" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11" fill="none" stroke="#000" stroke-width="1.2"/></marker></defs>
 <g font-family="Arial, Helvetica, sans-serif">
-<rect width="1440" height="1260" fill="#f4f5f0"/>
-<rect width="1440" height="150" fill="#151612"/>
-<rect x="36" y="32" width="9" height="78" rx="4" fill="#daf352"/>
-<text x="64" y="48" font-size="14" fill="#daf352" text-anchor="start" font-weight="700"><tspan x="64" dy="0">GIFTS4U / SYSTEM CONTEXT</tspan></text>
-<text x="64" y="87" font-size="30" fill="white" text-anchor="start" font-weight="700"><tspan x="64" dy="0">Use-casediagram · één beheerder</tspan></text>
-<text x="64" y="120" font-size="16" fill="#d8dacf" text-anchor="start" font-weight="400"><tspan x="64" dy="0">Eén persoon houdt de Control Tower bij; externe partijen leveren de ketengegevens.</tspan></text>
-<rect x="520" y="180" width="850" height="920" rx="4" fill="white" stroke="#151612" stroke-width="2"/>
-<text x="945" y="222" font-size="24" fill="#151612" text-anchor="middle" font-weight="700"><tspan x="945" dy="0">GIFTS4U Control Tower</tspan></text>
-<g stroke="#151612" stroke-width="2.5" fill="none"><circle cx="195" cy="607" r="12"/><path d="M195 619v36 m-25 -22h50 m-25 22l-22 26 m22 -26l22 26"/></g><text x="195" y="706" font-size="16" fill="#151612" text-anchor="middle" font-weight="700"><tspan x="195" dy="0">Control Tower-beheerder</tspan></text>
-<path d="M220 633L715 300" stroke="#747870" fill="none" stroke-width="1.6"/>
-<ellipse cx="945" cy="300" rx="230" ry="39" fill="#f0ebfe" stroke="#7855e9" stroke-width="1.5"/>
-<text x="945" y="295" font-size="18" fill="#151612" text-anchor="middle" font-weight="400"><tspan x="945" dy="0">UC01 · Orderoverzicht</tspan><tspan x="945" dy="24.3">Raadplegen</tspan></text>
-<path d="M220 633L715 405" stroke="#747870" fill="none" stroke-width="1.6"/>
-<ellipse cx="945" cy="405" rx="230" ry="39" fill="#f0ebfe" stroke="#7855e9" stroke-width="1.5"/>
-<text x="945" y="400" font-size="18" fill="#151612" text-anchor="middle" font-weight="400"><tspan x="945" dy="0">UC02 · Uitzonderingen En</tspan><tspan x="945" dy="24.3">Impact Beoordelen</tspan></text>
-<path d="M220 633L715 510" stroke="#747870" fill="none" stroke-width="1.6"/>
-<ellipse cx="945" cy="510" rx="230" ry="39" fill="#f0ebfe" stroke="#7855e9" stroke-width="1.5"/>
-<text x="945" y="505" font-size="18" fill="#151612" text-anchor="middle" font-weight="400"><tspan x="945" dy="0">UC03 · Corrigerend Besluit</tspan><tspan x="945" dy="24.3">Vastleggen En Toewijzen</tspan></text>
-<path d="M220 633L715 615" stroke="#747870" fill="none" stroke-width="1.6"/>
-<ellipse cx="945" cy="615" rx="230" ry="39" fill="#f0ebfe" stroke="#7855e9" stroke-width="1.5"/>
-<text x="945" y="610" font-size="18" fill="#151612" text-anchor="middle" font-weight="400"><tspan x="945" dy="0">UC04 · Opvolging En Logboek</tspan><tspan x="945" dy="24.3">Raadplegen</tspan></text>
-<path d="M220 633L715 720" stroke="#747870" fill="none" stroke-width="1.6"/>
-<ellipse cx="945" cy="720" rx="230" ry="39" fill="#f0ebfe" stroke="#7855e9" stroke-width="1.5"/>
-<text x="945" y="715" font-size="18" fill="#151612" text-anchor="middle" font-weight="400"><tspan x="945" dy="0">UC05 · Voorraad En Import</tspan><tspan x="945" dy="24.3">Volgen</tspan></text>
-<path d="M220 633L715 825" stroke="#747870" fill="none" stroke-width="1.6"/>
-<ellipse cx="945" cy="825" rx="230" ry="39" fill="#f0ebfe" stroke="#7855e9" stroke-width="1.5"/>
-<text x="945" y="820" font-size="18" fill="#151612" text-anchor="middle" font-weight="400"><tspan x="945" dy="0">UC06 · Productie En Transport</tspan><tspan x="945" dy="24.3">Volgen</tspan></text>
-<path d="M220 633L715 930" stroke="#747870" fill="none" stroke-width="1.6"/>
-<ellipse cx="945" cy="930" rx="230" ry="39" fill="#f0ebfe" stroke="#7855e9" stroke-width="1.5"/>
-<text x="945" y="925" font-size="18" fill="#151612" text-anchor="middle" font-weight="400"><tspan x="945" dy="0">UC07 · Klantcommunicatie</tspan><tspan x="945" dy="24.3">Coördineren</tspan></text>
-<path d="M220 633L715 1035" stroke="#747870" fill="none" stroke-width="1.6"/>
-<ellipse cx="945" cy="1035" rx="230" ry="39" fill="#f0ebfe" stroke="#7855e9" stroke-width="1.5"/>
-<text x="945" y="1030" font-size="18" fill="#151612" text-anchor="middle" font-weight="400"><tspan x="945" dy="0">UC08 · KPI&#x27;s En Meldingen</tspan><tspan x="945" dy="24.3">Bewaken</tspan></text>
-<text x="40" y="1150" font-size="18" fill="#151612" text-anchor="start" font-weight="700"><tspan x="40" dy="0">Leeswijzer</tspan></text>
-<text x="40" y="1181" font-size="17" fill="#151612" text-anchor="start" font-weight="400"><tspan x="40" dy="0">Alle acht doelen horen bij dezelfde beheerder. Lijnen betekenen deelname, geen procesvolgorde.</tspan></text>
-<text x="40" y="1212" font-size="17" fill="#151612" text-anchor="start" font-weight="400"><tspan x="40" dy="0">Partnergegevens en uitgaande opdrachten staan in het DFD. Partners bedienen de Control Tower niet.</tspan></text>
+<rect width="1240" height="1010" fill="#fff"/>
+<rect x="300" y="30" width="730" height="900" fill="none" stroke="#000" stroke-width="1.5"/>
+<text x="665.0" y="52" font-size="14" font-weight="700" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="665.0" dy="0">GIFTS4U Control Tower</tspan></text>
+<path d="M80 485L345.0 110.0" stroke="#000" stroke-width="1.2" fill="none"/>
+<path d="M80 485L345.0 200.0" stroke="#000" stroke-width="1.2" fill="none"/>
+<path d="M80 485L345.0 300.0" stroke="#000" stroke-width="1.2" fill="none"/>
+<path d="M80 485L345.0 380.0" stroke="#000" stroke-width="1.2" fill="none"/>
+<path d="M80 485L345.0 460.0" stroke="#000" stroke-width="1.2" fill="none"/>
+<path d="M80 485L345.0 540.0" stroke="#000" stroke-width="1.2" fill="none"/>
+<path d="M80 485L345.0 620.0" stroke="#000" stroke-width="1.2" fill="none"/>
+<path d="M80 485L345.0 700.0" stroke="#000" stroke-width="1.2" fill="none"/>
+<path d="M80 485L345.0 780.0" stroke="#000" stroke-width="1.2" fill="none"/>
+<path d="M80 485L345.0 860.0" stroke="#000" stroke-width="1.2" fill="none"/>
+<path d="M1110 520L985.0 520.0" stroke="#000" stroke-width="1.2" fill="none"/>
+<path d="M764.28 131.49L583.03 174.41" stroke="#000" stroke-width="1.2" stroke-dasharray="6 4" fill="none" marker-end="url(#open)"/>
+<text x="673.655" y="138.95" font-size="11" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="673.655" dy="0">«extend»</tspan></text>
+<text x="673.655" y="172.95" font-size="10" font-weight="400" font-style="italic" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="673.655" dy="0">[herstelscenario gewenst]</tspan></text>
+<path d="M596.85 216.03L742.07 235.14" stroke="#000" stroke-width="1.2" stroke-dasharray="6 4" fill="none" marker-end="url(#open)"/>
+<text x="669.46" y="211.58499999999998" font-size="11" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="669.46" dy="0">«include»</tspan></text>
+<path d="M587.93 285.14L742.07 264.86" stroke="#000" stroke-width="1.2" stroke-dasharray="6 4" fill="none" marker-end="url(#open)"/>
+<text x="665.0" y="261.0" font-size="11" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="665.0" dy="0">«include»</tspan></text>
+<path d="M855.0 650.0L855.0 566.0" stroke="#000" stroke-width="1.2" stroke-dasharray="6 4" fill="none" marker-end="url(#open)"/>
+<text x="863.0" y="601.0" font-size="11" font-weight="400" font-style="normal" text-anchor="start" dominant-baseline="middle" fill="#000"><tspan x="863.0" dy="0">«extend»</tspan></text>
+<text x="863.0" y="616.0" font-size="10" font-weight="400" font-style="italic" text-anchor="start" dominant-baseline="middle" fill="#000"><tspan x="863.0" dy="0">[looptijd &gt; 120% van belofte]</tspan></text>
+<ellipse cx="475.0" cy="110.0" rx="130.0" ry="30.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="475.0" y="102.5" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="475.0" dy="0">Orderoverzicht</tspan><tspan x="475.0" dy="15.0">Raadplegen (UC01)</tspan></text>
+<ellipse cx="475.0" cy="200.0" rx="130.0" ry="46.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="475.0" y="175.0" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="475.0" dy="0">Uitzondering En Impact</tspan><tspan x="475.0" dy="15.0">Beoordelen (UC02)</tspan></text>
+<path d="M359.49242601211756 204.0H590.5075739878824" stroke="#000" stroke-width="1"/>
+<text x="475.0" y="217.0" font-size="10" font-weight="700" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="475.0" dy="0">extension points</tspan></text>
+<text x="475.0" y="230.0" font-size="10" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="475.0" dy="0">herstelscenario gewenst</tspan></text>
+<ellipse cx="475.0" cy="300.0" rx="130.0" ry="30.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="475.0" y="292.5" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="475.0" dy="0">Ketenverstoring Simuleren</tspan><tspan x="475.0" dy="15.0">(Demo, UC09)</tspan></text>
+<ellipse cx="475.0" cy="380.0" rx="130.0" ry="30.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="475.0" y="372.5" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="475.0" dy="0">Corrigerend Besluit</tspan><tspan x="475.0" dy="15.0">Vastleggen (UC03)</tspan></text>
+<ellipse cx="475.0" cy="460.0" rx="130.0" ry="30.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="475.0" y="452.5" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="475.0" dy="0">Opvolging En Logboek</tspan><tspan x="475.0" dy="15.0">Raadplegen (UC04)</tspan></text>
+<ellipse cx="475.0" cy="540.0" rx="130.0" ry="30.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="475.0" y="532.5" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="475.0" dy="0">Voorraad En Import</tspan><tspan x="475.0" dy="15.0">Volgen (UC05)</tspan></text>
+<ellipse cx="475.0" cy="620.0" rx="130.0" ry="30.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="475.0" y="612.5" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="475.0" dy="0">Productie En Transport</tspan><tspan x="475.0" dy="15.0">Volgen (UC06)</tspan></text>
+<ellipse cx="475.0" cy="700.0" rx="130.0" ry="30.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="475.0" y="692.5" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="475.0" dy="0">Klantcommunicatie</tspan><tspan x="475.0" dy="15.0">Coördineren (UC07)</tspan></text>
+<ellipse cx="475.0" cy="780.0" rx="130.0" ry="30.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="475.0" y="772.5" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="475.0" dy="0">Meldingen En KPI&#x27;s</tspan><tspan x="475.0" dy="15.0">Bewaken (UC08)</tspan></text>
+<ellipse cx="475.0" cy="860.0" rx="130.0" ry="30.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="475.0" y="852.5" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="475.0" dy="0">Batchaantal Hongkong</tspan><tspan x="475.0" dy="15.0">Verhogen (UC11)</tspan></text>
+<ellipse cx="855.0" cy="110.0" rx="130.0" ry="30.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="855.0" y="110.0" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="855.0" dy="0">Herstelscenario Vergelijken</tspan></text>
+<ellipse cx="855.0" cy="250.0" rx="130.0" ry="30.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="855.0" y="250.0" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="855.0" dy="0">Getroffen Orders Bepalen</tspan></text>
+<ellipse cx="855.0" cy="520.0" rx="130.0" ry="46.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="855.0" y="510.0" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="855.0" dy="0">Leverlooptijd Bewaken (UC10)</tspan></text>
+<path d="M739.4924260121176 524.0H970.5075739878824" stroke="#000" stroke-width="1"/>
+<text x="855.0" y="537.0" font-size="10" font-weight="700" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="855.0" dy="0">extension points</tspan></text>
+<text x="855.0" y="550.0" font-size="10" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="855.0" dy="0">looptijd &gt; 120% van belofte</tspan></text>
+<ellipse cx="855.0" cy="680.0" rx="130.0" ry="30.0" fill="#fff" stroke="#000" stroke-width="1"/>
+<text x="855.0" y="680.0" font-size="12" font-weight="400" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="855.0" dy="0">Vertragingsalarm Tonen</tspan></text>
+<g stroke="#000" stroke-width="1.2" fill="none"><circle cx="65" cy="462.5" r="7.5"/><path d="M65 470V495 M50 480H80 M65 495L50 515 M65 495L80 515"/></g><text x="65" y="529" font-size="12" font-weight="700" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="65" dy="0">Control Tower-</tspan><tspan x="65" dy="15.0">beheerder</tspan></text>
+<g stroke="#000" stroke-width="1.2" fill="none"><circle cx="1125" cy="497.5" r="7.5"/><path d="M1125 505V530 M1110 515H1140 M1125 530L1110 550 M1125 530L1140 550"/></g><text x="1125" y="564" font-size="12" font-weight="700" font-style="normal" text-anchor="middle" dominant-baseline="middle" fill="#000"><tspan x="1125" dy="0">Tijd (klok)</tspan></text>
+<text x="40" y="960" font-size="12" font-weight="400" font-style="normal" text-anchor="start" dominant-baseline="middle" fill="#000"><tspan x="40" dy="0">Lijn = deelname van een actor (geen pijlpunt). Gestippelde pijl = «include» (altijd) of «extend» (alleen onder de conditie).</tspan></text>
+<text x="40" y="982" font-size="12" font-weight="400" font-style="normal" text-anchor="start" dominant-baseline="middle" fill="#000"><tspan x="40" dy="0">Partners en diensten bedienen de Control Tower niet; hun gegevensuitwisseling staat in het DFD niveau 0.</tspan></text>
 </g></svg>

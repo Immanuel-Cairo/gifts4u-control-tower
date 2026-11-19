@@ -1,16 +1,17 @@
 flowchart LR
     platform(("0 · Keten bewaken en bijsturen / GIFTS4U Control Tower"))
     beheerder["Control Tower-beheerder"]
-    beheerder -->|"F01: Filters, acties en besluiten"| platform
+    beheerder -->|"F01: Filters, besluiten en demo-events"| platform
     platform -->|"F02: Overzicht, meldingen en log"| beheerder
     webshop["Webshop / orderservice"]
     webshop -->|"F03: Orders en leverbeloften"| platform
-    importService["Importregistratie"]
-    importService -->|"F04: Partijen, ETA en vertraging"| platform
+    importService["Leverancier Hongkong / import"]
+    importService -->|"F04: Partijen, ETA en 'Delayed'"| platform
+    platform -->|"F13: Verhoogd batchaantal"| importService
     voorraad["Magazijn / voorraadservice"]
     voorraad -->|"F05: Voorraad en voorraadevents"| platform
     printz["Printz / productiegegevens"]
-    printz -->|"F06: Productiestatus en storing"| platform
+    printz -->|"F06: Ontvangen, productie, gereed, verzonden"| platform
     platform -->|"F07: Toegewezen herstelactie"| printz
     dhl["DHL / transportgegevens"]
     dhl -->|"F08: Transportstatus en ETA"| platform
@@ -18,3 +19,5 @@ flowchart LR
     communicatie["Klantcommunicatie"]
     communicatie -->|"F10: Berichtstatus en klachten"| platform
     platform -->|"F11: Update en opdracht"| communicatie
+    klok["Tijd / klok"]
+    klok -->|"F12: Huidige datum en tijd"| platform

@@ -1,0 +1,127 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="gifts4u_ucd" name="GIFTS4U Use-casediagram">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1240" pageHeight="960" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system" value="" style="rounded=0;html=1;fillColor=none;strokeColor=#000000;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="300" y="30" width="730" height="900" as="geometry" />
+        </mxCell>
+        <mxCell id="t_system" value="GIFTS4U Control Tower" style="text;html=1;whiteSpace=wrap;fontFamily=Arial;align=center;verticalAlign=middle;fontColor=#000000;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="515.0" y="43" width="300" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="uc01" value="Orderoverzicht&lt;br&gt;Raadplegen (UC01)" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="345" y="80.0" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc02" value="Uitzondering En Impact&lt;br&gt;Beoordelen (UC02)&lt;hr&gt;&lt;b style=&quot;font-size:10px&quot;&gt;extension points&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px&quot;&gt;herstelscenario gewenst&lt;/span&gt;" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="345" y="154.0" width="260" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="uc09" value="Ketenverstoring Simuleren&lt;br&gt;(Demo, UC09)" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="345" y="270.0" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc03" value="Corrigerend Besluit&lt;br&gt;Vastleggen (UC03)" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="345" y="350.0" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc04" value="Opvolging En Logboek&lt;br&gt;Raadplegen (UC04)" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="345" y="430.0" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc05" value="Voorraad En Import&lt;br&gt;Volgen (UC05)" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="345" y="510.0" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc06" value="Productie En Transport&lt;br&gt;Volgen (UC06)" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="345" y="590.0" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc07" value="Klantcommunicatie&lt;br&gt;Coördineren (UC07)" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="345" y="670.0" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc08" value="Meldingen En KPI&#x27;s&lt;br&gt;Bewaken (UC08)" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="345" y="750.0" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc11" value="Batchaantal Hongkong&lt;br&gt;Verhogen (UC11)" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="345" y="830.0" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="herstel" value="Herstelscenario Vergelijken" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="725" y="80.0" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="getroffen" value="Getroffen Orders Bepalen" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="725" y="220.0" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc10" value="Leverlooptijd Bewaken (UC10)&lt;hr&gt;&lt;b style=&quot;font-size:10px&quot;&gt;extension points&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px&quot;&gt;looptijd &gt; 120% van belofte&lt;/span&gt;" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;verticalAlign=top;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="725" y="474.0" width="260" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="alarm" value="Vertragingsalarm Tonen" style="ellipse;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="725" y="650.0" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="beheerder" value="Control Tower-&lt;br&gt;beheerder" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="50" y="455" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tijd" value="Tijd (klok)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontStyle=1;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="490" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e0" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;" edge="1" parent="1" source="beheerder" target="uc01">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;" edge="1" parent="1" source="beheerder" target="uc02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;" edge="1" parent="1" source="beheerder" target="uc09">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;" edge="1" parent="1" source="beheerder" target="uc03">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;" edge="1" parent="1" source="beheerder" target="uc04">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;" edge="1" parent="1" source="beheerder" target="uc05">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;" edge="1" parent="1" source="beheerder" target="uc06">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;" edge="1" parent="1" source="beheerder" target="uc07">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;" edge="1" parent="1" source="beheerder" target="uc08">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;" edge="1" parent="1" source="beheerder" target="uc11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;startArrow=none;" edge="1" parent="1" source="tijd" target="uc10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;endArrow=open;endFill=0;startArrow=none;dashed=1;" edge="1" parent="1" source="herstel" target="uc02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l11" value="«extend»" style="text;html=1;whiteSpace=wrap;fontFamily=Arial;align=center;verticalAlign=middle;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="638.655" y="131.45" width="70" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="c11" value="[herstelscenario gewenst]" style="text;html=1;whiteSpace=wrap;fontFamily=Arial;align=center;verticalAlign=middle;fontColor=#000000;fontSize=10;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="588.655" y="165.95" width="170" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;endArrow=open;endFill=0;startArrow=none;dashed=1;" edge="1" parent="1" source="uc02" target="getroffen">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l12" value="«include»" style="text;html=1;whiteSpace=wrap;fontFamily=Arial;align=center;verticalAlign=middle;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="634.46" y="204.08499999999998" width="70" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;endArrow=open;endFill=0;startArrow=none;dashed=1;" edge="1" parent="1" source="uc09" target="getroffen">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l13" value="«include»" style="text;html=1;whiteSpace=wrap;fontFamily=Arial;align=center;verticalAlign=middle;fontColor=#000000;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="630.0" y="253.5" width="70" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" value="" style="edgeStyle=none;html=1;rounded=0;strokeColor=#000000;strokeWidth=1.2;endArrow=open;endFill=0;startArrow=none;dashed=1;" edge="1" parent="1" source="alarm" target="uc10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l14" value="«extend»" style="text;html=1;whiteSpace=wrap;fontFamily=Arial;align=center;verticalAlign=middle;fontColor=#000000;align=left;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="863.0" y="593.5" width="70" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="c14" value="[looptijd &gt; 120% van belofte]" style="text;html=1;whiteSpace=wrap;fontFamily=Arial;align=center;verticalAlign=middle;fontColor=#000000;align=left;fontSize=10;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="863.0" y="609.0" width="170" height="14" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
