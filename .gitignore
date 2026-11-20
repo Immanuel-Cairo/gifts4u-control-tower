@@ -44,3 +44,5 @@ Temporary Items
 /.idea/misc.xml
 /.idea/vcs.xml
 /.idea/claudeCodeEditorTabs.xml
+/.idea/sqldialects.xml
+/code/backend/printz-service/package-lock.json
