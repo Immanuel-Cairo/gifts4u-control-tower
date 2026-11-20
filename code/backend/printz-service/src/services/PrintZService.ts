@@ -4,7 +4,11 @@ export class PrintZService {
         return []
     }
 
-    async CreateShipment(){
+    async CreatePrintJob() {
+        //maak een nieuwe printjop voor een item
+    }
+
+    async CreateShipment() {
         // maak een nieuwe shipment waaneer de order klaar is om naar de klant te versturen
     }
 }

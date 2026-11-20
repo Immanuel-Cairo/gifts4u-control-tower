@@ -226,8 +226,8 @@
         <mxCell id="s10" value="updatedAt : DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="s" vertex="1">
           <mxGeometry y="264" width="260" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="enums" value="&lt;b&gt;Enums (voorstel)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Role:&lt;/b&gt; ADMIN, BUYER, PRINTZ, DHL, HONG KONG&lt;br&gt;&lt;b&gt;OrderStatus:&lt;/b&gt; PENDING, IN_PROGRESS, SHIPPED, DELIVERED, CANCELLED&lt;br&gt;&lt;b&gt;ItemStatus:&lt;/b&gt; RECEIVED, BLANK_RECEIVED, PRINTING, PRINTED, SHIPPED, DELIVERED, FAILED&lt;br&gt;&lt;b&gt;ProductStatus:&lt;/b&gt; AVAILABLE, OUT_OF_STOCK, DISCONTINUED&lt;br&gt;&lt;b&gt;ShipmentType:&lt;/b&gt;&amp;nbsp;TO Warehouse ,TO_PRINTZ, TO_CUSTOMER&lt;br&gt;&lt;b&gt;ShipmentStatus:&lt;/b&gt; CREATED, IN_TRANSIT, DELIVERED, DELAYED, FAILED&lt;br&gt;&lt;b&gt;ImportStatus:&lt;/b&gt; ORDERED, IN_TRANSIT, STUCK_IN_CUSTOMS, RECEIVED&lt;br&gt;&lt;b&gt;CustomerType:&lt;/b&gt; B2B, B2C&lt;br&gt;&lt;b&gt;ExceptionType:&lt;/b&gt; CUSTOMS_DELAY, OUT_OF_STOCK, PRINT_FAILURE, CAPACITY_SHORTAGE, ADDRESS_PROBLEM, FAILED_DELIVERY&lt;br&gt;&lt;b&gt;Urgency:&lt;/b&gt; LOW, MEDIUM, HIGH, CRITICAL&lt;br&gt;&lt;b&gt;ExceptionStatus:&lt;/b&gt; OPEN, IN_PROGRESS, ESCALATED, RESOLVED&lt;br&gt;&lt;br&gt;&lt;i&gt;Grijze velden (Order[], Item[] ...) zijn Prisma relatievelden, geen kolommen in de database.&lt;/i&gt;" style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;size=16;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="1" vertex="1">
-          <mxGeometry x="40" y="660" width="600" height="290" as="geometry" />
+        <mxCell id="enums" value="&lt;b&gt;Enums (voorstel)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Role:&lt;/b&gt; ADMIN, BUYER, PRINTZ, DHL, HONG KONG&lt;br&gt;&lt;b&gt;OrderStatus:&lt;/b&gt; PENDING, IN_PROGRESS, SHIPPED, DELIVERED, CANCELLED&lt;br&gt;&lt;b&gt;ItemStatus:&lt;/b&gt; RECEIVED, BLANK_RECEIVED, PRINTING, PRINTED, SHIPPED, DELIVERED, FAILED&lt;br&gt;&lt;b&gt;ProductStatus:&lt;/b&gt; AVAILABLE, OUT_OF_STOCK, DISCONTINUED&lt;br&gt;&lt;b&gt;ShipmentType:&lt;/b&gt;&amp;nbsp;TO Warehouse ,TO_PRINTZ, TO_CUSTOMER&lt;br&gt;&lt;b&gt;ShipmentStatus:&lt;/b&gt; CREATED, IN_TRANSIT, DELIVERED, DELAYED, FAILED&lt;br&gt;&lt;b&gt;ImportStatus:&lt;/b&gt; ORDERED, IN_TRANSIT, STUCK_IN_CUSTOMS, RECEIVED&lt;br&gt;&lt;b&gt;CustomerType:&lt;/b&gt; B2B, B2C&lt;br&gt;&lt;b&gt;ExceptionType:&lt;/b&gt; CUSTOMS_DELAY, OUT_OF_STOCK, PRINT_FAILURE, CAPACITY_SHORTAGE, ADDRESS_PROBLEM, FAILED_DELIVERY&lt;br&gt;&lt;b&gt;Urgency:&lt;/b&gt; LOW, MEDIUM, HIGH, CRITICAL&lt;br&gt;&lt;b&gt;ExceptionStatus:&lt;/b&gt; OPEN, IN_PROGRESS, ESCALATED, RESOLVED&lt;br&gt;&lt;b&gt;PrintJobStatus:&lt;/b&gt; RECEIVED, PRINTING, QUALITY_CHECK, READY_TO_SHIP, FAILED&lt;br&gt;&lt;br&gt;&lt;i&gt;Grijze velden (Order[], Item[] ...) zijn Prisma relatievelden, geen kolommen in de database.&lt;/i&gt;" style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;size=16;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="40" y="660" width="600" height="310" as="geometry" />
         </mxCell>
         <mxCell id="e1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;endSize=10;startSize=10;" parent="1" source="u" target="o" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -322,6 +322,83 @@
               <mxPoint x="5" y="296" />
               <mxPoint x="5" y="1010" />
               <mxPoint x="1600" y="1010" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pj" value="PrintJob" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="720" y="1080" width="320" height="342" as="geometry" />
+        </mxCell>
+        <mxCell id="pj1" value="PK  id : String (uuid)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=1;" parent="pj" vertex="1">
+          <mxGeometry y="30" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pj2" value="FK  itemId : String (unique) → Item" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="pj" vertex="1">
+          <mxGeometry y="56" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pj3" value="orderId : String (kopie)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="pj" vertex="1">
+          <mxGeometry y="82" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pj4" value="sku : String (kopie)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="pj" vertex="1">
+          <mxGeometry y="108" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pj5" value="designUrl : String (kopie)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="pj" vertex="1">
+          <mxGeometry y="134" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pj6" value="status : PrintJobStatus" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="pj" vertex="1">
+          <mxGeometry y="160" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pj7" value="receivedAt : DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="pj" vertex="1">
+          <mxGeometry y="186" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pj8" value="printingStartedAt : DateTime?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="pj" vertex="1">
+          <mxGeometry y="212" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pj9" value="readyAt : DateTime?" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="pj" vertex="1">
+          <mxGeometry y="238" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pj10" value="createdAt : DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="pj" vertex="1">
+          <mxGeometry y="264" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pj11" value="updatedAt : DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="pj" vertex="1">
+          <mxGeometry y="290" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pj12" value="statusHistory : PrintJobStatusHistory[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=2;fontColor=#808080;" parent="pj" vertex="1">
+          <mxGeometry y="316" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ph" value="PrintJobStatusHistory" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="1120" y="1080" width="320" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ph1" value="PK  id : String (uuid)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;fontStyle=1;" parent="ph" vertex="1">
+          <mxGeometry y="30" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ph2" value="FK  printJobId : String → PrintJob" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="ph" vertex="1">
+          <mxGeometry y="56" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ph3" value="status : PrintJobStatus" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="ph" vertex="1">
+          <mxGeometry y="82" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ph4" value="changedAt : DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="ph" vertex="1">
+          <mxGeometry y="108" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ph5" value="FK  changedById : String → User" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=6;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="ph" vertex="1">
+          <mxGeometry y="134" width="320" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;endArrow=ERzeroToOne;startFill=0;endFill=0;endSize=10;startSize=10;exitX=0;exitY=0.95;exitDx=0;exitDy=0;entryX=0;entryY=0.2;entryDx=0;entryDy=0;" parent="1" source="i" target="pj" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="690" y="340" />
+              <mxPoint x="690" y="1148" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;endSize=10;startSize=10;exitX=1;exitY=0.2;exitDx=0;exitDy=0;entryX=0;entryY=0.43;entryDx=0;entryDy=0;" parent="1" source="pj" target="ph" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" value="changedBy" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;endSize=10;startSize=10;fontSize=11;exitX=1;exitY=0.98;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="u" target="ph" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="299" />
+              <mxPoint x="660" y="1460" />
+              <mxPoint x="1280" y="1460" />
             </Array>
           </mxGeometry>
         </mxCell>
