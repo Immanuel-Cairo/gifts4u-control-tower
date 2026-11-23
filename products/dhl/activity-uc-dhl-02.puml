@@ -1,0 +1,123 @@
+@startuml
+title UC-DHL-02 | Transportstatus registreren met bewijs
+caption Een uitvoering verwerkt een ophaling OF een aflevering voor een zending.
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam ArrowColor #334155
+skinparam activity {
+  BackgroundColor #EFF6FF
+  BorderColor #1E40AF
+  FontColor #0F172A
+  DiamondBackgroundColor #FEF3C7
+  DiamondBorderColor #92400E
+  StartColor #0F172A
+  EndColor #0F172A
+}
+skinparam swimlane {
+  BorderColor #94A3B8
+  TitleBackgroundColor #E2E8F0
+  TitleFontColor #0F172A
+}
+
+|DHL-medewerker|
+start
+:H1 - Selecteer zending;
+|DHL-service|
+:H2 - Controleer sessie en bevoegdheid;
+if (Toegang toegestaan?) then ([ja])
+else ([nee])
+  :E1 - Weiger toegang; <<#FEE2E2>>
+  stop
+endif
+if (Zending bestaat?) then ([ja])
+else ([nee])
+  :E2 - Meld onbekende zending; <<#FEE2E2>>
+  stop
+endif
+:H2 - Toon order en bevestigde status;
+|DHL-medewerker|
+if (Registratie voortzetten?) then ([ja])
+else ([nee])
+  :A3 - Annuleer zonder wijziging;
+  stop
+endif
+:H3 / A1 - Kies ophaling of aflevering;
+:Vul tijd en bron in; koppel bewijs\nen dien event met stabiel ID in;
+|DHL-service|
+:H4 - Controleer gegevens,\ntoegestane bron en bewijs;
+note right
+  Ophaling: bevestigde overdracht/ophaling.
+  Aflevering: geldig afleverbewijs.
+  Bewijs hoort bij dezelfde zending.
+end note
+if (Invoer en bewijs geldig?) then ([ja])
+else ([nee])
+  :E3 - Toon concrete invoerfout;\nbehoud bevestigde status; <<#FEE2E2>>
+  stop
+endif
+:H5 - Zoek event-ID;
+if (Event-ID al verwerkt?) then ([ja])
+  if (Inhoud identiek?) then ([ja])
+    :A2 - Toon bestaand resultaat\nen synchronisatiestatus;\ngeen tweede registratie; <<#DCFCE7>>
+    note right
+      Een openstaande update blijft
+      beschikbaar voor retry (E6).
+    end note
+    stop
+  else ([nee])
+    :E4 - Meld ID-conflict;\nbehoud bestaande registratie; <<#FEE2E2>>
+    stop
+  endif
+else ([nee])
+endif
+:H6 - Controleer status en tijdvolgorde;
+note right
+  O1 (voorstel):
+  Ophaling: Ready to Ship -> In Transit.
+  Aflevering: In Transit -> Delivered.
+  Aflevering niet voor de ophaling.
+end note
+if (Overgang toegestaan?) then ([ja])
+else ([nee])
+  :E4 - Meld volgordeconflict;\nbehoud bevestigde status; <<#FEE2E2>>
+  stop
+endif
+:H7 - Bewaar event, bewijsverwijzing,\naudit, doelstatus en uitgaande update\nals een samenhangende wijziging;
+note right
+  Controleer ook bij opslag op een
+  gelijktijdig event of gewijzigde status.
+end note
+switch (Uitkomst opslag)
+case ([nieuw opgeslagen])
+  :Registratie bevestigd;
+case ([exact duplicaat])
+  :A2 - Toon bestaand resultaat;\ngeen tweede registratie; <<#DCFCE7>>
+  stop
+case ([conflict])
+  :E4 - Meld conflict;\nlaat actuele gegevens herladen; <<#FEE2E2>>
+  stop
+case ([fout of uitkomst onbekend])
+  :E5 - Toon geen succes;\nverzend geen nieuwe update;\nherhaal met hetzelfde event-ID; <<#FEE2E2>>
+  stop
+endswitch
+:H8 - Verstuur opgeslagen update\nmet hetzelfde event- en order-ID;
+|Control Tower|
+:H9 - Probeer update idempotent\nte verwerken en te bevestigen;
+note right
+  Als de update niet aankomt, blijft
+  het vorige bevestigde event staan.
+  Bij verlies van de bevestiging kan
+  de update hier al verwerkt zijn.
+end note
+|DHL-service|
+if (Ontvangst bevestigd\nen bevestiging opgeslagen?) then ([ja])
+  :H10 - Markeer gesynchroniseerd; <<#DCFCE7>>
+else ([nee])
+  :E6 - Behoud lokale registratie;\nbewaar update voor retry\nmet hetzelfde event-ID; <<#FEF3C7>>
+endif
+|DHL-medewerker|
+:Zie registratie geslaagd en\nsynchronisatie bevestigd OF\nsynchronisatieprobleem;
+stop
+@enduml
