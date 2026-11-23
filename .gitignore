@@ -48,3 +48,6 @@ Temporary Items
 /.idea/dataSources.xml
 /code/backend/printz-service/prisma/migrations/20261120101051_v1/migration.sql
 /code/backend/printz-service/prisma/migrations/migration_lock.toml
+/code/frontend/svelte/static/robots.txt
+/code/frontend/svelte/.npmrc
+/code/frontend/svelte/.prettierignore
