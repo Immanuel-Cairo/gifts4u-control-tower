@@ -5,8 +5,11 @@ on:
   pull_request:
 
 jobs:
-  tests:
+  ci:
     runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: file:/tmp/ci.sqlite
 
     strategy:
       fail-fast: false
@@ -25,8 +28,10 @@ jobs:
         with:
           node-version: 24
 
-      - run: npm install
+      - run: npm ci
 
       - run: npm run lint
+
+      - run: npm run build
 
       - run: npm test
