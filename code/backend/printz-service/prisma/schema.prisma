@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum PrintJobStatus {
+  RECEIVED
+  PRINTING
+  QUALITY_CHECK
+  READY_TO_SHIP
+  FAILED
+}
+
+model PrintJob {
+  id                String                  @id @default(uuid())
+  orderId           String                  @map("order_id")
+  itemId            String                  @unique @map("item_id")
+  sku               String
+  designUrl         String                  @map("design_url")
+  status            PrintJobStatus          @default(RECEIVED)
+  receivedAt        DateTime                @default(now()) @map("received_at")
+  printingStartedAt DateTime?               @map("printing_started_at")
+  readyAt           DateTime?               @map("ready_at")
+  createdAt         DateTime                @default(now()) @map("created_at")
+  updatedAt         DateTime                @updatedAt @map("updated_at")
+  statusHistory     PrintJobStatusHistory[]
+
+  @@map("print_jobs")
+}
+
+model PrintJobStatusHistory {
+  id          String         @id @default(uuid())
+  printJobId  String         @map("print_job_id")
+  printJob    PrintJob       @relation(fields: [printJobId], references: [id], onDelete: Cascade)
+  status      PrintJobStatus
+  changedAt   DateTime       @default(now()) @map("changed_at")
+  changedById String         @map("changed_by_id")
+
+  @@map("print_job_status_history")
+}

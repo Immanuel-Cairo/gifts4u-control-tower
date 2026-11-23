@@ -44,3 +44,8 @@ Temporary Items
 /.idea/misc.xml
 /.idea/vcs.xml
 /.idea/claudeCodeEditorTabs.xml
+/.idea/sqldialects.xml
+/code/backend/printz-service/package-lock.json
+/.idea/dataSources.xml
+/code/backend/printz-service/prisma/migrations/20261120101051_v1/migration.sql
+/code/backend/printz-service/prisma/migrations/migration_lock.toml
