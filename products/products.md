@@ -16,3 +16,7 @@ The following products are expected:
 10. UML Component diagram of the Microservice Architecture
 11. API message design (logical data object) and API Specification per microservice
 12. UXD Testing (test script, questions and findings)
+
+## Activity diagrams
+
+- [UC-DHL-02: ophaling en aflevering bevestigen](dhl/activity-uc-dhl-02.md)
