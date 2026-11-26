@@ -1,0 +1,54 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+:root {
+	--font-body: Arial, sans-serif;
+	--font-heading: Georgia, serif;
+	--color-background: #f6f4ef;
+	--color-ink: #1d302b;
+	--color-primary: #254f43;
+	--color-accent: #77603c;
+	--color-muted: #5b6560;
+	--color-border: #d7dbd4;
+	--color-soft: #e8efe8;
+	--radius: 12px;
+	--radius-small: 8px;
+}
+
+.car-site *,
+.car-site *::before,
+.car-site *::after {
+	box-sizing: border-box;
+}
+.car-site h1,
+.car-site h2 {
+	font-family: var(--font-heading);
+	font-weight: 400;
+}
+.car-site a {
+	color: inherit;
+}
+.car-site button,
+.car-site input,
+.car-site select {
+	font: inherit;
+}
+.car-site input,
+.car-site select {
+	min-height: 48px;
+	padding: 12px;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-small);
+	background: white;
+	color: var(--color-ink);
+}
+.car-site input:disabled,
+.car-site select:disabled {
+	background: #f2f2ee;
+	color: var(--color-muted);
+	cursor: not-allowed;
+}
+.car-site :focus-visible {
+	outline: 3px solid var(--color-accent);
+	outline-offset: 4px;
+}

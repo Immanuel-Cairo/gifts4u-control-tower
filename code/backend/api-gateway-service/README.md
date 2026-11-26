@@ -63,7 +63,7 @@ src/
 │   └── errorHandling.ts    # asyncHandler wrapper + central error handler
 ├── routes/
 │   ├── auth.ts             # /auth → auth-service
-│   └── cars.ts             # /cars → car-service
+│   └── printz.ts             # /cars → car-service
 └── validation/
     └── schemas.ts          # Placeholder for gateway-level request validation
 
@@ -74,7 +74,7 @@ Dockerfile                  # Multi-stage Debian-slim build for the production i
 test-api.js                 # Smoke test through the gateway (npm run test:api)
 ```
 
-This service uses native ESM, so relative imports end in `.js` (TypeScript resolves `./routes/cars.js` to `cars.ts`).
+This service uses native ESM, so relative imports end in `.js` (TypeScript resolves `./routes/cars.js` to `printz.ts`).
 
 ---
 
@@ -90,9 +90,9 @@ Requests to any other path receive a `404`.
 
 This is a pass-through proxy — it doesn't re-implement each route, it just forwards matching paths (any method) to the upstream service and streams back its response, including error responses. Each upstream service is the source of truth for its own request validation and business logic.
 
-Because `express.json()` runs before the proxy (so `/health` and other local routes can read a JSON body), request bodies are already parsed by the time they reach the proxy. The proxy re-serializes them via `http-proxy-middleware`'s `fixRequestBody` (wired into `on.proxyReq`) — without it, write requests forwarded through the gateway would hang waiting for a body that was already consumed. Both `src/routes/cars.ts` and `src/routes/auth.ts` need this.
+Because `express.json()` runs before the proxy (so `/health` and other local routes can read a JSON body), request bodies are already parsed by the time they reach the proxy. The proxy re-serializes them via `http-proxy-middleware`'s `fixRequestBody` (wired into `on.proxyReq`) — without it, write requests forwarded through the gateway would hang waiting for a body that was already consumed. Both `src/routes/printz.ts` and `src/routes/auth.ts` need this.
 
-See `src/routes/cars.ts` / `src/routes/auth.ts` for the proxy definitions and `src/server.ts` for how they're mounted.
+See `src/routes/printz.ts` / `src/routes/auth.ts` for the proxy definitions and `src/server.ts` for how they're mounted.
 
 ---
 
