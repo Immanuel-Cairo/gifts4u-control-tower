@@ -1,0 +1,30 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title DFD Level 0 — Leverancier Hongkong / Import
+left to right direction
+usecase "0\nLeverancier Hongkong / Import" as P #DBEAFE
+rectangle "Leverancier- en transportbron" as Nsupplier
+rectangle "Magazijn / Voorraad" as Nwarehouse
+rectangle "Control Tower" as Ncontroltower
+Nsupplier --> P : F08: Partij,\nzendingreferentie en transportinformatie
+P --> Nwarehouse : F09: Bevestigde ontvangst: receipt-ID,\nSKU en werkelijk aantal
+Nwarehouse --> P : F10: Verwerkte ontvangst of registratiefout
+P --> Ncontroltower : F16: Partij-event,\nETA of importuitzondering
+Ncontroltower --> P : F24: Impactoverzicht van orders afhankelijk van partij
+P --> Ncontroltower : F30: Partij-ID voor impactbepaling
+rectangle "Importcoördinator" as Staff
+Staff --> P : Registratie, bevestiging en correctiegegevens
+P --> Staff : Werkoverzicht en registratieresultaat
+legend bottom
+Eén proces = één organisatiecontext. Pijlen zijn gegevens, geen goederen.
+F-ID’s verwijzen naar de stroomcatalogus; interne opslag blijft buiten Level 0.
+endlegend
+@enduml

@@ -1,0 +1,31 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title DFD Level 0 — Printz / Bedrukking
+left to right direction
+usecase "0\nPrintz / Bedrukking" as P #DBEAFE
+rectangle "Webshop / Orders" as Nwebshop
+rectangle "Magazijn / Voorraad" as Nwarehouse
+rectangle "DHL / Transport" as Ndhl
+rectangle "Control Tower" as Ncontroltower
+Nwebshop --> P : F07: Orderregels en goedgekeurde ontwerpversie
+Nwarehouse --> P : F11: Bevestigde overdracht en gereserveerde aantallen
+P --> Ndhl : F12: Verzendklare opdracht,\norder-ID en aantallen
+P --> Ncontroltower : F18: Printing,\nReady to Ship of printuitzondering
+Ncontroltower --> P : F26: Vastgelegde productieactie en eigenaar
+P --> Ncontroltower : F32: Eigenaarfilter voor productieacties
+rectangle "Printoperator" as Staff
+Staff --> P : Registratie, bevestiging en correctiegegevens
+P --> Staff : Werkoverzicht en registratieresultaat
+legend bottom
+Eén proces = één organisatiecontext. Pijlen zijn gegevens, geen goederen.
+F-ID’s verwijzen naar de stroomcatalogus; interne opslag blijft buiten Level 0.
+endlegend
+@enduml

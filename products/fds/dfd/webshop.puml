@@ -1,0 +1,37 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title DFD Level 0 — Webshop / Orders
+left to right direction
+usecase "0\nWebshop / Orders" as P #DBEAFE
+rectangle "Klant / ontvanger" as Ncustomer
+rectangle "Magazijn / Voorraad" as Nwarehouse
+rectangle "Printz / Bedrukking" as Nprintz
+rectangle "DHL / Transport" as Ndhl
+rectangle "Control Tower" as Ncontroltower
+Ncustomer --> P : F01: Bestelling,\nadres,\nregels en ontwerpverwijzing
+P --> Ncustomer : F02: Order-ID,\nsynchronisatie en acceptatieresultaat
+P --> Nwarehouse : F03: SKU voor beschikbaarheidscontrole
+Nwarehouse --> P : F04: Fysieke,\ngereserveerde en beschikbare voorraad
+P --> Nwarehouse : F05: Reserveringsverzoek met order-ID en regels
+Nwarehouse --> P : F06: Reservering of tekort met ontbrekend aantal
+P --> Nprintz : F07: Orderregels en goedgekeurde ontwerpversie
+P --> Ndhl : F13: Minimale aflevergegevens van de order
+Ndhl --> P : F14: Order-ID voor aflevergegevens
+P --> Ncontroltower : F15: Order Received met order-ID,\nbron en tijdstip
+Ncontroltower --> P : F20: Goedgekeurde klantupdate met eventreferentie
+P --> Ncontroltower : F21: Communicatielog: resultaat en verzendstatus
+Ncustomer --> P : F28: Klacht en orderreferentie
+P --> Ncustomer : F29: Klantupdate of klachtbevestiging
+legend bottom
+Eén proces = één organisatiecontext. Pijlen zijn gegevens, geen goederen.
+F-ID’s verwijzen naar de stroomcatalogus; interne opslag blijft buiten Level 0.
+endlegend
+@enduml
