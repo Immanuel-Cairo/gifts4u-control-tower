@@ -1,0 +1,42 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam defaultFontSize 13
+left to right direction
+title GIFTS4U — vijf organisaties en Control Tower met API-contracten
+component "Webshop / Orders\nPOST /webshop/orders\nGET /webshop/orders/{orderId}/delivery\nPOST /webshop/customer-updates\nPOST /webshop/complaints" as Web
+component "Leverancier / Import\nPOST /import/shipments\nPOST /import/shipments/{lotId}/events\nGET /import/shipments/{lotId}" as Imp
+component "Magazijn / Voorraad\nGET /warehouse/stock/{sku}\nPOST /warehouse/receipts\nPOST /warehouse/reservations\nPOST /warehouse/handovers\nPOST /warehouse/batches" as Mag
+component "Printz / Bedrukking\nPOST /printz/jobs\nPOST /printz/jobs/{jobId}/handover\nPOST /printz/jobs/{jobId}/events\nPOST /printz/jobs/{jobId}/quality-checks" as Prt
+component "DHL / Transport\nPOST /dhl/shipments\nGET /dhl/shipments/{shipmentId}\nPOST /dhl/shipments/{shipmentId}/events\nGET /dhl/capacity" as DHL
+component "Control Tower\nPOST /control-tower/events [PoC]\nPOST /control-tower/partner-events\nGET /control-tower/orders [PoC]\nPOST /control-tower/decisions\nGET /control-tower/actions\nGET /control-tower/impact/{lotId}" as CT
+actor "Klant" as Customer
+actor "Eén Control Tower-beheerder" as Admin
+Customer --> Web : Bestelling / klantcommunicatie
+Web --> Mag : F03–F06 beschikbaarheid / reservering
+Imp --> Mag : F09/F10 werkelijke ontvangst
+Web --> Prt : F07 opdracht + ontwerpverwijzing
+Mag --> Prt : F11 handoverbevestiging
+Prt --> DHL : F12 verzendklare opdracht
+DHL --> Web : F13/F14 minimale aflevergegevens
+Web --> CT : F15 Order Received [PoC]\nF21 communicatieresultaat
+Imp --> CT : F16 partij / ETA / uitzondering
+Mag --> CT : F17 voorraad / handover
+Prt --> CT : F18 Printing / Ready to Ship / uitzondering
+DHL --> CT : F19 transport / ETA / uitzondering
+CT --> Web : F20 klantupdate
+Admin --> CT : F22/F23 beoordelen en besluiten
+note bottom of CT
+F30–F33 verzoeken; F24–F27 impact / acties via CT-API.
+Auth en gateway zijn gedeelde technische voorzieningen,
+geen extra ketenorganisatie. Klantcommunicatie valt onder Webshop.
+end note
+legend bottom
+Endpointnamen zijn contractvoorstellen. [PoC] = uitgevoerde lokale slice.
+De PoC implementeert ook POST /webshop/orders; overige processen blijven ontwerp.
+Technisch schema: gateway/service-identiteit → organisatie-API → eigen opslag.
+Geen centrale gedeelde database of bestaande automatische integratie verondersteld.
+endlegend
+@enduml
