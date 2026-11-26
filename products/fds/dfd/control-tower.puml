@@ -1,0 +1,41 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title DFD Level 0 — Control Tower
+left to right direction
+usecase "0\nControl Tower" as P #DBEAFE
+rectangle "Webshop / Orders" as Nwebshop
+rectangle "Leverancier Hongkong / Import" as Nimport
+rectangle "Magazijn / Voorraad" as Nwarehouse
+rectangle "Printz / Bedrukking" as Nprintz
+rectangle "DHL / Transport" as Ndhl
+rectangle "Control Tower-beheerder" as Nmanager
+Nwebshop --> P : F15: Order Received met order-ID,\nbron en tijdstip
+Nimport --> P : F16: Partij-event,\nETA of importuitzondering
+Nwarehouse --> P : F17: Voorraadsnapshot,\nStock Received of Sent to Print
+Nprintz --> P : F18: Printing,\nReady to Ship of printuitzondering
+Ndhl --> P : F19: Ophaling,\naflevering,\nETA of transportuitzondering
+P --> Nwebshop : F20: Goedgekeurde klantupdate met eventreferentie
+Nwebshop --> P : F21: Communicatielog: resultaat en verzendstatus
+Nmanager --> P : F22: Filter,\nbeoordeling en bevoegd genomen besluit
+P --> Nmanager : F23: Orderoverzicht,\nhistorie,\nETA en uitzonderingen
+P --> Nimport : F24: Impactoverzicht van orders afhankelijk van partij
+P --> Nwarehouse : F25: Vastgelegde voorraadactie en eigenaar
+P --> Nprintz : F26: Vastgelegde productieactie en eigenaar
+P --> Ndhl : F27: Vastgelegde transportactie en eigenaar
+Nimport --> P : F30: Partij-ID voor impactbepaling
+Nwarehouse --> P : F31: Eigenaarfilter voor voorraadacties
+Nprintz --> P : F32: Eigenaarfilter voor productieacties
+Ndhl --> P : F33: Eigenaarfilter voor transportacties
+legend bottom
+Eén proces = één organisatiecontext. Pijlen zijn gegevens, geen goederen.
+F-ID’s verwijzen naar de stroomcatalogus; interne opslag blijft buiten Level 0.
+endlegend
+@enduml

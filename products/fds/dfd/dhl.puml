@@ -1,0 +1,30 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title DFD Level 0 — DHL / Transport
+left to right direction
+usecase "0\nDHL / Transport" as P #DBEAFE
+rectangle "Printz / Bedrukking" as Nprintz
+rectangle "Webshop / Orders" as Nwebshop
+rectangle "Control Tower" as Ncontroltower
+Nprintz --> P : F12: Verzendklare opdracht,\norder-ID en aantallen
+Nwebshop --> P : F13: Minimale aflevergegevens van de order
+P --> Nwebshop : F14: Order-ID voor aflevergegevens
+P --> Ncontroltower : F19: Ophaling,\naflevering,\nETA of transportuitzondering
+Ncontroltower --> P : F27: Vastgelegde transportactie en eigenaar
+P --> Ncontroltower : F33: Eigenaarfilter voor transportacties
+rectangle "DHL-planner of medewerker" as Staff
+Staff --> P : Registratie, bevestiging en correctiegegevens
+P --> Staff : Werkoverzicht en registratieresultaat
+legend bottom
+Eén proces = één organisatiecontext. Pijlen zijn gegevens, geen goederen.
+F-ID’s verwijzen naar de stroomcatalogus; interne opslag blijft buiten Level 0.
+endlegend
+@enduml

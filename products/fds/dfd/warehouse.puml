@@ -1,0 +1,35 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title DFD Level 0 — Magazijn / Voorraad
+left to right direction
+usecase "0\nMagazijn / Voorraad" as P #DBEAFE
+rectangle "Webshop / Orders" as Nwebshop
+rectangle "Leverancier Hongkong / Import" as Nimport
+rectangle "Printz / Bedrukking" as Nprintz
+rectangle "Control Tower" as Ncontroltower
+Nwebshop --> P : F03: SKU voor beschikbaarheidscontrole
+P --> Nwebshop : F04: Fysieke,\ngereserveerde en beschikbare voorraad
+Nwebshop --> P : F05: Reserveringsverzoek met order-ID en regels
+P --> Nwebshop : F06: Reservering of tekort met ontbrekend aantal
+Nimport --> P : F09: Bevestigde ontvangst: receipt-ID,\nSKU en werkelijk aantal
+P --> Nimport : F10: Verwerkte ontvangst of registratiefout
+P --> Nprintz : F11: Bevestigde overdracht en gereserveerde aantallen
+P --> Ncontroltower : F17: Voorraadsnapshot,\nStock Received of Sent to Print
+Ncontroltower --> P : F25: Vastgelegde voorraadactie en eigenaar
+P --> Ncontroltower : F31: Eigenaarfilter voor voorraadacties
+rectangle "Magazijnmedewerker" as Staff
+Staff --> P : Registratie, bevestiging en correctiegegevens
+P --> Staff : Werkoverzicht en registratieresultaat
+legend bottom
+Eén proces = één organisatiecontext. Pijlen zijn gegevens, geen goederen.
+F-ID’s verwijzen naar de stroomcatalogus; interne opslag blijft buiten Level 0.
+endlegend
+@enduml
