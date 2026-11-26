@@ -1,0 +1,28 @@
+name: Supply Chain PoC
+
+on:
+  push:
+    paths:
+      - 'code/supply-chain-poc/**'
+      - '.github/workflows/supply-chain-poc.yml'
+  pull_request:
+    paths:
+      - 'code/supply-chain-poc/**'
+      - '.github/workflows/supply-chain-poc.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: code/supply-chain-poc
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm run check
+      - run: npm test
