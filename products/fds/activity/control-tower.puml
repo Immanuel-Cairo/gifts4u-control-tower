@@ -1,0 +1,35 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title Organisatieproces — Control Tower
+start
+:Ontvang partnergegevens; controleer bron en schema;
+if (Geldig en geen inhoudelijk conflict?) then (ja)
+ :Verwerk event-ID één keer en bewaar auditgegevens;
+ :Werk order-, voorraad- of partijoverzicht bij;
+ :Houd bevestigde status, ETA en exception apart;
+ :Beheerder bekijkt overzicht en filters;
+ if (Afwijking of actie nodig?) then (ja)
+  :Beoordeel getroffen orders, impact en urgentie;
+  if (Besluit buiten eigen bevoegdheid?) then (ja)
+   :Vraag bevoegd besluit buiten de Control Tower;
+  endif
+  :Leg besluit, beslisser, eigenaar en deadline vast;
+  :Stuur of wijs actie toe; volg bevestiging;
+  :Bereid klantupdate voor op basis van feiten;
+  :Controleer oplossing en sluit exception met reden;
+ endif
+ :Bewaar historie en toon actuele feiten;
+else (nee)
+ :Meld validatie- of synchronisatieprobleem;
+ :Behoud laatst bevestigde gegevens;
+endif
+stop
+@enduml

@@ -1,0 +1,31 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title Organisatieproces — Magazijn / Voorraad
+start
+:Ontvang en controleer werkelijke goederenontvangst;
+:Verwerk receipt-ID één keer in fysieke voorraad;
+:Toon fysiek, gereserveerd en beschikbaar per SKU;
+:Ontvang orderreservering;
+if (Voldoende voorraad onder gelijktijdige controle?) then (ja)
+ :Leg reservering atomair vast;
+ :Pick en controleer aantallen;
+ :Bevestig overdracht aan Printz;
+ :Registreer Sent to Print en deel event;
+else (nee)
+ :Registreer tekort met order, aantal en eigenaar;
+ :Vraag opvolging en aanvulling;
+endif
+if (Piekperiode of nieuw voorraadbesluit?) then (ja)
+ :Pas batchplanning aan; log actor en reden;
+endif
+:Volg uitgaande updates; herstel synchronisatiefouten;
+stop
+@enduml

@@ -1,0 +1,36 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title Organisatieproces — Webshop / Orders
+start
+:Ontvang bestelling en ontwerpverwijzing;
+if (Adres en orderregels geldig?) then (ja)
+ :Vraag beschikbare voorraad op;
+ if (Beschikbaarheid bevestigd?) then (ja)
+  :Reserveer aantallen en bevestig leverbelofte;
+  :Bewaar order en uitgaand event samen;
+  :Deel Order Received en printopdracht;
+  :Volg bevestigde ketenevents en afwijkingen;
+  if (Klantupdate nodig?) then (ja)
+   :Maak en controleer klantbericht;
+   :Verzend of simuleer expliciet en log resultaat;
+  endif
+  if (Klacht ontvangen?) then (ja)
+   :Registreer klacht; koppel retour, herdruk of vervanging;
+  endif
+ else (nee / onbekend)
+  :Toon tekort of onbekende beschikbaarheid;
+  :Geen onbevestigde leverbelofte;
+ endif
+else (nee)
+ :Toon validatiefouten zonder orderacceptatie;
+endif
+stop
+@enduml

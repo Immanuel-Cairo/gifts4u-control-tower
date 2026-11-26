@@ -1,0 +1,35 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title Organisatieproces — DHL / Transport
+start
+:Ontvang verzendklare opdracht;
+:Vraag minimale aflevergegevens op;
+:Plan capaciteit en vervoer;
+if (Adres geldig en capaciteit beschikbaar?) then (ja)
+ :Wacht op werkelijk uitgevoerde ophaling;
+ :Controleer ophaalbewijs en registreer In Transit;
+ :Deel bevestigd event met Control Tower;
+ :Volg vervoer en wijzig ETA als schatting;
+ :Voer afleverpoging uit;
+ if (Aflevering geslaagd met bewijs?) then (ja)
+  :Controleer afleverbewijs en registreer Delivered;
+  :Deel bevestigd event;
+ else (nee)
+  :Registreer mislukte poging, oorzaak en volgende actie;
+  :Behoud bevestigde transportstatus; plan opvolging;
+ endif
+else (nee)
+ :Registreer adres- of capaciteitsexceptie;
+ :Deel eigenaar, volgende actie en ETA of onbekend;
+endif
+:Controleer synchronisatie; retry met hetzelfde event-ID;
+stop
+@enduml
