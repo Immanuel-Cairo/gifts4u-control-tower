@@ -1,0 +1,35 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title Organisatieproces — Printz / Bedrukking
+start
+:Ontvang printopdracht en handover;
+:Controleer order-ID, SKU, aantal en goedgekeurde ontwerpversie;
+if (Gegevens en goederen compleet?) then (ja)
+ if (Capaciteit en machine beschikbaar?) then (ja)
+  :Start bedrukking; registreer Printing;
+  :Voer bedrukking uit;
+  :Controleer personalisatie en aantallen;
+  while (Kwaliteit onvoldoende?) is (ja)
+   :Registreer afwijking en organiseer herdruk;
+   :Voer herdruk en nieuwe kwaliteitscontrole uit;
+  endwhile (goedgekeurd)
+  :Registreer Ready to Ship één keer;
+  :Deel verzendopdracht met DHL en event met Control Tower;
+ else (nee)
+  :Registreer machine- of capaciteitsexceptie;
+  :Deel impact; behoud laatst bevestigde status;
+ endif
+else (nee)
+ :Vraag correctie; start geen bedrukking;
+endif
+:Bewaar mislukte API-overdracht voor retry;
+stop
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title Organisatieproces — Leverancier Hongkong / Import
+start
+:Registreer partij, SKU, aantallen en zendingreferentie;
+:Volg transportinformatie en verwachte aankomst;
+while (Nog niet werkelijk ontvangen?) is (ja)
+ if (Douane- of transportvertraging?) then (ja)
+  :Registreer uitzondering bij partij;
+  :Deel oorzaak en ETA als schatting;
+  :Vraag getroffen orders en impact op;
+ endif
+ :Werk bevestigde gebeurtenissen en planning bij;
+endwhile (ontvangen)
+:Controleer werkelijk ontvangen SKU en aantal;
+:Bewaar ontvangst-ID en ontvangstbevestiging;
+:Deel ontvangst met magazijn;
+if (Ontvangstbevestiging van API?) then (ja)
+ :Markeer synchronisatie bevestigd;
+else (nee)
+ :Bewaar update voor retry met hetzelfde ontvangst-ID;
+ :Toon synchronisatieprobleem;
+endif
+stop
+@enduml
