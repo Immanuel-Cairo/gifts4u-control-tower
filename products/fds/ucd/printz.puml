@@ -1,0 +1,28 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title UCD — Printz / Bedrukking
+left to right direction
+actor "Printoperator" as User
+actor "Magazijn / Voorraad" as Support
+rectangle "Printz / Bedrukking" {
+usecase "Printopdracht en ontwerp controleren" as UC0
+usecase "Bedrukking starten" as UC1
+usecase "Machine- of capaciteitsprobleem melden" as UC2
+usecase "Personalisatie en aantallen controleren" as UC3
+usecase "Verzendklaar melden" as UC4
+}
+User -- UC0
+User -- UC1
+User -- UC2
+User -- UC3
+User -- UC4
+Support -- UC0
+@enduml
