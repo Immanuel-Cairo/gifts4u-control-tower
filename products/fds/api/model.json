@@ -1,0 +1,383 @@
+{
+  "orgs": [
+    {
+      "id": "webshop",
+      "name": "Webshop / Orders",
+      "actor": "B2B- of B2C-klant",
+      "req": "FR-WEB-01 t/m 06; FR-KLM-01 t/m 05",
+      "issue": 184,
+      "goals": [
+        "Bestelling plaatsen",
+        "Beschikbaarheid en leverbelofte bekijken",
+        "Goedgekeurd ontwerp koppelen",
+        "Orderbevestiging ontvangen",
+        "Klantupdate en klacht afhandelen"
+      ],
+      "support": "Klantenservicemedewerker",
+      "supportGoals": [
+        4
+      ]
+    },
+    {
+      "id": "import",
+      "name": "Leverancier Hongkong / Import",
+      "actor": "Importcoördinator",
+      "req": "FR-IMP-01 t/m 05",
+      "goals": [
+        "Inkomende partij registreren",
+        "Transport en verwachte aankomst volgen",
+        "Douane- of transportvertraging melden",
+        "Getroffen orders en impact bekijken",
+        "Werkelijke ontvangst doorgeven"
+      ],
+      "support": "Leverancier / transportbron",
+      "supportGoals": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "warehouse",
+      "name": "Magazijn / Voorraad",
+      "actor": "Magazijnmedewerker",
+      "req": "FR-MAG-01 t/m 06",
+      "goals": [
+        "Werkelijke goederenontvangst vastleggen",
+        "Voorraad per SKU bekijken",
+        "Voorraad voor orders reserveren",
+        "Voorraadtekort behandelen",
+        "Overdracht aan Printz registreren",
+        "Batchplanning aanpassen"
+      ],
+      "support": "Webshop / Orders",
+      "supportGoals": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "printz",
+      "name": "Printz / Bedrukking",
+      "actor": "Printoperator",
+      "req": "FR-PRT-01 t/m 05",
+      "goals": [
+        "Printopdracht en ontwerp controleren",
+        "Bedrukking starten",
+        "Machine- of capaciteitsprobleem melden",
+        "Personalisatie en aantallen controleren",
+        "Verzendklaar melden"
+      ],
+      "support": "Magazijn / Voorraad",
+      "supportGoals": [
+        0
+      ]
+    },
+    {
+      "id": "dhl",
+      "name": "DHL / Transport",
+      "actor": "DHL-planner of medewerker",
+      "req": "FR-DHL-01 t/m 05",
+      "issue": 185,
+      "goals": [
+        "Zending en vervoersfase bekijken",
+        "Capaciteit plannen",
+        "Ophaling bevestigen",
+        "Aflevering met bewijs bevestigen",
+        "Afleverprobleem behandelen",
+        "ETA en uitzondering delen"
+      ],
+      "support": "Ontvanger",
+      "supportGoals": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": "control-tower",
+      "name": "Control Tower",
+      "actor": "Control Tower-beheerder",
+      "req": "FR-CT-01 t/m 11; NFR-01 t/m 08",
+      "issue": 186,
+      "goals": [
+        "Ketenoverzicht en filters bekijken",
+        "Voorraad en orderhistorie bekijken",
+        "Uitzonderingen en impact beoordelen",
+        "Bevoegd genomen besluit vastleggen",
+        "Actie en eigenaar opvolgen",
+        "Klantupdate voorbereiden en volgen"
+      ],
+      "support": "Partner-API’s",
+      "supportGoals": [
+        0,
+        1,
+        2
+      ]
+    }
+  ],
+  "flows": [
+    [
+      "F01",
+      "customer",
+      "webshop",
+      "Bestelling, adres, regels en ontwerpverwijzing",
+      "POST /webshop/orders",
+      "OrderRequest"
+    ],
+    [
+      "F02",
+      "webshop",
+      "customer",
+      "Order-ID, synchronisatie en acceptatieresultaat",
+      "response POST /webshop/orders",
+      "OrderResult"
+    ],
+    [
+      "F03",
+      "webshop",
+      "warehouse",
+      "SKU voor beschikbaarheidscontrole",
+      "GET /warehouse/stock/{sku}",
+      "StockQuery"
+    ],
+    [
+      "F04",
+      "warehouse",
+      "webshop",
+      "Fysieke, gereserveerde en beschikbare voorraad",
+      "response GET /warehouse/stock/{sku}",
+      "Stock"
+    ],
+    [
+      "F05",
+      "webshop",
+      "warehouse",
+      "Reserveringsverzoek met order-ID en regels",
+      "POST /warehouse/reservations",
+      "Reservation"
+    ],
+    [
+      "F06",
+      "warehouse",
+      "webshop",
+      "Reservering of tekort met ontbrekend aantal",
+      "response POST /warehouse/reservations",
+      "ReservationResult"
+    ],
+    [
+      "F07",
+      "webshop",
+      "printz",
+      "Orderregels en goedgekeurde ontwerpversie",
+      "POST /printz/jobs",
+      "PrintJob"
+    ],
+    [
+      "F08",
+      "supplier",
+      "import",
+      "Partij, zendingreferentie en transportinformatie",
+      "POST /import/shipments",
+      "ImportShipment"
+    ],
+    [
+      "F09",
+      "import",
+      "warehouse",
+      "Bevestigde ontvangst: receipt-ID, SKU en werkelijk aantal",
+      "POST /warehouse/receipts",
+      "Receipt"
+    ],
+    [
+      "F10",
+      "warehouse",
+      "import",
+      "Verwerkte ontvangst of registratiefout",
+      "response POST /warehouse/receipts",
+      "ReceiptResult"
+    ],
+    [
+      "F11",
+      "warehouse",
+      "printz",
+      "Bevestigde overdracht en gereserveerde aantallen",
+      "POST /printz/jobs/{jobId}/handover",
+      "Handover"
+    ],
+    [
+      "F12",
+      "printz",
+      "dhl",
+      "Verzendklare opdracht, order-ID en aantallen",
+      "POST /dhl/shipments",
+      "ShipmentRequest"
+    ],
+    [
+      "F13",
+      "webshop",
+      "dhl",
+      "Minimale aflevergegevens van de order",
+      "response GET /webshop/orders/{orderId}/delivery",
+      "Address"
+    ],
+    [
+      "F14",
+      "dhl",
+      "webshop",
+      "Order-ID voor aflevergegevens",
+      "GET /webshop/orders/{orderId}/delivery",
+      "DeliveryQuery"
+    ],
+    [
+      "F15",
+      "webshop",
+      "control-tower",
+      "Order Received met order-ID, bron en tijdstip",
+      "POST /control-tower/events",
+      "OrderReceived"
+    ],
+    [
+      "F16",
+      "import",
+      "control-tower",
+      "Partij-event, ETA of importuitzondering",
+      "POST /control-tower/partner-events",
+      "PartnerEvent"
+    ],
+    [
+      "F17",
+      "warehouse",
+      "control-tower",
+      "Voorraadsnapshot, Stock Received of Sent to Print",
+      "POST /control-tower/partner-events",
+      "PartnerEvent"
+    ],
+    [
+      "F18",
+      "printz",
+      "control-tower",
+      "Printing, Ready to Ship of printuitzondering",
+      "POST /control-tower/partner-events",
+      "PartnerEvent"
+    ],
+    [
+      "F19",
+      "dhl",
+      "control-tower",
+      "Ophaling, aflevering, ETA of transportuitzondering",
+      "POST /control-tower/partner-events",
+      "PartnerEvent"
+    ],
+    [
+      "F20",
+      "control-tower",
+      "webshop",
+      "Goedgekeurde klantupdate met eventreferentie",
+      "POST /webshop/customer-updates",
+      "CustomerUpdate"
+    ],
+    [
+      "F21",
+      "webshop",
+      "control-tower",
+      "Communicatielog: resultaat en verzendstatus",
+      "POST /control-tower/partner-events",
+      "PartnerEvent"
+    ],
+    [
+      "F22",
+      "manager",
+      "control-tower",
+      "Filter, beoordeling en bevoegd genomen besluit",
+      "POST /control-tower/decisions",
+      "Decision"
+    ],
+    [
+      "F23",
+      "control-tower",
+      "manager",
+      "Orderoverzicht, historie, ETA en uitzonderingen",
+      "response GET /control-tower/orders",
+      "OrderList"
+    ],
+    [
+      "F24",
+      "control-tower",
+      "import",
+      "Impactoverzicht van orders afhankelijk van partij",
+      "response GET /control-tower/impact/{lotId}",
+      "Impact"
+    ],
+    [
+      "F25",
+      "control-tower",
+      "warehouse",
+      "Vastgelegde voorraadactie en eigenaar",
+      "response GET /control-tower/actions?owner=warehouse",
+      "ActionList"
+    ],
+    [
+      "F26",
+      "control-tower",
+      "printz",
+      "Vastgelegde productieactie en eigenaar",
+      "response GET /control-tower/actions?owner=printz",
+      "ActionList"
+    ],
+    [
+      "F27",
+      "control-tower",
+      "dhl",
+      "Vastgelegde transportactie en eigenaar",
+      "response GET /control-tower/actions?owner=dhl",
+      "ActionList"
+    ],
+    [
+      "F28",
+      "customer",
+      "webshop",
+      "Klacht en orderreferentie",
+      "POST /webshop/complaints",
+      "Complaint"
+    ],
+    [
+      "F29",
+      "webshop",
+      "customer",
+      "Klantupdate of klachtbevestiging",
+      "response / klantcommunicatie",
+      "CustomerUpdate"
+    ],
+    [
+      "F30",
+      "import",
+      "control-tower",
+      "Partij-ID voor impactbepaling",
+      "GET /control-tower/impact/{lotId}",
+      "ImpactQuery"
+    ],
+    [
+      "F31",
+      "warehouse",
+      "control-tower",
+      "Eigenaarfilter voor voorraadacties",
+      "GET /control-tower/actions?owner=warehouse",
+      "ActionQuery"
+    ],
+    [
+      "F32",
+      "printz",
+      "control-tower",
+      "Eigenaarfilter voor productieacties",
+      "GET /control-tower/actions?owner=printz",
+      "ActionQuery"
+    ],
+    [
+      "F33",
+      "dhl",
+      "control-tower",
+      "Eigenaarfilter voor transportacties",
+      "GET /control-tower/actions?owner=dhl",
+      "ActionQuery"
+    ]
+  ]
+}

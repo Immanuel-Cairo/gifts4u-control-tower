@@ -1,0 +1,18 @@
+{
+  "eventId": "1da2c8ab-b12f-4ef9-9061-713da729eaf5",
+  "type": "order.received",
+  "source": "webshop",
+  "occurredAt": "2026-11-26T14:00:00Z",
+  "orderId": "f248ad63-a179-4075-9265-a0186b789a19",
+  "data": {
+    "customerType": "B2B",
+    "lines": [
+      {
+        "sku": "MUG-WHITE",
+        "quantity": 10
+      }
+    ],
+    "designVersion": "design-demo-v1",
+    "promisedDeliveryDate": "2099-12-01"
+  }
+}
