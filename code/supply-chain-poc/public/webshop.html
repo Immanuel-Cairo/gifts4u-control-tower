@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>GIFTS4U — Webshop demo</title>
+<style>body{font:16px system-ui;background:#f1f5f9;color:#172033;margin:0}main{max-width:760px;margin:40px auto;padding:28px;background:white;border-radius:16px}h1{margin-top:0}.notice{background:#fff7d6;padding:16px;border-radius:8px}form{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}label{display:grid;gap:6px}input,select,button{font:inherit;padding:10px;border:1px solid #aab5c5;border-radius:6px}button{background:#243b73;color:white;cursor:pointer}button:disabled{opacity:.6;cursor:wait}.wide{grid-column:1/-1}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#eff6ff;padding:16px;border-radius:8px}a{color:#243b73}@media(max-width:600px){main{margin:12px;padding:20px}form{grid-template-columns:1fr}}</style></head>
+<body><main><h1>Een order door de keten</h1><p>Registreer een testorder en volg dezelfde order in de Control Tower.</p>
+<p class="notice"><strong>Lokale demo.</strong> Voorraad is een vaste teststub: MUG-WHITE = 100, TSHIRT-BLACK-M = 200. Er wordt niets werkelijk gereserveerd. Gebruik fictieve gegevens. De leverdatum is testinvoer; er worden geen klantberichten verstuurd.</p>
+<form id="order-form">
+<label>Klanttype<select name="customerType"><option>B2B</option><option>B2C</option></select></label>
+<label>SKU<select name="sku"><option>MUG-WHITE</option><option>TSHIRT-BLACK-M</option></select></label>
+<label>Aantal<input name="quantity" type="number" min="1" max="1000000" value="10" required></label>
+<label>Ontwerpversie<input name="designVersion" value="design-demo-v1" maxlength="100" required></label>
+<label>Straat<input name="street" value="Demostraat" maxlength="120" required></label>
+<label>Huisnummer<input name="houseNumber" value="10" maxlength="20" required></label>
+<label>Postcode<input name="postalCode" value="1000AA" maxlength="20" required></label>
+<label>Plaats<input name="city" value="Demostad" maxlength="100" required></label>
+<label>Landcode<input name="countryCode" value="NL" pattern="[A-Z]{2}" maxlength="2" required></label>
+<label>Leverdatum (test)<input name="promisedDeliveryDate" type="date" value="2099-12-01" required></label>
+<button id="submit" type="submit">Order registreren / opnieuw proberen</button><button id="new" type="button">Nieuwe aanvraag-ID</button>
+</form>
+<p id="message" role="status" aria-live="polite">Klaar voor een testorder.</p><pre id="result" hidden></pre>
+<p><a href="http://127.0.0.1:4011" target="_blank" rel="noopener">Open de Control Tower →</a></p>
+<p>Opnieuw proberen gebruikt dezelfde aanvraag-ID. Nieuwe inhoud onder dezelfde ID geeft een conflict. Kies ‘Nieuwe aanvraag-ID’ voor een andere order.</p></main>
+<script>
+const form=document.querySelector('form'),message=document.querySelector('#message'),result=document.querySelector('#result'),submit=document.querySelector('#submit'),fresh=document.querySelector('#new');
+let key=crypto.randomUUID();
+fresh.addEventListener('click',()=>{key=crypto.randomUUID();result.hidden=true;message.textContent='Nieuwe aanvraag-ID klaar.';});
+form.addEventListener('submit',async e=>{e.preventDefault();submit.disabled=true;fresh.disabled=true;message.textContent='Order opslaan en event overdragen…';
+const f=new FormData(form);const payload={customerType:f.get('customerType'),lines:[{sku:f.get('sku'),quantity:Number(f.get('quantity'))}],designVersion:f.get('designVersion'),promisedDeliveryDate:f.get('promisedDeliveryDate'),deliveryAddress:Object.fromEntries(['street','houseNumber','postalCode','city','countryCode'].map(k=>[k,f.get(k)]))};
+try{const response=await fetch('/webshop/orders',{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':key},body:JSON.stringify(payload)});const data=await response.json();result.hidden=false;result.textContent=JSON.stringify(data,null,2);if(!response.ok)throw Error(data.error?.message||'Registratie mislukt.');message.textContent=data.synchronization==='delivered'?'Order opgeslagen. Control Tower heeft ontvangst bevestigd.':'Order lokaal opgeslagen; synchronisatie nog niet bevestigd. De outbox probeert opnieuw.';}catch(error){message.textContent=error.message+' Opnieuw proberen behoudt dezelfde aanvraag-ID.';}finally{submit.disabled=false;fresh.disabled=false;}});
+</script></body></html>

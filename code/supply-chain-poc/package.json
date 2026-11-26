@@ -1,0 +1,12 @@
+{
+  "name": "gifts4u-supply-chain-poc",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24.0.0 <25" },
+  "scripts": {
+    "start": "node src/start.mjs",
+    "test": "node --test",
+    "check": "node --check src/http.mjs && node --check src/validation.mjs && node --check src/webshop.mjs && node --check src/control-tower.mjs && node --check src/start.mjs"
+  }
+}
