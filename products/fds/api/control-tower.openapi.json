@@ -1,0 +1,790 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "GIFTS4U — Control Tower",
+    "version": "0.1.0",
+    "description": "Reviewbaar contractvoorstel bij #190/#180. Alleen x-implementation=poc is lokaal geïmplementeerd; andere routes zijn nog ontwerp. Geen externe servers worden verondersteld."
+  },
+  "paths": {
+    "/control-tower/events": {
+      "post": {
+        "operationId": "receiveOrderEvent",
+        "summary": "receiveOrderEvent",
+        "description": "Alleen order.received van webshop in deze PoC. Exacte duplicate: 200; nieuwe ontvangst: 201; gewijzigde inhoud of tweede init-event voor dezelfde order: 409. Extra velden zoals adressen worden afgewezen.",
+        "parameters": [],
+        "x-implementation": "poc",
+        "responses": {
+          "200": {
+            "description": "Bestaande registratie bij exacte retry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/EventReceipt"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Succes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/EventReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ongeldige JSON of ontbrekende idempotentiesleutel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Service-identiteit ontbreekt of is ongeldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Geen rechten",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Niet gevonden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict: sleutel, voorraad of statusovergang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Bericht te groot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Content-Type moet application/json zijn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Inhoud voldoet niet aan contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Afhankelijkheid of opslag niet beschikbaar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas.json#/OrderReceived"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ServiceKey": []
+          }
+        ]
+      }
+    },
+    "/control-tower/orders": {
+      "get": {
+        "operationId": "listOrders",
+        "summary": "listOrders",
+        "description": "",
+        "parameters": [],
+        "x-implementation": "poc",
+        "responses": {
+          "200": {
+            "description": "Succes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/OrderList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ongeldige JSON of ontbrekende idempotentiesleutel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Service-identiteit ontbreekt of is ongeldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Geen rechten",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Niet gevonden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict: sleutel, voorraad of statusovergang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Bericht te groot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Content-Type moet application/json zijn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Inhoud voldoet niet aan contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Afhankelijkheid of opslag niet beschikbaar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/control-tower/partner-events": {
+      "post": {
+        "operationId": "receivePartnerEvent",
+        "summary": "receivePartnerEvent",
+        "description": "Voorstel: brongebonden authenticatie en bevoegdheid per eventtype. DHL-status vereist shipment-ID en gecontroleerd bewijs. Late events mogen actuele status niet ongemerkt terugzetten.",
+        "parameters": [],
+        "x-implementation": "proposed",
+        "responses": {
+          "200": {
+            "description": "Bestaande registratie bij exacte retry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Ack"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Succes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Ack"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ongeldige JSON of ontbrekende idempotentiesleutel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Service-identiteit ontbreekt of is ongeldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Geen rechten",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Niet gevonden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict: sleutel, voorraad of statusovergang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Bericht te groot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Content-Type moet application/json zijn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Inhoud voldoet niet aan contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Afhankelijkheid of opslag niet beschikbaar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas.json#/PartnerEvent"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/control-tower/decisions": {
+      "post": {
+        "operationId": "recordDecision",
+        "summary": "recordDecision",
+        "description": "recordedBy komt uit de sessie; decidedBy is de bevoegde beslisser. expectedVersion voorkomt verloren updates.",
+        "parameters": [],
+        "x-implementation": "proposed",
+        "responses": {
+          "200": {
+            "description": "Bestaande registratie bij exacte retry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Ack"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Succes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Ack"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ongeldige JSON of ontbrekende idempotentiesleutel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Service-identiteit ontbreekt of is ongeldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Geen rechten",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Niet gevonden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict: sleutel, voorraad of statusovergang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Bericht te groot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Content-Type moet application/json zijn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Inhoud voldoet niet aan contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Afhankelijkheid of opslag niet beschikbaar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "./schemas.json#/Decision"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/control-tower/actions": {
+      "get": {
+        "operationId": "listAssignedActions",
+        "summary": "listAssignedActions",
+        "description": "",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "owner",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "webshop",
+                "import",
+                "warehouse",
+                "printz",
+                "dhl",
+                "control-tower"
+              ]
+            }
+          }
+        ],
+        "x-implementation": "proposed",
+        "responses": {
+          "200": {
+            "description": "Succes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/ActionList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ongeldige JSON of ontbrekende idempotentiesleutel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Service-identiteit ontbreekt of is ongeldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Geen rechten",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Niet gevonden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict: sleutel, voorraad of statusovergang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Bericht te groot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Content-Type moet application/json zijn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Inhoud voldoet niet aan contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Afhankelijkheid of opslag niet beschikbaar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/control-tower/impact/{lotId}": {
+      "get": {
+        "operationId": "readLotImpact",
+        "summary": "readLotImpact",
+        "description": "",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lotId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Resource-ID"
+            }
+          }
+        ],
+        "x-implementation": "proposed",
+        "responses": {
+          "200": {
+            "description": "Succes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Impact"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ongeldige JSON of ontbrekende idempotentiesleutel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Service-identiteit ontbreekt of is ongeldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Geen rechten",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Niet gevonden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict: sleutel, voorraad of statusovergang",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Bericht te groot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Content-Type moet application/json zijn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Inhoud voldoet niet aan contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Afhankelijkheid of opslag niet beschikbaar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./schemas.json#/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ServiceKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Service-Key",
+        "description": "Alleen lokale PoC. Productie: brongebonden service-identiteit."
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Voorgestelde productie-authenticatie; niet geïmplementeerd door de PoC."
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ]
+}

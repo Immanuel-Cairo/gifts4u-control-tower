@@ -1,0 +1,18 @@
+{
+  "customerType": "B2B",
+  "lines": [
+    {
+      "sku": "MUG-WHITE",
+      "quantity": 10
+    }
+  ],
+  "designVersion": "design-demo-v1",
+  "deliveryAddress": {
+    "street": "Demostraat",
+    "houseNumber": "10",
+    "postalCode": "1000AA",
+    "city": "Demostad",
+    "countryCode": "NL"
+  },
+  "promisedDeliveryDate": "2099-12-01"
+}

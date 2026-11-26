@@ -1,0 +1,1849 @@
+{
+  "StockQuery": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "sku": {
+        "type": "string",
+        "minLength": 1,
+        "description": "SKU uit het pad"
+      }
+    },
+    "required": [
+      "sku"
+    ]
+  },
+  "DeliveryQuery": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "orderId": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    "required": [
+      "orderId"
+    ]
+  },
+  "ImpactQuery": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "lotId": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    "required": [
+      "lotId"
+    ]
+  },
+  "ActionQuery": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "owner": {
+        "type": "string",
+        "enum": [
+          "warehouse",
+          "printz",
+          "dhl"
+        ]
+      }
+    },
+    "required": [
+      "owner"
+    ]
+  },
+  "Error": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Machineleesbare foutcode"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Veilige uitleg zonder stacktrace"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      }
+    },
+    "required": [
+      "error"
+    ]
+  },
+  "Address": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "street": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Straat",
+        "maxLength": 120
+      },
+      "houseNumber": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Huisnummer en toevoeging",
+        "maxLength": 20
+      },
+      "postalCode": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Postcode",
+        "maxLength": 20
+      },
+      "city": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Plaats",
+        "maxLength": 100
+      },
+      "countryCode": {
+        "type": "string",
+        "pattern": "^[A-Z]{2}$"
+      }
+    },
+    "required": [
+      "street",
+      "houseNumber",
+      "postalCode",
+      "city",
+      "countryCode"
+    ]
+  },
+  "OrderLine": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "sku": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Catalogus-SKU",
+        "maxLength": 64
+      },
+      "quantity": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000
+      }
+    },
+    "required": [
+      "sku",
+      "quantity"
+    ]
+  },
+  "OrderRequest": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "customerType": {
+        "type": "string",
+        "enum": [
+          "B2B",
+          "B2C"
+        ]
+      },
+      "lines": {
+        "type": "array",
+        "items": {
+          "$ref": "./schemas.json#/OrderLine"
+        },
+        "minItems": 1,
+        "maxItems": 100
+      },
+      "designVersion": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Goedgekeurde ontwerpverwijzing; geen bestand",
+        "maxLength": 100
+      },
+      "deliveryAddress": {
+        "$ref": "./schemas.json#/Address"
+      },
+      "promisedDeliveryDate": {
+        "type": "string",
+        "format": "date"
+      }
+    },
+    "required": [
+      "customerType",
+      "lines",
+      "designVersion",
+      "deliveryAddress",
+      "promisedDeliveryDate"
+    ]
+  },
+  "OrderData": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "customerType": {
+        "type": "string",
+        "enum": [
+          "B2B",
+          "B2C"
+        ]
+      },
+      "lines": {
+        "type": "array",
+        "items": {
+          "$ref": "./schemas.json#/OrderLine"
+        },
+        "minItems": 1,
+        "maxItems": 100
+      },
+      "designVersion": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Ontwerpversie; geen toegangstoken",
+        "maxLength": 100
+      },
+      "promisedDeliveryDate": {
+        "type": "string",
+        "format": "date"
+      }
+    },
+    "required": [
+      "customerType",
+      "lines",
+      "designVersion",
+      "promisedDeliveryDate"
+    ]
+  },
+  "OrderReceived": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "order.received"
+        ]
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "webshop"
+        ]
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "orderId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "data": {
+        "$ref": "./schemas.json#/OrderData"
+      }
+    },
+    "required": [
+      "eventId",
+      "type",
+      "source",
+      "occurredAt",
+      "orderId",
+      "data"
+    ]
+  },
+  "EventReceipt": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "orderId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "duplicate": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "eventId",
+      "orderId",
+      "duplicate"
+    ]
+  },
+  "OrderResult": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "orderId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Order Received"
+        ]
+      },
+      "synchronization": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "delivered"
+        ]
+      },
+      "inventoryMode": {
+        "type": "string",
+        "enum": [
+          "stub"
+        ]
+      },
+      "duplicate": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "orderId",
+      "eventId",
+      "status",
+      "synchronization",
+      "inventoryMode",
+      "duplicate"
+    ]
+  },
+  "OrderView": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "orderId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Order Received"
+        ]
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "webshop"
+        ]
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "receivedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "data": {
+        "$ref": "./schemas.json#/OrderData"
+      },
+      "eta": {
+        "type": "string",
+        "format": "date-time",
+        "nullable": true
+      },
+      "exceptions": {
+        "type": "array",
+        "items": {
+          "$ref": "./schemas.json#/Exception"
+        }
+      }
+    },
+    "required": [
+      "orderId",
+      "status",
+      "source",
+      "occurredAt",
+      "receivedAt",
+      "data",
+      "eta",
+      "exceptions"
+    ]
+  },
+  "Stock": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "sku": {
+        "type": "string",
+        "minLength": 1,
+        "description": "SKU"
+      },
+      "physical": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "reserved": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "available": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "observedAt": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "required": [
+      "sku",
+      "physical",
+      "reserved",
+      "available",
+      "observedAt"
+    ]
+  },
+  "Reservation": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "reservationId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "orderId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "lines": {
+        "type": "array",
+        "items": {
+          "$ref": "./schemas.json#/OrderLine"
+        },
+        "minItems": 1,
+        "maxItems": 100
+      }
+    },
+    "required": [
+      "reservationId",
+      "orderId",
+      "lines"
+    ]
+  },
+  "ReservationResult": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "reservationId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "state": {
+        "type": "string",
+        "enum": [
+          "reserved"
+        ]
+      },
+      "lines": {
+        "type": "array",
+        "items": {
+          "$ref": "./schemas.json#/OrderLine"
+        },
+        "minItems": 1,
+        "maxItems": 100
+      }
+    },
+    "required": [
+      "reservationId",
+      "state",
+      "lines"
+    ]
+  },
+  "ImportShipment": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "lotId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "supplier": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Leverancier"
+      },
+      "shipmentReference": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Externe referentie"
+      },
+      "lines": {
+        "type": "array",
+        "items": {
+          "$ref": "./schemas.json#/OrderLine"
+        },
+        "minItems": 1,
+        "maxItems": 100
+      },
+      "eta": {
+        "type": "string",
+        "format": "date-time",
+        "nullable": true
+      }
+    },
+    "required": [
+      "lotId",
+      "supplier",
+      "shipmentReference",
+      "lines",
+      "eta"
+    ]
+  },
+  "ImportProgress": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "import"
+        ]
+      },
+      "milestone": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Bevestigde transportgebeurtenis"
+      },
+      "eta": {
+        "type": "string",
+        "format": "date-time",
+        "nullable": true
+      }
+    },
+    "required": [
+      "eventId",
+      "occurredAt",
+      "source",
+      "milestone"
+    ]
+  },
+  "Receipt": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "receiptId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "lotId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "sku": {
+        "type": "string",
+        "minLength": 1,
+        "description": "SKU"
+      },
+      "actualQuantity": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "import"
+        ]
+      }
+    },
+    "required": [
+      "receiptId",
+      "lotId",
+      "sku",
+      "actualQuantity",
+      "occurredAt",
+      "source"
+    ]
+  },
+  "ReceiptResult": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "receiptId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "duplicate": {
+        "type": "boolean"
+      },
+      "stock": {
+        "$ref": "./schemas.json#/Stock"
+      }
+    },
+    "required": [
+      "receiptId",
+      "duplicate",
+      "stock"
+    ]
+  },
+  "Handover": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "orderId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "reservationId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "lines": {
+        "type": "array",
+        "items": {
+          "$ref": "./schemas.json#/OrderLine"
+        },
+        "minItems": 1,
+        "maxItems": 100
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "required": [
+      "eventId",
+      "orderId",
+      "reservationId",
+      "lines",
+      "occurredAt"
+    ]
+  },
+  "BatchChange": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "sku": {
+        "type": "string",
+        "minLength": 1,
+        "description": "SKU"
+      },
+      "plannedQuantity": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000
+      },
+      "reason": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Reden voor aanpassing"
+      },
+      "actorId": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Bevoegde gebruiker"
+      }
+    },
+    "required": [
+      "sku",
+      "plannedQuantity",
+      "reason",
+      "actorId"
+    ]
+  },
+  "PrintJob": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "jobId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "orderId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "lineNo": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000
+      },
+      "sku": {
+        "type": "string",
+        "minLength": 1,
+        "description": "SKU"
+      },
+      "quantity": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000
+      },
+      "designVersion": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Goedgekeurde versie"
+      }
+    },
+    "required": [
+      "jobId",
+      "orderId",
+      "lineNo",
+      "sku",
+      "quantity",
+      "designVersion"
+    ]
+  },
+  "PrintProgress": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "printing.started",
+          "ready-to-ship"
+        ]
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "qualityCheckId": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    "required": [
+      "eventId",
+      "type",
+      "occurredAt"
+    ]
+  },
+  "QualityCheck": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "qualityCheckId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "designVersion": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Gecontroleerde versie"
+      },
+      "quantity": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000
+      },
+      "passed": {
+        "type": "boolean"
+      },
+      "checkedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "actorId": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Controleur"
+      }
+    },
+    "required": [
+      "qualityCheckId",
+      "designVersion",
+      "quantity",
+      "passed",
+      "checkedAt",
+      "actorId"
+    ]
+  },
+  "ShipmentRequest": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "shipmentId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "orderId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "jobId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "quantity": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000
+      },
+      "readyEventId": {
+        "type": "string",
+        "format": "uuid"
+      }
+    },
+    "required": [
+      "shipmentId",
+      "orderId",
+      "jobId",
+      "quantity",
+      "readyEventId"
+    ]
+  },
+  "Shipment": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "shipmentId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "orderId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "Ready to Ship",
+          "In Transit",
+          "Delivered"
+        ]
+      },
+      "eta": {
+        "type": "string",
+        "format": "date-time",
+        "nullable": true
+      },
+      "destination": {
+        "$ref": "./schemas.json#/Address"
+      }
+    },
+    "required": [
+      "shipmentId",
+      "orderId",
+      "status",
+      "eta",
+      "destination"
+    ]
+  },
+  "TransportProof": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "proofId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "shipmentId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "kind": {
+        "type": "string",
+        "enum": [
+          "pickup",
+          "delivery"
+        ]
+      },
+      "evidenceRef": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Beperkt toegankelijke bewijsverwijzing"
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "required": [
+      "proofId",
+      "shipmentId",
+      "kind",
+      "evidenceRef",
+      "occurredAt"
+    ]
+  },
+  "TransportEvent": {
+    "oneOf": [
+      {
+        "$ref": "./schemas.json#/Pickup"
+      },
+      {
+        "$ref": "./schemas.json#/Delivery"
+      },
+      {
+        "$ref": "./schemas.json#/EtaUpdate"
+      },
+      {
+        "$ref": "./schemas.json#/TransportException"
+      }
+    ]
+  },
+  "Pickup": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "pickup.confirmed"
+        ]
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "dhl"
+        ]
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "proof": {
+        "$ref": "./schemas.json#/TransportProof"
+      }
+    },
+    "required": [
+      "eventId",
+      "type",
+      "source",
+      "occurredAt",
+      "proof"
+    ]
+  },
+  "Delivery": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "delivery.confirmed"
+        ]
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "dhl"
+        ]
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "proof": {
+        "$ref": "./schemas.json#/TransportProof"
+      }
+    },
+    "required": [
+      "eventId",
+      "type",
+      "source",
+      "occurredAt",
+      "proof"
+    ]
+  },
+  "EtaUpdate": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "eta.updated"
+        ]
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "dhl"
+        ]
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "eta": {
+        "type": "string",
+        "format": "date-time",
+        "nullable": true
+      },
+      "reason": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Reden"
+      }
+    },
+    "required": [
+      "eventId",
+      "type",
+      "source",
+      "occurredAt",
+      "eta",
+      "reason"
+    ]
+  },
+  "TransportException": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "exception.raised"
+        ]
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "dhl"
+        ]
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "exception": {
+        "$ref": "./schemas.json#/Exception"
+      }
+    },
+    "required": [
+      "eventId",
+      "type",
+      "source",
+      "occurredAt",
+      "exception"
+    ]
+  },
+  "Capacity": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "date": {
+        "type": "string",
+        "format": "date"
+      },
+      "planned": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "available": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "shortage": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "required": [
+      "date",
+      "planned",
+      "available",
+      "shortage"
+    ]
+  },
+  "Exception": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "exceptionId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "cause": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Oorzaak"
+      },
+      "owner": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Eigenaar"
+      },
+      "nextAction": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Volgende actie"
+      },
+      "urgency": {
+        "type": "string",
+        "enum": [
+          "low",
+          "medium",
+          "high"
+        ]
+      },
+      "affectedOrderIds": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "state": {
+        "type": "string",
+        "enum": [
+          "open",
+          "resolved"
+        ]
+      }
+    },
+    "required": [
+      "exceptionId",
+      "cause",
+      "owner",
+      "nextAction",
+      "urgency",
+      "affectedOrderIds",
+      "state"
+    ]
+  },
+  "Decision": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "decisionId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "exceptionId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "expectedVersion": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "decidedBy": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Bevoegde beslisser"
+      },
+      "rationale": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Onderbouwing"
+      },
+      "action": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Vervolgactie"
+      },
+      "owner": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Verantwoordelijke"
+      },
+      "dueAt": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "required": [
+      "decisionId",
+      "exceptionId",
+      "expectedVersion",
+      "decidedBy",
+      "rationale",
+      "action",
+      "owner",
+      "dueAt"
+    ]
+  },
+  "Action": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "actionId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "decisionId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "owner": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Eigenaar"
+      },
+      "action": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Actie"
+      },
+      "dueAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "state": {
+        "type": "string",
+        "enum": [
+          "assigned",
+          "confirmed",
+          "completed"
+        ]
+      }
+    },
+    "required": [
+      "actionId",
+      "decisionId",
+      "owner",
+      "action",
+      "dueAt",
+      "state"
+    ]
+  },
+  "Impact": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "lotId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "orders": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "orderId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "impact": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Mogelijke impact; geen bevestigde leverdatum"
+            }
+          },
+          "required": [
+            "orderId",
+            "impact"
+          ]
+        }
+      }
+    },
+    "required": [
+      "lotId",
+      "orders"
+    ]
+  },
+  "CustomerUpdate": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "messageId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "orderId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "channel": {
+        "type": "string",
+        "enum": [
+          "email",
+          "phone",
+          "dashboard"
+        ]
+      },
+      "recipientRef": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Beperkt toegankelijke ontvangerreferentie"
+      },
+      "message": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Feitelijke tekst"
+      },
+      "simulated": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "messageId",
+      "orderId",
+      "eventId",
+      "channel",
+      "recipientRef",
+      "message",
+      "simulated"
+    ]
+  },
+  "Complaint": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "complaintId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "orderId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "cause": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Klacht"
+      },
+      "followUp": {
+        "type": "string",
+        "enum": [
+          "return",
+          "reprint",
+          "replacement",
+          "pending"
+        ]
+      }
+    },
+    "required": [
+      "complaintId",
+      "orderId",
+      "cause",
+      "followUp"
+    ]
+  },
+  "Ack": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Geaccepteerde resource/event-ID"
+      },
+      "duplicate": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "duplicate"
+    ]
+  },
+  "PartnerEvent": {
+    "oneOf": [
+      {
+        "$ref": "./schemas.json#/LotEvent"
+      },
+      {
+        "$ref": "./schemas.json#/StockEvent"
+      },
+      {
+        "$ref": "./schemas.json#/StatusEvent"
+      },
+      {
+        "$ref": "./schemas.json#/ExceptionEvent"
+      },
+      {
+        "$ref": "./schemas.json#/EtaEvent"
+      },
+      {
+        "$ref": "./schemas.json#/CommunicationEvent"
+      }
+    ]
+  },
+  "LotEvent": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "webshop",
+          "import",
+          "warehouse",
+          "printz",
+          "dhl",
+          "control-tower"
+        ]
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "import.progress"
+        ]
+      },
+      "aggregateType": {
+        "type": "string",
+        "enum": [
+          "lot"
+        ]
+      },
+      "aggregateId": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Bronidentiteit van aggregate"
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "data": {
+        "$ref": "./schemas.json#/ImportProgress"
+      }
+    },
+    "required": [
+      "eventId",
+      "source",
+      "type",
+      "aggregateType",
+      "aggregateId",
+      "occurredAt",
+      "data"
+    ]
+  },
+  "StockEvent": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "webshop",
+          "import",
+          "warehouse",
+          "printz",
+          "dhl",
+          "control-tower"
+        ]
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "stock.snapshot"
+        ]
+      },
+      "aggregateType": {
+        "type": "string",
+        "enum": [
+          "stock"
+        ]
+      },
+      "aggregateId": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Bronidentiteit van aggregate"
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "data": {
+        "$ref": "./schemas.json#/Stock"
+      }
+    },
+    "required": [
+      "eventId",
+      "source",
+      "type",
+      "aggregateType",
+      "aggregateId",
+      "occurredAt",
+      "data"
+    ]
+  },
+  "StatusEvent": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "webshop",
+          "import",
+          "warehouse",
+          "printz",
+          "dhl",
+          "control-tower"
+        ]
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "order.status.confirmed"
+        ]
+      },
+      "aggregateType": {
+        "type": "string",
+        "enum": [
+          "order"
+        ]
+      },
+      "aggregateId": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Bronidentiteit van aggregate"
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "data": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Stock Received",
+              "Sent to Print",
+              "Printing",
+              "Ready to Ship",
+              "In Transit",
+              "Delivered"
+            ]
+          },
+          "proofRef": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Verplicht voor DHL-statussen"
+          },
+          "shipmentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "orderId",
+          "status"
+        ]
+      }
+    },
+    "required": [
+      "eventId",
+      "source",
+      "type",
+      "aggregateType",
+      "aggregateId",
+      "occurredAt",
+      "data"
+    ]
+  },
+  "ExceptionEvent": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "webshop",
+          "import",
+          "warehouse",
+          "printz",
+          "dhl",
+          "control-tower"
+        ]
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "exception.raised"
+        ]
+      },
+      "aggregateType": {
+        "type": "string",
+        "enum": [
+          "exception"
+        ]
+      },
+      "aggregateId": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Bronidentiteit van aggregate"
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "data": {
+        "$ref": "./schemas.json#/Exception"
+      }
+    },
+    "required": [
+      "eventId",
+      "source",
+      "type",
+      "aggregateType",
+      "aggregateId",
+      "occurredAt",
+      "data"
+    ]
+  },
+  "EtaEvent": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "webshop",
+          "import",
+          "warehouse",
+          "printz",
+          "dhl",
+          "control-tower"
+        ]
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "eta.updated"
+        ]
+      },
+      "aggregateType": {
+        "type": "string",
+        "enum": [
+          "order"
+        ]
+      },
+      "aggregateId": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Bronidentiteit van aggregate"
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "data": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "eta": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Reden"
+          }
+        },
+        "required": [
+          "orderId",
+          "eta",
+          "reason"
+        ]
+      }
+    },
+    "required": [
+      "eventId",
+      "source",
+      "type",
+      "aggregateType",
+      "aggregateId",
+      "occurredAt",
+      "data"
+    ]
+  },
+  "CommunicationEvent": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "eventId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "webshop",
+          "import",
+          "warehouse",
+          "printz",
+          "dhl",
+          "control-tower"
+        ]
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "communication.recorded"
+        ]
+      },
+      "aggregateType": {
+        "type": "string",
+        "enum": [
+          "order"
+        ]
+      },
+      "aggregateId": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Bronidentiteit van aggregate"
+      },
+      "occurredAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "data": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "messageId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "sent",
+              "simulated",
+              "failed"
+            ]
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "messageId",
+          "orderId",
+          "state",
+          "occurredAt"
+        ]
+      }
+    },
+    "required": [
+      "eventId",
+      "source",
+      "type",
+      "aggregateType",
+      "aggregateId",
+      "occurredAt",
+      "data"
+    ]
+  },
+  "OrderList": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "orders": {
+        "type": "array",
+        "items": {
+          "$ref": "./schemas.json#/OrderView"
+        }
+      }
+    },
+    "required": [
+      "orders"
+    ]
+  },
+  "ActionList": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "actions": {
+        "type": "array",
+        "items": {
+          "$ref": "./schemas.json#/Action"
+        }
+      }
+    },
+    "required": [
+      "actions"
+    ]
+  }
+}
