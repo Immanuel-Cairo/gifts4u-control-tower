@@ -1,0 +1,28 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title UCD — Webshop / Orders
+left to right direction
+actor "B2B- of B2C-klant" as User
+actor "Klantenservicemedewerker" as Support
+rectangle "Webshop / Orders" {
+usecase "Bestelling plaatsen" as UC0
+usecase "Beschikbaarheid en leverbelofte bekijken" as UC1
+usecase "Goedgekeurd ontwerp koppelen" as UC2
+usecase "Orderbevestiging ontvangen" as UC3
+usecase "Klantupdate en klacht afhandelen" as UC4
+}
+User -- UC0
+User -- UC1
+User -- UC2
+User -- UC3
+User -- UC4
+Support -- UC4
+@enduml

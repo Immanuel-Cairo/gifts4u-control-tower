@@ -1,0 +1,31 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title UCD — Magazijn / Voorraad
+left to right direction
+actor "Magazijnmedewerker" as User
+actor "Webshop / Orders" as Support
+rectangle "Magazijn / Voorraad" {
+usecase "Werkelijke goederenontvangst vastleggen" as UC0
+usecase "Voorraad per SKU bekijken" as UC1
+usecase "Voorraad voor orders reserveren" as UC2
+usecase "Voorraadtekort behandelen" as UC3
+usecase "Overdracht aan Printz registreren" as UC4
+usecase "Batchplanning aanpassen" as UC5
+}
+User -- UC0
+User -- UC1
+User -- UC2
+User -- UC3
+User -- UC4
+User -- UC5
+Support -- UC1
+Support -- UC2
+@enduml

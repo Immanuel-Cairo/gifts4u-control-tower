@@ -1,0 +1,29 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title UCD — Leverancier Hongkong / Import
+left to right direction
+actor "Importcoördinator" as User
+actor "Leverancier / transportbron" as Support
+rectangle "Leverancier Hongkong / Import" {
+usecase "Inkomende partij registreren" as UC0
+usecase "Transport en verwachte aankomst volgen" as UC1
+usecase "Douane- of transportvertraging melden" as UC2
+usecase "Getroffen orders en impact bekijken" as UC3
+usecase "Werkelijke ontvangst doorgeven" as UC4
+}
+User -- UC0
+User -- UC1
+User -- UC2
+User -- UC3
+User -- UC4
+Support -- UC0
+Support -- UC1
+@enduml

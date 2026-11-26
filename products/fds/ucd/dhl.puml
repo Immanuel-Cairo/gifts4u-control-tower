@@ -1,0 +1,31 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName SansSerif
+skinparam defaultFontSize 14
+skinparam ArrowColor #475569
+skinparam rectangleBackgroundColor #F1F5F9
+skinparam rectangleBorderColor #334155
+skinparam packageStyle rectangle
+title UCD — DHL / Transport
+left to right direction
+actor "DHL-planner of medewerker" as User
+actor "Ontvanger" as Support
+rectangle "DHL / Transport" {
+usecase "Zending en vervoersfase bekijken" as UC0
+usecase "Capaciteit plannen" as UC1
+usecase "Ophaling bevestigen" as UC2
+usecase "Aflevering met bewijs bevestigen" as UC3
+usecase "Afleverprobleem behandelen" as UC4
+usecase "ETA en uitzondering delen" as UC5
+}
+User -- UC0
+User -- UC1
+User -- UC2
+User -- UC3
+User -- UC4
+User -- UC5
+Support -- UC3
+Support -- UC4
+@enduml
