@@ -1,0 +1,170 @@
+@startuml
+!pragma layout smetana
+hide circle
+skinparam linetype ortho
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontSize 13
+title GIFTS4U — logisch systeem-ERD (geen verplichte gedeelde database)
+entity "Order (Webshop)" as Orders {
+ * orderId : UUID <<PK>>
+ --
+ * customerType : B2B/B2C
+ * promisedDeliveryDate : date
+ * deliveryAddress : restricted data
+ * requestId : string <<unique>>
+}
+entity "OrderLine (Webshop)" as Line {
+ * orderId : UUID <<PK, FK>>
+ * lineNo : integer <<PK>>
+ --
+ * sku : string <<FK>>
+ * quantity : positive integer
+ * designVersionId : string <<FK>>
+}
+entity "DesignVersion (Webshop)" as Design {
+ * designVersionId : string <<PK>>
+ --
+ * approvedAt : timestamp
+ * assetRef : restricted reference
+}
+entity "SKU (Magazijn)" as SKU {
+ * sku : string <<PK>>
+ --
+ * description : string
+ * physicalQuantity : nonnegative integer
+}
+entity "ImportShipment (Import)" as Import {
+ * lotId : UUID <<PK>>
+ --
+ * shipmentReference : string <<unique>>
+ * supplier : string
+ eta : timestamp
+}
+entity "ImportLine (Import)" as ImportLine {
+ * lotId : UUID <<PK, FK>>
+ * sku : string <<PK, FK>>
+ --
+ * expectedQuantity : positive integer
+}
+entity "Receipt (Magazijn)" as Receipt {
+ * receiptId : UUID <<PK>>
+ --
+ * lotId : UUID <<FK>>
+ * sku : string <<FK>>
+ * actualQuantity : positive integer
+ * occurredAt : timestamp
+}
+entity "Reservation (Magazijn)" as Reservation {
+ * reservationId : UUID <<PK>>
+ --
+ * orderId : UUID <<FK>>
+ * lineNo : integer <<FK>>
+ * quantity : positive integer
+ * state : active/released/consumed
+}
+entity "PrintJob (Printz)" as Print {
+ * jobId : UUID <<PK>>
+ --
+ * orderId : UUID <<FK>>
+ * lineNo : integer <<FK>>
+ * designVersionId : string <<FK>>
+ * quantity : positive integer
+ * status : confirmed state
+ qualityCheckedAt : timestamp
+}
+entity "Shipment (DHL)" as Shipment {
+ * shipmentId : UUID <<PK>>
+ --
+ * orderId : UUID <<FK>>
+ * status : confirmed state
+ eta : timestamp
+ * deliveryAddressRef : restricted reference
+}
+entity "TransportProof (DHL)" as Proof {
+ * proofId : UUID <<PK>>
+ --
+ * shipmentId : UUID <<FK>>
+ * kind : pickup/delivery
+ * evidenceRef : restricted reference
+ * occurredAt : timestamp
+}
+entity "Event (bron + CT-projectie)" as Event {
+ * source : organization <<PK>>
+ * eventId : UUID <<PK>>
+ --
+ orderId : UUID <<FK, optional>>
+ * aggregateType : order/lot/stock/shipment
+ * aggregateId : string
+ * type : string
+ * occurredAt : timestamp
+ * receivedAt : timestamp
+ * payload : immutable typed data
+}
+entity "Exception (bron + CT)" as Exception {
+ * exceptionId : UUID <<PK>>
+ --
+ * source : organization
+ * aggregateId : string
+ * cause : string
+ * owner : string
+ * urgency : string
+ * state : open/resolved
+ * version : integer
+}
+entity "AffectedOrder (CT)" as Affected {
+ * exceptionId : UUID <<PK, FK>>
+ * orderId : UUID <<PK, FK>>
+ --
+ impact : string
+}
+entity "Decision (CT)" as Decision {
+ * decisionId : UUID <<PK>>
+ --
+ * exceptionId : UUID <<FK>>
+ * decidedBy : authorized person
+ * recordedBy : userId
+ * rationale : string
+ * recordedAt : timestamp
+}
+entity "Action (CT)" as Action {
+ * actionId : UUID <<PK>>
+ --
+ * decisionId : UUID <<FK>>
+ * owner : person/organization
+ * dueAt : timestamp
+ * state : assigned/confirmed/completed
+}
+entity "Communication (Webshop)" as Communication {
+ * messageId : UUID <<PK>>
+ --
+ * orderId : UUID <<FK>>
+ eventId : UUID
+ * recipientRef : restricted reference
+ * channel : string
+ * state : draft/sent/simulated/failed
+ sentAt : timestamp
+}
+Orders ||--|{ Line
+SKU ||--o{ Line
+Design ||--o{ Line
+Import ||--|{ ImportLine
+SKU ||--o{ ImportLine
+ImportLine ||--o{ Receipt
+Line ||--o{ Reservation
+Line ||--o{ Print
+Design ||--o{ Print
+Orders ||--o{ Shipment
+Shipment ||--o{ Proof
+Orders |o--o{ Event
+Orders ||--o{ Affected
+Exception ||--o{ Affected
+Exception ||--o{ Decision
+Decision ||--o{ Action
+Orders ||--o{ Communication
+legend bottom
+* = verplicht. PK/FK zijn logische sleutels; tussen services worden ID's uitgewisseld.
+Event.aggregateId verwijst volgens aggregateType naar order/partij/SKU/zending.
+ImportLine → Receipt gebruikt (lotId, sku); Reservation/PrintJob → OrderLine gebruikt (orderId, lineNo).
+endlegend
+@enduml
