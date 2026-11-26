@@ -14,6 +14,8 @@ This repository is a starting point for a project. Fill in your own case, produc
 2. [products/](products/) — your analysis/design deliverables (persona, diagrams, specs, prototype, test plan)
 3. [code/](code/) — the implementation
 
+Project planning and team agreements are maintained in the [GitHub wiki](https://github.com/Immanuel-Cairo/gifts4u-control-tower/wiki). See the [branching model](https://github.com/Immanuel-Cairo/gifts4u-control-tower/wiki/Branchingmodel) and [CI/CD pipeline](https://github.com/Immanuel-Cairo/gifts4u-control-tower/wiki/CI-CD-pipeline) for the current workflow. Analysis/design deliverables remain in `products/`.
+
 ## Process
 
 All work — analysis/design products and code alike — must be tracked through GitHub issues and resolved through pull requests. This is not optional: it's how you and your teammates stay able to follow what changed, why, and who reviewed it.
@@ -24,13 +26,15 @@ All work — analysis/design products and code alike — must be tracked through
 
    Read [ISSUES_CREATION.md](ISSUES_CREATION.md) before opening issues — it explains how to split a story or product into issues that are small enough to review in one PR, and the size checks both templates ask you to confirm.
 
-2. **No direct commits to the main branch.** All changes — product documents and code — are made on a branch and merged via a pull request. Never push straight to the main branch, even for "small" fixes.
+2. **Use `develop` and `release`; no direct pushes.** `develop` is the default integration branch. Feature and ordinary bug branches start from and merge into `develop`. Release PRs go from `develop` to `release`. Urgent fixes to the release candidate start from `release`, merge back into `release`, and are then merged back into `develop`. Both fixed branches require a pull request. This development workflow ends at `release`. `master` is the final production branch; promotion to production is outside the scope of this workflow.
 
-3. **One issue → one branch → one pull request.** Name the branch after the issue, and reference the issue in the PR description with `Closes #<issue-number>` so the link shows up automatically and the issue closes on merge.
+3. **One issue → one branch → one pull request.** Use `feature/us-name`, `bugs/short-description`, or `hotfix/short-description`, with lowercase letters and hyphens. Include the story or issue in the name, for example `feature/us-dhl-02-80-specificatie`. This also applies to product documents. Reference the issue with `Closes #<issue-number>` in the PR to `develop`; a hotfix PR only to `release` does not close it automatically. Existing workbranches may retain their old names until that work is finished.
 
-4. **Every pull request gets reviewed before merging.** A teammate (or, for product PRs, the reviewing pair using the **Peer Feedback** template) reviews the diff and leaves feedback on the issue/PR before it's merged. Don't merge your own PR without a review.
+4. **Every pull request gets reviewed before merging.** At least one teammate must approve; review conversations must be resolved and the required `ci (printz-service)` check must pass. Branch protection enforces this for `develop` and `release`, including administrators. New commits require renewed approval. Do not merge your own PR without a review. Use merge commits between the two fixed branches to preserve shared history.
 
 5. **Traceability is the point.** Because every change is: issue → branch → PR → review → merge, anyone (a teammate or us) can look at the issue tracker and reconstruct what was built, in what order, and who signed off on it. Skipping the process breaks that chain — it's the first thing we check when a milestone looks unclear.
+
+The CI workflow runs on pushes and pull requests and currently checks only Printz: dependency installation, lint, build and tests. A green check does not establish that every service works or that a deployment took place. See the wiki for failure handling, release steps and remaining pipeline work.
 
 ## Case
 
