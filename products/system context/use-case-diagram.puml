@@ -1,0 +1,52 @@
+@startuml
+left to right direction
+skinparam monochrome true
+skinparam shadowing false
+skinparam BackgroundColor white
+skinparam usecaseBackgroundColor white
+skinparam actorBackgroundColor white
+actor "Supply Management Director" as directeur
+actor "Medewerker Hongkong" as hongkong
+actor "Magazijnmedewerker" as magazijn
+actor "Printz-medewerker" as printz
+actor "DHL-medewerker" as dhl
+actor "Klant (B2B / B2C)" as klant
+rectangle "GIFTS4U-platform inclusief Control Tower" {
+  usecase "Ketenoverzicht\nraadplegen (UC01)" as UC01
+  usecase "Uitzonderingen en\nimpact beoordelen (UC02)\n--\nUitbreidingspunt\nHerstelopties gewenst" as UC02
+  usecase "Corrigerend besluit\nvastleggen en toewijzen (UC03)" as UC03
+  usecase "Besluit en opvolging\ncontroleren (UC04)" as UC04
+  usecase "Klantupdate opstellen\nen afhandeling vastleggen (UC13)" as UC13
+  usecase "Personalisatieklacht\nregistreren en opvolgen (UC14)" as UC14
+  usecase "Importpartijen\nregistreren en volgen (UC05)" as UC05
+  usecase "Importvertraging\nregistreren (UC06)" as UC06
+  usecase "Voorraad ontvangen,\nplannen en reserveren (UC07)" as UC07
+  usecase "Overdracht naar\nPrintz bevestigen (UC08)" as UC08
+  usecase "Printopdracht uitvoeren\nen kwaliteit vrijgeven (UC09)" as UC09
+  usecase "Printstoring of\ncapaciteitstekort melden (UC10)" as UC10
+  usecase "Zending volgen en\ngebeurtenissen bevestigen (UC11)" as UC11
+  usecase "Transportcapaciteit\nplannen (UC12)" as UC12
+  usecase "Bestelling plaatsen\nmet personalisatie (UC15)" as UC15
+  usecase "Orderupdates\nontvangen (UC16)" as UC16
+  usecase "Herstelopties vergelijken" as herstel
+  usecase "Voorraad controleren" as voorraad
+}
+directeur -- UC01
+directeur -- UC02
+directeur -- UC03
+directeur -- UC04
+directeur -- UC13
+directeur -- UC14
+UC05 -- hongkong
+UC06 -- hongkong
+UC07 -- magazijn
+UC08 -- magazijn
+UC09 -- printz
+UC10 -- printz
+UC11 -- dhl
+UC12 -- dhl
+klant -- UC15
+klant -- UC16
+herstel ..> UC02 : <<extend>>\n[herstelopties gewenst]
+UC15 ..> voorraad : <<include>>
+@enduml

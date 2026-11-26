@@ -8,10 +8,10 @@ const { readFileSync } = require("node:fs");
 const { join } = require("node:path");
 const vm = require("node:vm");
 
-function demo() {
+function demo(savedState) {
   const elements = new Map();
   const handlers = {};
-  const stored = new Map();
+  const stored = new Map(savedState ? [["gifts4u-prototype-v1", JSON.stringify(savedState)]] : []);
   function element(selector) {
     if (!elements.has(selector))
       elements.set(selector, {
@@ -86,6 +86,9 @@ function demo() {
     run: (code) => vm.runInContext(code, context),
     html: (selector) => element(selector).innerHTML,
     text: (selector) => element(selector).textContent,
+    click(action, id) {
+      handlers.click({ target: { closest: () => ({ dataset: { action, id } }) } });
+    },
     submit(id, data, record) {
       handlers.submit({
         target: new Form(id, data, record),
@@ -151,7 +154,7 @@ test("all navigation views render and search, filters, pagination and empty stat
   assert.equal(d.run("page"), 1);
 });
 
-test("scenario selection and director decision preserve status, ETA and reservation", () => {
+test("single operator records an authorized decision without changing order facts", () => {
   const d = demo();
   const before = d.run("JSON.stringify(state.orders)");
   d.run('showScenario("EX-001");scenario="wait";showScenario("EX-001",true)');
@@ -166,11 +169,13 @@ test("scenario selection and director decision preserve status, ETA and reservat
     "EX-001",
   );
   assert.equal(d.run("state.decisions.length"), 0);
-  d.run('state.role="Directeur"');
+
   d.submit(
     "decision-form",
     {
       owner: "Milan",
+      decidedBy: "Sophie / eigenaar",
+      authorized: "on",
       deadline: "2026-11-16T15:00",
       reason: "Extra capaciteit afstemmen",
     },
@@ -183,6 +188,7 @@ test("scenario selection and director decision preserve status, ETA and reservat
 
 test("an unavailable stock balance prevents double allocation in the local demo", () => {
   const d = demo();
+  d.click("toggle-partner-demo");
   d.run(
     'state.orders.forEach(o=>o.reserved=false); state.inventory[0].physical=100; state.orders[0].stage=0;state.orders[0].sku="MUG-WHT";state.orders[0].quantity=100;state.orders[0].events=state.orders[0].events.slice(0,1); state.orders[1].quantity=100; advance("G4U-1048");advance("G4U-1047")',
   );
@@ -194,6 +200,7 @@ test("an unavailable stock balance prevents double allocation in the local demo"
 
 test("receiving an import batch adds actual quantity only once", () => {
   const d = demo();
+  d.click("toggle-partner-demo");
   const before = d.run("state.inventory[0].physical");
   d.submit("receive-form", { quantity: "580" }, "HK-2026-081");
   d.submit("receive-form", { quantity: "580" }, "HK-2026-081");
@@ -203,6 +210,7 @@ test("receiving an import batch adds actual quantity only once", () => {
 
 test("duplicate events are idempotent, offline Printz cannot confirm new status", () => {
   const d = demo();
+  d.click("toggle-partner-demo");
   const count = d.run("state.orders[0].events.length");
   assert.equal(d.run("addEvent(state.orders[0],state.orders[0].stage)"), false);
   assert.equal(d.run("state.orders[0].events.length"), count);
@@ -219,6 +227,7 @@ test("duplicate events are idempotent, offline Printz cannot confirm new status"
 
 test("quality, shipment proof and ETA changes are tracked independently", () => {
   const d = demo();
+  d.click("toggle-partner-demo");
   d.submit("qc-form", { design: "on", quantity: "on" }, "G4U-1048");
   assert.equal(d.run("state.orders[0].qc"), true);
   assert.equal(d.run("state.orders[0].stage"), 4);
@@ -280,6 +289,7 @@ test("communication and complaint are logged without status mutation", () => {
 
 test("new order rejects insufficient stock and escapes rendered user content", () => {
   const d = demo();
+  d.click("toggle-partner-demo");
   const fields = {
     customer: "<img src=x onerror=alert(1)>",
     type: "B2B",
@@ -305,13 +315,51 @@ test("new order rejects insufficient stock and escapes rendered user content", (
   assert.equal(d.run("state.orders[0].reserved"), false);
 });
 
-test("DHL role hides the design reference and Printz hides customer address", () => {
+test("one operator sees order context without a role switch", () => {
   const d = demo();
-  d.run('state.role="DHL";showOrder("G4U-1048")');
-  assert.doesNotMatch(d.html("#detail-content"), /ONT-1048/);
-  d.run('state.role="Printz";showOrder("G4U-1048")');
-  assert.doesNotMatch(d.html("#detail-content"), /Voorbeeldstraat/);
+  d.run('showSettings();showOrder("G4U-1048")');
+  assert.doesNotMatch(d.html("#action-content"), /role-select|Bekijk als directeur/);
+  assert.match(d.html("#action-content"), /Control Tower-beheerder/);
   assert.match(d.html("#detail-content"), /ONT-1048/);
+  assert.match(d.html("#detail-content"), /Voorbeeldstraat/);
+  assert.doesNotMatch(d.html("#detail-content"), /data-action="advance"/);
+  d.run('showScenario("EX-001")');
+  assert.match(d.html("#action-content"), /id="decision-form"/);
+});
+
+test("legacy role migration preserves orders and historical actors", () => {
+  const old = demo().run('JSON.parse(JSON.stringify(state))');
+  old.role = "DHL";
+  old.orders[0].customer = "Bewaarde klant";
+  old.audit[0].actor = "Historische directeur";
+  const d = demo(old);
+  assert.equal(d.run('Object.hasOwn(state,"role")'), false);
+  assert.equal(d.run('state.orders[0].customer'), "Bewaarde klant");
+  assert.equal(d.run('state.audit[0].actor'), "Historische directeur");
+  d.run('audit("Test", "Printz", "G4U-1048");save();state=loadState()');
+  assert.equal(d.run('state.audit[0].actor'), "Sophie · Control Tower-beheerder");
+  assert.equal(d.run('state.audit[0].source'), "Printz");
+});
+
+test("partner inputs require explicit demo mode and keep the same operator", () => {
+  const d = demo();
+  const before = d.run('JSON.stringify(state)');
+  d.click("receive", "HK-2026-081");
+  d.submit("receive-form", { quantity: "580" }, "HK-2026-081");
+  d.run('advance("G4U-1047")');
+  assert.equal(d.run('JSON.stringify(state)'), before);
+  assert.doesNotMatch(d.html("#main"), /data-action="new-order"/);
+  d.click("toggle-partner-demo");
+  assert.match(d.html("#main"), /Partnerdemo actief/);
+  d.submit("receive-form", { quantity: "580" }, "HK-2026-081");
+  assert.equal(d.run('state.imports[0].received'), true);
+  assert.equal(d.run('state.audit[0].actor'), "Sophie · Control Tower-beheerder");
+  assert.equal(d.run('state.audit[0].simulated'), true);
+  d.click("toggle-partner-demo");
+  assert.doesNotMatch(d.html("#main"), /Partnerdemo actief/);
+  const reopened = demo(d.run('JSON.parse(JSON.stringify(state))'));
+  assert.equal(reopened.run('partnerDemo'), false);
+  assert.equal(reopened.run('state.imports[0].received'), true);
 });
 
 test("closing an exception preserves order facts and state survives reload", () => {
@@ -329,4 +377,87 @@ test("closing an exception preserves order facts and state survives reload", () 
     "Opgelost",
   );
   assert.match(d.run("state.audit[0].text"), /Printz bevestigt herstel/);
+});
+
+// ---- Klantfeedback uit de presentaties ----
+
+test("overview shows action items first, most urgent on top, in red", () => {
+  const d = demo();
+  d.run('view="overzicht";render()');
+  const html = d.html("#main");
+  const action = html.indexOf('class="action-panel"');
+  assert.ok(action > 0 && action < html.indexOf('class="metrics"'));
+  assert.ok(html.indexOf("Printlijn 02 staat stil") < html.indexOf("Zending wacht bij douane"));
+  assert.match(html, /badge danger">Kritiek/);
+  assert.match(html, /Leverlooptijd meer dan 20% overschreden/);
+  assert.match(html, /class="chain"/);
+  d.run('state.exceptions.forEach(e=>e.state="Opgelost");state.orders.forEach(o=>o.eta=o.promised);render()');
+  assert.match(d.html("#main"), /Alles op schema/);
+});
+
+test("money is out of scope: the scenario shows quantities, not costs", () => {
+  const d = demo();
+  d.run('showScenario("EX-001")');
+  const html = d.html("#action-content");
+  assert.doesNotMatch(html, /€|kosten · indicatie/i);
+  assert.match(html, /Betrokken producten<\/span><b>\d[\d.]* stuks/);
+});
+
+test("simulated Hong Kong delay marks the batch Delayed and links waiting orders", () => {
+  const d = demo();
+  d.submit("delay-form", { cause: "Brand in Hongkong" }, "HK-2026-082");
+  assert.equal(d.run('state.imports[1].delayed'), false);
+  d.click("toggle-partner-demo");
+  d.run('state.orders[5].stage=0;state.orders[5].sku="BAG-NAT"');
+  d.submit("delay-form", { cause: "Brand in Hongkong" }, "HK-2026-082");
+  d.submit("delay-form", { cause: "Brand in Hongkong" }, "HK-2026-082");
+  assert.equal(d.run('state.imports[1].delayed'), true);
+  assert.equal(d.run('state.imports[1].eta'), null);
+  assert.equal(d.run('state.exceptions.filter(e=>e.kind==="delay").length'), 1);
+  assert.equal(d.run('state.exceptions.at(-1).orders.includes(state.orders[5].id)'), true);
+  assert.deepEqual(
+    [...d.run('scenarioOptions(state.exceptions.at(-1))')],
+    ["Spoedverzoek bij Hongkong", "Wachten op nieuwe ETA"],
+  );
+  d.run('view="import";render()');
+  assert.match(d.html("#main"), /badge danger">Delayed/);
+  assert.equal(d.run('hongKongEta("2026-11-16")'), "2026-12-01");
+});
+
+test("batch increase for peak periods changes the Hong Kong order, not physical stock", () => {
+  const d = demo();
+  const physical = d.run("state.inventory[0].physical");
+  d.submit("batch-form", { sku: "MUG-WHT", quantity: "500", reason: "Kerst" });
+  assert.equal(d.run("state.inventory[0].batch"), 600);
+  assert.match(d.text("#batch-error"), /meer dan het huidige batchaantal/);
+  d.submit("batch-form", { sku: "MUG-WHT", quantity: "1200", reason: "Kerst" });
+  assert.equal(d.run("state.inventory[0].batch"), 1200);
+  assert.equal(d.run("state.inventory[0].physical"), physical);
+  assert.match(d.run("state.audit[0].text"), /600 naar 1200 stuks \(Kerst\)/);
+  d.run('view="magazijn";render()');
+  assert.match(d.html("#main"), /Batch Hongkong/);
+});
+
+test("Printz shows four statuses and DHL shows the route position per order", () => {
+  const d = demo();
+  d.run('view="printz";render()');
+  for (const label of ["Ontvangen bij Printz", "In productie", "Gereed", "Verzonden"])
+    assert.match(d.html("#main"), new RegExp(label));
+  d.run('view="dhl";render()');
+  assert.match(d.html("#main"), /Positie in DHL-route/);
+  assert.match(d.html("#main"), /Sorteercentrum|Bezorgroute|Wacht op ophaling/);
+  d.run('const o=state.orders.find(o=>o.stage===5);showOrder(o.id)');
+  assert.match(d.html("#detail-content"), /class="current"/);
+});
+
+test("older saved demos gain batch and delay fields without losing data", () => {
+  const old = demo().run("JSON.parse(JSON.stringify(state))");
+  old.inventory.forEach((i) => delete i.batch);
+  old.imports.forEach((i) => { delete i.delayed; delete i.delayCause; });
+  old.orders[0].customer = "Bewaarde klant";
+  const d = demo(old);
+  assert.equal(d.run("state.inventory[0].batch"), 600);
+  assert.equal(d.run("state.imports[0].delayed"), true);
+  assert.equal(d.run("state.imports[1].delayed"), false);
+  assert.equal(d.run("state.orders[0].customer"), "Bewaarde klant");
 });
