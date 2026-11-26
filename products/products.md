@@ -1,18 +1,23 @@
 # Products
 
-Commit every analysis/design deliverable for your project to this folder. Use text formats where possible (Markdown, Mermaid, PlantUML) so changes are reviewable in a pull request — see [ISSUES_CREATION.md](../ISSUES_CREATION.md), Part A, for how to split each product into issues.
+Bewaar analyse- en ontwerpdeliverables in products/. Gebruik bewerkbare tekstbronnen voor review; zie [ISSUES_CREATION.md](../ISSUES_CREATION.md).
 
-The following products are expected:
+Voor onderstaande FDS-onderwerpen geldt Mike's Supply Chain-verduidelijking in [issue #180](https://github.com/Immanuel-Cairo/gifts4u-control-tower/issues/180), niet de verouderde per-student/per-use-case-invulling van de template.
 
-1. Persona
-2. Journey map
-3. System requirements
-4. 2 System Context Diagrams (UCD and Level 0 DFD)
-5. Wireflow
-6. High fidelity prototype (please pay attention to heuristics) — [GIFTS4U Control Tower](prototype/index.html), [Nederlandstalige walkthrough](prototype/walkthrough.md)
-7. Use-case specification (2 filled in Use Case templates per student)
-8. Activity diagram of 1 of the Use Cases per student
-9. Entity Relationship Diagram
-10. UML Component diagram of the Microservice Architecture
-11. API message design (logical data object) and API Specification per microservice
-12. UXD Testing (test script, questions and findings)
+| Product | Verwachting voor dit project |
+| --- | --- |
+| DFD | Zes Level 0 DFD's: één per vijf ketenorganisaties plus Control Tower. Geen Level 1 of Level 2 nodig of verwacht. Gegevensstromen voeden de API-specificaties. |
+| UCD | Afzonderlijk per organisatie gewenst, vooral Control Tower. |
+| Use-case-specificatie | Minimaal drie totaal; één per organisatie gewenst. Geen eis van twee per student op basis van de oude template. |
+| Activitydiagram | Per organisatie als geheel ideaal, vooral Control Tower. Niet één diagram per individuele use case. Geen nieuw numeriek minimum verzinnen. |
+| ERD | Minimaal één: heel logisch systeem of opgesplitst per organisatie. |
+| Componentdiagram | Eén systeemdiagram met vijf organisaties, Control Tower en API-endpoints. |
+| API message design en specificatie | Leg benodigde data en berichten vast en gebruik ze direct voor iteratieve implementatie. |
+
+[Opleveringen, dekking, bronnen en reviewpunten](fds/README.md).
+
+Andere producten uit de projectopdracht blijven van toepassing: persona, journey map, requirements, wireflow, high-fidelity prototype en UXD-testplan/script/bevindingen. Mike's verduidelijking schrapt deze niet.
+
+Het bestaande [Control Tower-prototype](prototype/index.html) en de [walkthrough](prototype/walkthrough.md) blijven referenties.
+
+**Start coding naast het ontwerpwerk.** Wacht niet tot alle diagrammen perfect zijn. Splits implementatie in toetsbare slices en houd mocks, werkelijk werkende functies en resterende integratie herkenbaar.
