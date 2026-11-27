@@ -16,6 +16,7 @@ jobs:
       matrix:
         service:
           - printz-service
+          - webshop-service
 
     defaults:
       run:
