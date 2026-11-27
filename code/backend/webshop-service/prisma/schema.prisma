@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum OrderStatus {
+  RECEIVED
+  ACCEPTED
+  CANCELLED
+}
+
+model Order {
+  id                   String              @id @default(uuid())
+  orderNumber          String              @unique @map("order_number")
+  customerType         String              @map("customer_type")
+  sku                  String
+  quantity             Int
+  promisedDeliveryDate DateTime            @map("promised_delivery_date")
+  status               OrderStatus         @default(RECEIVED)
+  receivedAt           DateTime            @default(now()) @map("received_at")
+  createdAt            DateTime            @default(now()) @map("created_at")
+  updatedAt            DateTime            @updatedAt @map("updated_at")
+  statusHistory        OrderStatusHistory[]
+
+  @@map("orders")
+}
+
+model OrderStatusHistory {
+  id          String      @id @default(uuid())
+  orderId     String      @map("order_id")
+  order       Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status      OrderStatus
+  changedAt   DateTime    @default(now()) @map("changed_at")
+  changedById String      @map("changed_by_id")
+
+  @@map("order_status_history")
+}
